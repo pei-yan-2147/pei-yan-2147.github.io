@@ -1,0 +1,21 @@
+site_name: 'PEI 演算法筆記'
+
+
+theme:
+  name: 'material'
+
+
+
+
+nav:
+  - '首頁': index.md
+  - '前言':
+    - '函數製作': 函數製作.md
+
+
+
+
+extra_css:
+  - 'assets/custom.css'
+extra_javascript:
+  - 'assets/custom.js'

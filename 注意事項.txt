@@ -1,0 +1,13 @@
+GPT網址
+https://chatgpt.com/c/530bcc04-bcf1-4ae4-8156-ed1c1ed1104b
+
+執行網頁
+cmd執行：  mkdocs serve
+到網址：    http://127.0.0.1:8000/
+
+
+mkdocs serve
+mkdocs gh-deploy
+
+
+87

@@ -6,3 +6,6 @@ cmd執行：  mkdocs serve
 到網址：    http://127.0.0.1:8000/
 
 
+mkdocs build
+
+mkdocs gh-deploy

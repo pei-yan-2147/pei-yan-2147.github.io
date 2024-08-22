@@ -27,23 +27,41 @@
 
 /* 左側索引欄設定------------------------------------------------------------------------ */ 
 /* 自定义左侧主导航栏背景颜色和字体样式 */
+/* 设置导航栏的整体背景颜色和文字颜色 */
+
+
+/* 主导航背景样式 */
 .md-nav {
-  background-color: #f8f9fa;  /* 设置背景颜色 */
-  color: #000000;  /* 设置文字颜色 */
+  background-color: #f8f9fa;  /* 主导航背景颜色 */
+  color: #000000;  /* 主导航文字颜色 */
   font-size: 16px;  /* 设置字体大小 */
-  padding: 10px;  /* 设置内边距 */
+  padding: 0;  /* 移除内边距 */
+  border-radius: 10px;  /* 为内容区域添加圆角 */
 }
 
-/* 自定义主导航栏中的链接样式 */
-.md-nav .md-nav__link {
-  color: #007bff;  /* 设置链接颜色 */
-  text-decoration: none;  /* 去除下划线 */
+/* 自定义 md-nav__title 的样式 */
+.md-nav__title {
+  color: #ffffff;  /* 设置文字颜色 */
+  font-size: 20px;  /* 设置字体大小 */
+  font-weight: bold;  /* 设置字体粗细 */
+  background-color: #000000 !important;  /* 设置背景颜色 */
+  padding: 10px;  /* 设置上下内边距 */
+  text-align: center;  /* 文字居中 */
+  text-decoration: none;  /* 移除下划线 */
+  
+  border-radius: 10px 10px 0 0;  /* 左上、右上角圆角，去掉下方圆角 */
+  width: 100%;  /* 确保背景填充整个宽度 */
+  box-sizing: border-box;  /* 确保 padding 不会影响宽度 */
+  margin: 0;  /* 移除外边距，使其与容器紧贴 */
 }
 
-.md-nav .md-nav__link:hover {
-  background-color: #e9ecef;  /* 悬停时的背景颜色 */
-  color: #0056b3;  /* 悬停时的文字颜色 */
+/* 去除导航栏整体的额外内边距 */
+.md-nav {
+  padding-top: 0;
+  margin-top: 0;
 }
+
+
 
 
 /* 左側索引欄設定----------------------------------------------------------------------- */
@@ -58,15 +76,16 @@
 
 .custom-toc-container {
   position: fixed;
-  right: 20px;
+  right: 2vw;  /* 使用 vw 设置右边距 */
   top: 100px;
-  width: 250px;
+  width: calc(18vw);  /* 视口宽度的 20%，并减去 10 像素 */
   background-color: #f9f9f9;
-  border-left: 3px solid #007bff;
+  border-left: 3px solid #ca3add;
   padding: 10px;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;  /* 可选：为内容区域添加圆角 */
 }
 
 .custom-toc a {
@@ -101,7 +120,7 @@
 .md-typeset h1 {
   font-family: 'Microsoft JhengHei', sans-serif;font-size: 2.5em;  /* 根據需要調整字體大小 */
   font-weight: bold;  /* 設置字體粗細 */
-  color: #00ffdd ;  /* 這裡設置你想要的顏色 */
+  color: #000000 ;  /* 這裡設置你想要的顏色 */
 }
 
 .md-content {

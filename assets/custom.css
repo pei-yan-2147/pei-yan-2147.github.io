@@ -1,20 +1,53 @@
 .copy-button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    border: none;
-    background: #f0f0f0;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 12px;
-  }
-  
-  .copy-button:hover {
-    background: #e0e0e0;
-  }
-  
-  .code-container {
-    position: relative;
-    padding-top: 20px;
-  }
-  
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border: none;
+  background: #f0f0f0;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.copy-button:hover {
+  background: #e0e0e0;
+}
+
+.code-container {
+  position: relative;
+  padding-top: 20px;
+}
+
+
+
+
+body {
+  background: url('背景/94132137-7d4fc100-fe7c-11ea-8512-69f90cb65e48.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
+
+
+
+#-----------------------------------------
+
+
+
+/* body {
+  background-color: #000000;
+  /* 更深的黑色背景 */
+  color: #ffffff;
+  /* 白色文字 */
+}
+
+.md-header {
+  background-color: #ffffff;
+  /* 完全黑色的導航欄 */
+}
+
+.md-nav__title,
+.md-nav__link,
+.md-nav__item {
+  color: #6b1111;
+  /* 導航欄中的文字顏色 */
+} */

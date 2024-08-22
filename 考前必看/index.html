@@ -9,6 +9,10 @@
       
       
       
+        <link rel="prev" href="../APCS/">
+      
+      
+        <link rel="next" href="../%E6%9C%89%E4%BA%8B%E6%B2%92%E4%BA%8B%E6%89%93%E4%B8%80%E6%AC%A1/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -16,11 +20,14 @@
     
     
       
-        <title>注意long long - PEI 演算法筆記</title>
+        <title>考前必看 - PEI 演算法筆記</title>
       
     
     
       <link rel="stylesheet" href="../assets/stylesheets/main.3cba04c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -39,6 +46,8 @@
       
     
     
+      <link rel="stylesheet" href="../assets/custom.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -49,7 +58,12 @@
   </head>
   
   
-    <body dir="ltr">
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="black" data-md-color-accent="deep-orange">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -76,8 +90,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="PEI 演算法筆記" class="md-header__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+  <img src="../logo/peilogo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -94,15 +107,15 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              注意long long
+              考前必看
             
           </span>
         </div>
       </div>
     </div>
     
+      
     
-      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
@@ -171,8 +184,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="PEI 演算法筆記" class="md-nav__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+  <img src="../logo/peilogo.png" alt="logo">
 
     </a>
     PEI 演算法筆記
@@ -264,10 +276,19 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../%E6%9C%80%E5%A4%A7%E5%85%AC%E5%9B%A0%E6%95%B8gcd/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -276,6 +297,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -287,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/B1zbzJqH0" class="md-nav__link">
+      <a href="../%E6%9C%89%E4%BA%8B%E6%B2%92%E4%BA%8B%E6%89%93%E4%B8%80%E6%AC%A1/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2123,23 +2145,22 @@
 <hr />
 <h1 id="codeblocks">codeblocks使用技巧</h1>
 <details>
-<summary>已熟記</summary>
-
-<h2>換行反斜線「\」不能tab</h2>
-
-<img src="img/考前必看/upload_5f954c937ffd55e0e5583d4a70c41beb.png" style="width:50%;" />
-
-<p>可以配合懶人法使用</p>
-
-<p>注意!!在 <code>\</code> 之前要空格，不然會黏在一起變成：</p>
-<ul>
-  <li>原本：7 6 5 4 2 1 1 8 5 1 1 3 1 4 2 0 2 0 3 3</li>
-  <li>變成：7 65 2 4 2 1 1 85 11 31 42 02 03 3</li>
-</ul>
-
-<img src="img/考前必看/upload_f52eedb7b0400e66dada40ed7a0f15bc.png" style="width:50%;" />
-
-</details>
+        <summary><span><span>已熟記</span></span></summary>
+        <h2 id="換行反斜線「」不能tab" data-id="換行反斜線「」不能tab"><span>換行反斜線「\」不能tab</span></h2>
+        <p><img src="https://hackmd.io/_uploads/rJeN-ugaa.png" alt="image" width="50%"
+                class="offline-handled error-handled" loading="lazy"></p>
+        <blockquote>
+            <p><span>可以配合懶人法使用</span></p>
+        </blockquote>
+        <blockquote>
+            <p><span>注意!!在</span><code>\</code><span>之前要空格，不然會黏在一起變成：</span><br>
+                <span>原本：7 6 5 2 4 2 1 1 8 5 1 1 3 1 4 2 0 2 0 3 3</span><br>
+                <span>變成：7 65 2 4 2 1 1 85 11 31 42 02 03 3</span>
+            </p>
+        </blockquote>
+        <p><img src="https://hackmd.io/_uploads/rkAbjyQ6a.png" alt="image" width="50%"
+                class="offline-handled error-handled" loading="lazy"></p>
+    </details>
 
 <hr />
 <h2 id="ctrl-r">尋找與取代 ctrl + R</h2>

@@ -9,10 +9,8 @@
       
       
       
-        <link rel="prev" href="..">
+        <link rel="prev" href="../APCS/">
       
-      
-        <link rel="next" href="../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -20,7 +18,7 @@
     
     
       
-        <title>待辦事項 - PEI 演算法筆記</title>
+        <title>考前必看 - PEI 演算法筆記</title>
       
     
     
@@ -61,6 +59,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#long-long" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -93,7 +96,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              待辦事項
+              考前必看
             
           </span>
         </div>
@@ -203,17 +206,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../%E5%BE%85%E8%BE%A6%E4%BA%8B%E9%A0%85/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -222,7 +218,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -271,10 +266,19 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -283,6 +287,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -2107,6 +2112,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -2121,27 +2128,111 @@
                   
 
 
-  <h1>待辦事項</h1>
+<h1 id="long-long">注意long long！！！</h1>
+<blockquote>
+<p>保險起見，每一題最後int 都要轉成long long(除了main)</p>
+</blockquote>
+<hr />
+<h1 id="codeblocks">codeblocks使用技巧</h1>
+<details>
+<summary>已熟記</summary>
 
+<h2>換行反斜線「\」不能tab</h2>
+
+<img src="img/考前必看/upload_5f954c937ffd55e0e5583d4a70c41beb.png" style="width:50%;" />
+
+<p>可以配合懶人法使用</p>
+
+<p>注意!!在 <code>\</code> 之前要空格，不然會黏在一起變成：</p>
 <ul>
-  <li><input type="checkbox" /> <a href="https://chatgpt.com/g/g-0wndrW0Ml-c/c/03f12ac9-ffcc-44c9-8101-30fa9ce60897" target="_blank">矩陣乘法</a></li>
-  <li><input type="checkbox" /> 看完ionc數論篇章(不能用電腦時再看)</li>
-  <li><input type="checkbox" checked /> <a href="https://zerojudge.tw/ShowProblem?problemid=a007" target="_blank">理解題目：[a007. 判斷質數]</a></li>
-  <li><input type="checkbox" /> 線段樹</li>
-  <li><input type="checkbox" checked /> DP：切換點</li>
-  <li><input type="checkbox" checked /> 質因數分解</li>
-  <li><input type="checkbox" checked /> N皇后問題</li>
-  <li><input type="checkbox" /> 其他技巧：啟發是合併</li>
-  <li><input type="checkbox" checked /> 埃式篩法</li>
-  <li><input type="checkbox" /> 數論 a^b mod p</li>
-  <li><input type="checkbox" /> pbds</li>
-  <li><input type="checkbox" checked /> bitset使用</li>
-  <li><input type="checkbox" /> 三分搜尋</li>
-  <li><input type="checkbox" checked /> 離散化熟練</li>
-  <li><input type="checkbox" /> <a href="https://hackmd.io/@peicpp/Sk3U40NZA#%E4%BE%8B%E9%A1%8C-P-1-1-%E5%90%88%E6%88%90%E5%87%BD%E6%95%B81" target="_blank">往後整理，不要用istream</a></li>
-  <li><input type="checkbox" /> <a href="https://zh.wikipedia.org/wiki/%E4%B8%80%E7%AC%94%E7%94%BB%E9%97%AE%E9%A2%98#%E5%AE%9A%E7%90%86%E4%BA%8C" target="_blank">一筆畫問題</a></li>
-  <li><input type="checkbox" checked /> 樹的圓心</li>
+  <li>原本：7 6 5 4 2 1 1 8 5 1 1 3 1 4 2 0 2 0 3 3</li>
+  <li>變成：7 65 2 4 2 1 1 85 11 31 42 02 03 3</li>
 </ul>
+
+<img src="img/考前必看/upload_f52eedb7b0400e66dada40ed7a0f15bc.png" style="width:50%;" />
+
+</details>
+
+<hr />
+<h2 id="ctrl-r">尋找與取代 ctrl + R</h2>
+<blockquote>
+<p>ctrl + R</p>
+</blockquote>
+<hr />
+<h2 id="ctrlshiftc-ctrlshiftx">多行註解Ctrl+Shift+C / Ctrl+Shift+x</h2>
+<blockquote>
+<p><img alt="image" src="https://hackmd.io/_uploads/S1QTBigap.png" /></p>
+</blockquote>
+<hr />
+<h1 id="_1">易忘英文</h1>
+<hr />
+<h1 id="_2">資料型態</h1>
+<hr />
+<h2 id="istringstream-cin">istringstream cin(" ");</h2>
+<blockquote>
+<p>istringstream cin("5 17 \
+5 5 8 3 10");</p>
+</blockquote>
+<hr />
+<h1 id="stl">STL</h1>
+<hr />
+<h2 id="priority_queue">priority_queue</h2>
+<blockquote>
+<p>優先駐列
+</p>
+</blockquote>
+<hr />
+<h2 id="multiset">multiset</h2>
+<blockquote>
+<p>多元素set(會排序)
+</p>
+</blockquote>
+<hr />
+<h2 id="unordered_set">unordered_set</h2>
+<blockquote>
+<p>不排序set(單元素)</p>
+</blockquote>
+<hr />
+<h2 id="unordered_multiset">unordered_multiset</h2>
+<blockquote>
+<p>不排序且多重元素</p>
+</blockquote>
+<hr />
+<h2 id="priority_queue_1">priority_queue</h2>
+<blockquote>
+<p><a href="https://hackmd.io/@peicpp/rJDZ4R4WA">優先駐列</a></p>
+</blockquote>
+<hr />
+<h2 id="prev_permutationnext_permutation"><a href="https://hackmd.io/@peicpp/Sk3SU6VZ0/https%3A%2F%2Fhackmd.io%2F%40peicpp%2FSyqZ-8LZ0">prev_permutation/next_permutation</a></h2>
+<blockquote>
+<p>排列
+prev_permutation(v,v+n)</p>
+</blockquote>
+<hr />
+<h2 id="isdigitisalpha"><a href="https://hackmd.io/@peicpp/Sk3SU6VZ0/https%3A%2F%2Fhackmd.io%2F%40peicpp%2FBk2DcbO-R">isdigit(字元)/isalpha(字元)</a></h2>
+<blockquote>
+<p>數字、字母判斷</p>
+</blockquote>
+<hr />
+<h2 id="touppertolower"><a href="https://hackmd.io/@peicpp/Sk3SU6VZ0/https%3A%2F%2Fhackmd.io%2F%40peicpp%2FHJ6p-dGSA">toupper(字元)/tolower(字元)</a></h2>
+<blockquote>
+<p>大小寫轉換</p>
+</blockquote>
+<hr />
+<h2 id="priority_queue_2">priority_queue</h2>
+<blockquote>
+<p>優先柱列</p>
+</blockquote>
+<hr />
+<h1 id="_3"><a href="https://hackmd.io/@peicpp/HyK_fR4ZA">陣列</a></h1>
+<hr />
+<h2 id="strlen">取字串長度(strlen)</h2>
+<hr />
+<h2 id="atoi">字串轉數字(atoi)</h2>
+<hr />
+<h2 id="strcpy">複製(strcpy)</h2>
+<hr />
+<h2 id="strcmp">字串比大小(要使用strcmp)</h2>
 
 
 

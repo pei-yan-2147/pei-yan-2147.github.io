@@ -1,145 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
-
-
-/* 程式複製框------------------------------------------------------------------ */
 .copy-button {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  border: none;
-  background: #f0f0f0;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.copy-button:hover {
-  background: #e0e0e0;
-}
-
-.code-container {
-  position: relative;
-  padding-top: 20px;
-}
-/* 程式複製框------------------------------------------------------------------ */
-
-
-/* 左側索引欄設定------------------------------------------------------------------------ */ 
-/* 自定义左侧主导航栏背景颜色和字体样式 */
-.md-nav {
-  background-color: #f8f9fa;  /* 设置背景颜色 */
-  color: #000000;  /* 设置文字颜色 */
-  font-size: 16px;  /* 设置字体大小 */
-  padding: 10px;  /* 设置内边距 */
-}
-
-/* 自定义主导航栏中的链接样式 */
-.md-nav .md-nav__link {
-  color: #007bff;  /* 设置链接颜色 */
-  text-decoration: none;  /* 去除下划线 */
-}
-
-.md-nav .md-nav__link:hover {
-  background-color: #e9ecef;  /* 悬停时的背景颜色 */
-  color: #0056b3;  /* 悬停时的文字颜色 */
-}
-
-
-/* 左側索引欄設定----------------------------------------------------------------------- */
-
-/* 右側索引欄設定----------------------------------------------------------------------- */
-
-/* 隱藏原本的 */
-.md-nav--secondary {
-  display: none;
-}
-
-
-.custom-toc-container {
-  position: fixed;
-  right: 20px;
-  top: 100px;
-  width: 250px;
-  background-color: #f9f9f9;
-  border-left: 3px solid #007bff;
-  padding: 10px;
-  max-height: 80vh;
-  overflow-y: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.custom-toc a {
-  color: #007bff;
-  text-decoration: none;
-  display: block;
-  padding: 5px 0;
-}
-
-.custom-toc a:hover {
-  background-color: #e9ecef;
-  color: #0056b3;
-}
-
-
-
-/* 右側索引欄設定----------------------------------------------------------------------- */
-
-
-
-
-
-/* 要設置內文的東西，都要加上 .md-typeset-------------------------------------------------- */
-/* body { */
-  /* 背景 */
-  /* background: url('背景/94132137-7d4fc100-fe7c-11ea-8512-69f90cb65e48.gif') no-repeat center center fixed; */
-  /* background-size: cover; */
-  /* 背景 */
-/* } */
-
-
-.md-typeset h1 {
-  font-family: 'Microsoft JhengHei', sans-serif;font-size: 2.5em;  /* 根據需要調整字體大小 */
-  font-weight: bold;  /* 設置字體粗細 */
-  color: #00ffdd ;  /* 這裡設置你想要的顏色 */
-}
-
-.md-content {
-  background-color: #ffffff;  /* 设置为白色背景 */
-  padding: 20px;  /* 添加适当的内边距，以确保内容不会紧贴边缘 */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  /* 可选：添加阴影，使内容区域更加突出 */
-  border-radius: 10px;  /* 可选：为内容区域添加圆角 */
-}
-
-
-
-
-
-
-/* 要設置內文的東西，都要加上 .md-typeset-------------------------------------------------- */
-
-
-/* 設置全站背景影片的容器 */
-.video-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -1;  /* 确保视频在背景层 */
-  pointer-events: none; /* 确保背景视频不影响前景内容的操作 */
-}
-
-.video-background video {
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-size: cover;
-  z-index: -1;
-}
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    border: none;
+    background: #f0f0f0;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  
+  .copy-button:hover {
+    background: #e0e0e0;
+  }
+  
+  .code-container {
+    position: relative;
+    padding-top: 20px;
+  }
+  body {
+    background-color: #121212;  /* 更深的黑色背景 */
+    color: #ffffff;  /* 白色文字 */
+  }
+  
+  .md-header {
+    background-color: #000000;  /* 完全黑色的導航欄 */
+  }
+  
+  .md-nav__title, .md-nav__link, .md-nav__item {
+    color: #ffffff;  /* 導航欄中的文字顏色 */
+  }

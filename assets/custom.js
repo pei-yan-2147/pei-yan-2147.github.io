@@ -8,4 +8,4 @@ function copyToClipboard(element) {
   document.body.removeChild(textarea);
   alert("已複製到剪貼簿");
 }
-
+  

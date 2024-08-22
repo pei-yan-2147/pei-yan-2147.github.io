@@ -1,0 +1,134 @@
+site_name: 'PEI 演算法筆記'
+repo_url: https://github.com/pei-yan-2147/pei-yan-2147.github.io
+
+theme:
+  name: 'material'
+  custom_dir: 'docs/overrides'  # 指定自定义模板目录
+  logo: 'logo\peilogo.png'
+  favicon: 'logo\peilogo.png'
+  palette:
+    primary: 'black'
+    accent: 'deep-orange'
+    scheme: 'dark'  # 這會讓整體配色更偏向黑色
+
+
+  
+
+
+  
+extra_css:
+  - assets/custom.css
+
+# extra:
+#   toc:
+#     integrate: true
+#     depth: 4  # 显示到 h4
+#     sticky: true  # 固定 TOC 位置
+
+
+
+
+  # social:
+  #   - icon: fontawesome/brands/github
+  #     link: https://github.com/your-username
+  #   - icon: fontawesome/brands/twitter
+  #     link: https://twitter.com/your-username
+
+
+
+
+markdown_extensions:
+  - toc:
+      permalink: true  # 确保为每个标题生成永久链接
+      toc_depth: 4      # 设置 TOC 的深度，确保包含子标题
+
+      
+
+
+nav:
+  - '首頁': index.md
+  - '待辦事項': 待辦事項.md
+  - '學習資源': 學習資源.md
+  - 'APCS': APCS.md
+  - '考前必看': 考前必看.md
+  - '有事沒事打一次': '有事沒事打一次.md'
+  - '前言':
+    - 'hackmd特殊使用': 'hackmd特殊使用.md'
+    - '優質網站': '優質網站.md'
+    - '營隊': 'https://hackmd.io/@peicpp/HJKpgRNZA'
+    - '使用vscode撰寫c++': 'https://hackmd.io/@peicpp/H1dlbR4b0'
+    - '打字音效': 'https://hackmd.io/@peicpp/HyfGhRzHC'
+    - '資料來源': 'https://hackmd.io/@peicpp/SySUbCEbC'
+  - '概念、語法、技巧':
+    - '經典報錯': 'https://hackmd.io/@peicpp/HJEsE5U_R'
+    - '偷懶方法': 'https://hackmd.io/@peicpp/Hk3sCA37A'
+    - '指標(\*、\&)': 'https://hackmd.io/@peicpp/ry0cINrKR'
+    - 'getline搭配stringstream': 'https://hackmd.io/@peicpp/BkoMedqwR'
+    - 'scanf & printf': 'https://hackmd.io/@peiyan/HkdLv49wC'
+    - '定義#define': 'https://hackmd.io/@peicpp/BJkB3lONC'
+    - '位元運算': 'https://hackmd.io/@peicpp/HJu1uZESR'
+    - '使用位元窮舉': 'https://hackmd.io/@peicpp/BkfT-R4ZA'
+    - 'bitset使用': 'https://hackmd.io/@peicpp/rJUJRipY0'
+    - '懶人輸入法，比賽時用': 'https://hackmd.io/@peicpp/rJDrGCVWA'
+    - '複雜度': 'https://hackmd.io/@peicpp/Bk9ubCVbR'
+    - '排序sort': 'https://hackmd.io/@peicpp/SJw_e0NZ0'
+    - '定義比較規則': 'https://hackmd.io/@peicpp/HkzxzGtP0'
+    - '排列生成permutation窮舉': 'https://hackmd.io/@peicpp/SyqZ-8LZ0'
+    - 'switch之使用': 'https://hackmd.io/@peicpp/SJpkfAEW0'
+    - 'do while使用': 'https://hackmd.io/@peicpp/SJHPye_Z0'
+    - '判斷是否為數字、字母': 'https://hackmd.io/@peicpp/Bk2DcbO-R'
+    - '大小寫轉換': 'https://hackmd.io/@peicpp/HJ6p-dGSA'
+    - '小數點後幾位': 'https://hackmd.io/@peicpp/HyW7MCN-C'
+    - '輸出結尾空白': 'https://hackmd.io/@peicpp/BJ-7JdL-0'
+    - '前序、中序、後序': 'https://hackmd.io/@peicpp/Syv5a3yDA'
+  - '數論':
+    - 'log': 'https://hackmd.io/@peicpp/rJK-6y3PR'
+    - 'Σ sigma (西格瑪)': 'https://hackmd.io/@peicpp/B14yMCzSA'
+    - '%模運算': 'https://hackmd.io/@peicpp/r1T0rBbPR'
+    - '元素/費馬小定理': 'https://hackmd.io/@peicpp/S16Pp8fvC'
+    - '圈結構&約瑟夫問題': 'https://hackmd.io/@peicpp/HkMkJ_brA'
+    - '七橋問題&一筆畫問題': 'https://hackmd.io/@peicpp/HkSH6QMsC'
+    - '質數、找質因數(埃式篩)': 'https://hackmd.io/@peiyan/Sk0EXkK9A'
+    - '因數倍數': 'https://hackmd.io/@peiyan/Sk2cd7eo0'
+    - '歐幾里得引理': 'https://hackmd.io/@peicpp/HylVj7lsA'
+    - '歐幾里得演算法：輾轉相除法：最大公因數gcd': 'https://hackmd.io/@peiyan/HJomZ3VKR'
+    - '擴展歐幾里得演算法': 'https://hackmd.io/@peicpp/ByzEj_yjA'
+    - '歐拉函數': 'https://hackmd.io/@peicpp/S1ei8QPK0'
+    - '矩陣運算': 'https://hackmd.io/@peicpp/S1Gwt2MsR'
+  - '資料結構':
+    - 'STL': 'https://hackmd.io/@peicpp/SkoResqSC'
+    - '文字陣列': 'https://hackmd.io/@peicpp/HyK_fR4ZA'
+    - '鏈結結構': 'https://hackmd.io/@peicpp/H1YcXA4WR'
+    - 'map': 'https://hackmd.io/@peicpp/HJK070VWR'
+    - '優先柱列(priority_queue)': 'https://hackmd.io/@peicpp/rJDZ4R4WA'
+    - '線段樹': 'https://hackmd.io/@peicpp/SJ-9QCBFA'
+  - '演算法':
+    - '遞迴': 'https://hackmd.io/@peicpp/Sk3U40NZA'
+    - '爆搜': 'https://hackmd.io/@peicpp/rJPQc1-w0'
+    - '前綴和&差分': 'https://hackmd.io/@peicpp/SJdFVRV-R'
+    - '搜尋、二分搜尋、跳躍二分搜': 'https://hackmd.io/@peicpp/r1wnERN-R'
+    - '跳躍二分搜': 'https://hackmd.io/@peicpp/H1weSAVWA'
+    - '哈希表': 'https://hackmd.io/@peicpp/rk3fBANbR'
+    - '離散化': 'https://hackmd.io/@peicpp/r15IHCN-A'
+    - '快速冪': 'https://hackmd.io/@peicpp/SJctS04bC'
+    - '滑動視窗(Sliding window)(技巧)': 'https://hackmd.io/@peicpp/B1q3rAE-C'
+    - '掃瞄線演算法': 'https://hackmd.io/@peicpp/SkvgLCNZC'
+    - '折半枚舉': 'https://hackmd.io/@peicpp/rJPQc1-w0#%E4%B8%89%E3%80%81%E6%8A%98%E5%8D%8A%E6%9E%9A%E8%88%89'
+    - '貪心演算法(Greedy)': 'https://hackmd.io/@peicpp/BJaVUR4WA'
+    - '動態規劃(dp)': 'https://hackmd.io/@peicpp/BkU9804bR'
+    - '圖論': 'https://hackmd.io/@peicpp/S1p2IAV-A'
+    - '樹論': 'https://hackmd.io/@peicpp/HJPzMV7NR'
+  - 'APCS歷屆':
+    - '統整': 'https://docs.google.com/spreadsheets/d/15ANYkk1BhHBNcZINYVzdzh2dG11dVd4kMIbcF5l6_h8/edit?usp=sharing'
+    - '編年/題庫(by YUI HUANG)': 'https://docs.google.com/spreadsheets/d/1B1qI4OE_O4UAc3L77vzmrFFC27ZiMnlh96KpgyUQAgs/edit#gid=0'
+    - '實作一': 'https://hackmd.io/@peicpp/BkydrymzC'
+    - '實作二': 'https://hackmd.io/@peicpp/ryXipJZm0'
+    - '實作三': 'https://hackmd.io/@peicpp/SkGJC1-mC'
+    - '實作四': 'https://hackmd.io/@peicpp/H1DZkgbmC'
+  - '刷題':
+    - 'CSEC': 'https://hackmd.io/@peicpp/HJEeEnZVR'
+    - '北市學科能力競賽': 'https://hackmd.io/@peicpp/rJSZjdwFR'
+  - '常用英文': 'https://hackmd.io/@peicpp/Hy_wpZ-KC'
+  - '加深加廣': 'https://hackmd.io/@peicpp/SJlXoY1tA'
+  - '程式碼範例': '程式碼範例.md'
+  - '好看': '好看.html'

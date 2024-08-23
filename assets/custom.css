@@ -37,6 +37,7 @@
   font-size: 16px;  /* 设置字体大小 */
   padding: 0;  /* 移除内边距 */
   border-radius: 10px;  /* 为内容区域添加圆角 */
+  overflow: hidden;  /* 防止子元素溢出显示 */
 }
 
 /* 自定义 md-nav__title 的样式 */
@@ -50,9 +51,9 @@
   text-decoration: none;  /* 移除下划线 */
   
   border-radius: 10px 10px 0 0;  /* 左上、右上角圆角，去掉下方圆角 */
-  width: 100%;  /* 确保背景填充整个宽度 */
+  width: calc(100% + 20px);  /* 让背景宽度比父容器多 20px */
+  margin: 0 -10px;  /* 将背景左右扩展10px */
   box-sizing: border-box;  /* 确保 padding 不会影响宽度 */
-  margin: 0;  /* 移除外边距，使其与容器紧贴 */
 }
 
 /* 去除导航栏整体的额外内边距 */
@@ -73,26 +74,29 @@
   display: none;
 }
 
-
 .custom-toc-container {
-  position: fixed;
-  right: 2vw;  /* 使用 vw 设置右边距 */
-  top: 100px;
-  width: calc(18vw);  /* 视口宽度的 20%，并减去 10 像素 */
+  /* position: absolute;  绝对定位 */
+  position: fixed;  /* 固定定位，确保 TOC 在页面滚动时保持在固定位置 */
+  top: 11%;
+  left: 72%;
+  width: 18vw;  /* 固定宽度为视口宽度的 18% */
   background-color: #f9f9f9;
-  border-left: 3px solid #ca3add;
-  padding: 10px;
-  max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;  /* 可选：为内容区域添加圆角 */
+  z-index: 1;  /* 确保 TOC 位于内容上方 */
 }
 
+
+.custom-toc-container nav ul {
+  list-style-type: none; /* 去除列表项的默认黑点 */
+}
+
+
 .custom-toc a {
-  color: #007bff;
+  color: #000000;
   text-decoration: none;
   display: block;
-  padding: 5px 0;
+  padding: 0px 0;
 }
 
 .custom-toc a:hover {
@@ -125,10 +129,12 @@
 
 .md-content {
   background-color: #ffffff;  /* 设置为白色背景 */
-  padding: 20px;  /* 添加适当的内边距，以确保内容不会紧贴边缘 */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  /* 可选：添加阴影，使内容区域更加突出 */
   border-radius: 10px;  /* 可选：为内容区域添加圆角 */
+  /* min-width: 80%;  设置内容区域的宽度为页面宽度的80%，你可以根据需要调整这个值 */
+  margin: 0 auto;  /* 将内容区域居中 */
+  box-sizing: border-box;  /* 确保 padding 不影响宽度 */
 }
+
 
 
 

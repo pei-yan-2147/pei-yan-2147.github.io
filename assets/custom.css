@@ -97,16 +97,17 @@
   background-color: #e9ecef; /* 懸停時，背景變成淺灰色 */
   color: #0056b3; /* 懸停時，文字顏色變成藍色 */
 }
-
 /* TOC 標題的樣式 */
 .custom-toc-title {
   font-size: 1.5em;  /* 設定標題字體大小 */
   font-weight: bold;  /* 設定標題字體粗細 */
-  color: #333;  /* 設定標題顏色 */
-  padding-bottom: 10px;  /* 在標題下方添加一些內邊距 */
+  color: #ffffff;  /* 設定標題文字顏色為白色 */
+  background-color: #000000;  /* 設定背景顏色為黑色 */
+  padding: 10px;  /* 設定內邊距 */
   text-align: center;  /* 使標題居中 */
-  border-bottom: 2px solid #ca3add;  /* 在標題下方添加一條分隔線 */
-  margin-bottom: 10px;  /* 設定與 TOC 內容之間的距離 */
+  border-radius: 10px 10px 0 0;  /* 左上、右上角圓角 */
+  margin: 0 -10px 10px -10px;  /* 去掉左边和右边的外边距，使背景扩展到容器边缘 */
+  box-sizing: border-box;  /* 确保 padding 不影响宽度 */
 }
 
 /* === 內文樣式的設定 ============================================== */

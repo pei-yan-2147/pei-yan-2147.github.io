@@ -69,9 +69,9 @@
 /* 自定義 TOC 容器樣式 */
 .custom-toc-container {
   position: fixed; /* 固定定位，確保 TOC 在頁面滾動時保持在固定位置 */
-  /* top: 0px; 調整 TOC 的頂部對齊 */
-  left: 72%;
-  width: 20vw; /* 固定寬度為視口寬度的 18% */
+  top: 10px; /* 調整 TOC 的頂部對齊 */
+  left: calc(100% - 28vw); /* 使 TOC 左側與中間內容的右側對齊 */
+  width: 20vw; /* 固定寬度為視口寬度的 20% */
   background-color: #f9f9f9; /* 設定背景顏色為淺灰色 */
   overflow-y: auto; /* 如果內容超出範圍，允許垂直滾動 */
   border-radius: 10px; /* 為內容區域添加圓角 */
@@ -97,6 +97,7 @@
   background-color: #e9ecef; /* 懸停時，背景變成淺灰色 */
   color: #0056b3; /* 懸停時，文字顏色變成藍色 */
 }
+
 /* TOC 標題的樣式 */
 .custom-toc-title {
   font-size: 1.5em;  /* 設定標題字體大小 */
@@ -106,8 +107,8 @@
   padding: 10px;  /* 設定內邊距 */
   text-align: center;  /* 使標題居中 */
   border-radius: 10px 10px 0 0;  /* 左上、右上角圓角 */
-  margin: 0 -10px 10px -10px;  /* 去掉左边和右边的外边距，使背景扩展到容器边缘 */
-  box-sizing: border-box;  /* 确保 padding 不影响宽度 */
+  margin: 0 -10px 10px -10px;  /* 去掉左邊和右邊的外邊距，使背景擴展到容器邊緣 */
+  box-sizing: border-box;  /* 確保 padding 不影響寬度 */
 }
 
 /* === 內文樣式的設定 ============================================== */

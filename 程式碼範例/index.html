@@ -37,14 +37,31 @@
     
 
     <div class="video-background">
-        <video autoplay loop muted playsinline>
+        <video id="background-video" autoplay loop muted playsinline>
             <source src="../video/background.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
-    
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var tocContainer = document.querySelector('.custom-toc-container');
+        var leftNav = document.querySelector('.md-nav');
 
+        if (leftNav && tocContainer) {
+            // 初始定位 TOC
+            updateTocPosition();
+
+            // 监听滚动事件
+            window.addEventListener('scroll', updateTocPosition);
+        }
+
+        function updateTocPosition() {
+            var leftNavRect = leftNav.getBoundingClientRect();
+            tocContainer.style.top = (leftNavRect.top >= 0 ? leftNavRect.top : 0) + 'px';
+        }
+      });
+    </script>
 
     
       
@@ -2261,6 +2278,7 @@ int gcd(int a, int b) {
 
     <!-- 新增的 TOC 区块，引用 toc 扩展生成的永久链接 -->
     <div class="custom-toc-container">
+        <div class="custom-toc-title">目錄</div> <!-- 添加「目錄」标题 -->
         <nav class="custom-toc">
             <ul>
                 

@@ -1,170 +1,156 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
+/* === 程式複製框的設定 ============================================== */
 
-
-/* 程式複製框------------------------------------------------------------------ */
+/* 設定「複製程式碼」按鈕的樣式 */
 .copy-button {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  border: none;
-  background: #f0f0f0;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 12px;
+  position: absolute; /* 讓按鈕固定在容器的右上角 */
+  right: 10px; /* 右邊距離10px */
+  top: 10px; /* 上方距離10px */
+  border: none; /* 移除邊框 */
+  background: #f0f0f0; /* 設定背景顏色為淺灰色 */
+  padding: 5px 10px; /* 設定內邊距 */
+  cursor: pointer; /* 設定滑鼠指針為點擊狀態 */
+  font-size: 12px; /* 設定字體大小 */
 }
 
+/* 設定「複製程式碼」按鈕的懸停樣式 */
 .copy-button:hover {
-  background: #e0e0e0;
+  background: #e0e0e0; /* 懸停時，背景變成更深的灰色 */
 }
 
+/* 設定程式碼容器的樣式 */
 .code-container {
-  position: relative;
-  padding-top: 20px;
+  position: relative; /* 讓容器內的元素相對定位 */
+  padding-top: 20px; /* 增加上方的內邊距 */
 }
-/* 程式複製框------------------------------------------------------------------ */
 
+/* === 左側索引欄的設定 ============================================== */
 
-/* 左側索引欄設定------------------------------------------------------------------------ */ 
-/* 自定义左侧主导航栏背景颜色和字体样式 */
-/* 设置导航栏的整体背景颜色和文字颜色 */
-
-
-/* 主导航背景样式 */
+/* 主導航背景樣式 */
 .md-nav {
-  background-color: #f8f9fa;  /* 主导航背景颜色 */
-  color: #000000;  /* 主导航文字颜色 */
-  font-size: 16px;  /* 设置字体大小 */
-  padding: 0;  /* 移除内边距 */
-  border-radius: 10px;  /* 为内容区域添加圆角 */
-  overflow: hidden;  /* 防止子元素溢出显示 */
+  background-color: #f8f9fa; /* 主導航背景顏色 */
+  color: #000000; /* 主導航文字顏色 */
+  font-size: 20px; /* 設定字體大小 */
+  padding: 0; /* 移除內邊距 */
+  font-weight: bold; /* 設置字體粗細 */
+  border-radius: 10px; /* 為內容區域添加圓角 */
+  overflow: hidden; /* 防止子元素溢出顯示 */
 }
 
-/* 自定义 md-nav__title 的样式 */
+/* 自定義主導航欄標題的樣式 */
 .md-nav__title {
-  color: #ffffff;  /* 设置文字颜色 */
-  font-size: 20px;  /* 设置字体大小 */
-  font-weight: bold;  /* 设置字体粗细 */
-  background-color: #000000 !important;  /* 设置背景颜色 */
-  padding: 10px;  /* 设置上下内边距 */
-  text-align: center;  /* 文字居中 */
-  text-decoration: none;  /* 移除下划线 */
-  
-  border-radius: 10px 10px 0 0;  /* 左上、右上角圆角，去掉下方圆角 */
-  width: calc(100% + 20px);  /* 让背景宽度比父容器多 20px */
-  margin: 0 -10px;  /* 将背景左右扩展10px */
-  box-sizing: border-box;  /* 确保 padding 不会影响宽度 */
+  color: #ffffff; /* 設定文字顏色為白色 */
+  font-size: 30px; /* 設定字體大小 */
+  font-weight: bold; /* 設定字體粗細 */
+  background-color: #000000 !important; /* 設定背景顏色為黑色 */
+  padding: 10px; /* 設定上下內邊距 */
+  text-align: center; /* 文字居中 */
+  text-decoration: none; /* 移除下劃線 */
+  border-radius: 10px 10px 0 0; /* 左上、右上角圓角，去掉下方圓角 */
+  width: calc(100% + 20px); /* 讓背景寬度比父容器多 20px */
+  margin: 0 -10px; /* 將背景左右擴展10px */
+  box-sizing: border-box; /* 確保 padding 不影響寬度 */
 }
 
-/* 去除导航栏整体的额外内边距 */
+/* 去除導航欄整體的額外內邊距 */
 .md-nav {
-  padding-top: 0;
-  margin-top: 0;
+  padding-top: 0; /* 設置導航欄頂部的內邊距為0 */
+  margin-top: 0; /* 設置導航欄頂部的外邊距為0 */
 }
 
+/* === 右側索引欄的設定 ============================================== */
 
-
-
-/* 左側索引欄設定----------------------------------------------------------------------- */
-
-/* 右側索引欄設定----------------------------------------------------------------------- */
-
-/* 隱藏原本的 */
+/* 隱藏原本的右側導航欄 */
 .md-nav--secondary {
-  display: none;
+  display: none; /* 隱藏原本的右側導航欄 */
 }
 
+/* 自定義 TOC 容器樣式 */
 .custom-toc-container {
-  /* position: absolute;  绝对定位 */
-  position: fixed;  /* 固定定位，确保 TOC 在页面滚动时保持在固定位置 */
-  top: 11%;
+  position: fixed; /* 固定定位，確保 TOC 在頁面滾動時保持在固定位置 */
+  /* top: 0px; 調整 TOC 的頂部對齊 */
   left: 72%;
-  width: 18vw;  /* 固定宽度为视口宽度的 18% */
-  background-color: #f9f9f9;
-  overflow-y: auto;
-  border-radius: 10px;  /* 可选：为内容区域添加圆角 */
-  z-index: 1;  /* 确保 TOC 位于内容上方 */
+  width: 20vw; /* 固定寬度為視口寬度的 18% */
+  background-color: #f9f9f9; /* 設定背景顏色為淺灰色 */
+  overflow-y: auto; /* 如果內容超出範圍，允許垂直滾動 */
+  border-radius: 10px; /* 為內容區域添加圓角 */
+  z-index: 1; /* 確保 TOC 位於內容上方 */
+  font-weight: bold; /* 設定字體粗細 */
 }
 
-
+/* 去除 TOC 列表項的黑點 */
 .custom-toc-container nav ul {
-  list-style-type: none; /* 去除列表项的默认黑点 */
+  list-style-type: none; /* 去除列表項的默認黑點 */
 }
 
-
+/* 設定 TOC 連結樣式 */
 .custom-toc a {
-  color: #000000;
-  text-decoration: none;
-  display: block;
-  padding: 0px 0;
+  color: #000000; /* 設定連結文字顏色為黑色 */
+  text-decoration: none; /* 移除連結下劃線 */
+  display: block; /* 讓連結成為區塊元素 */
+  padding: 0px 0; /* 設定內邊距 */
 }
 
+/* 設定 TOC 連結懸停樣式 */
 .custom-toc a:hover {
-  background-color: #e9ecef;
-  color: #0056b3;
+  background-color: #e9ecef; /* 懸停時，背景變成淺灰色 */
+  color: #0056b3; /* 懸停時，文字顏色變成藍色 */
 }
 
+/* TOC 標題的樣式 */
+.custom-toc-title {
+  font-size: 1.5em;  /* 設定標題字體大小 */
+  font-weight: bold;  /* 設定標題字體粗細 */
+  color: #333;  /* 設定標題顏色 */
+  padding-bottom: 10px;  /* 在標題下方添加一些內邊距 */
+  text-align: center;  /* 使標題居中 */
+  border-bottom: 2px solid #ca3add;  /* 在標題下方添加一條分隔線 */
+  margin-bottom: 10px;  /* 設定與 TOC 內容之間的距離 */
+}
 
+/* === 內文樣式的設定 ============================================== */
 
-/* 右側索引欄設定----------------------------------------------------------------------- */
-
-
-
-
-
-/* 要設置內文的東西，都要加上 .md-typeset-------------------------------------------------- */
-/* body { */
-  /* 背景 */
-  /* background: url('背景/94132137-7d4fc100-fe7c-11ea-8512-69f90cb65e48.gif') no-repeat center center fixed; */
-  /* background-size: cover; */
-  /* 背景 */
-/* } */
-
-
+/* 設置內文標題的樣式 */
 .md-typeset h1 {
-  font-family: 'Microsoft JhengHei', sans-serif;font-size: 2.5em;  /* 根據需要調整字體大小 */
-  font-weight: bold;  /* 設置字體粗細 */
-  color: #000000 ;  /* 這裡設置你想要的顏色 */
+  font-family: 'Microsoft JhengHei', sans-serif; /* 設定字體為微軟正黑體 */
+  font-size: 2.5em; /* 根據需要調整字體大小 */
+  font-weight: bold; /* 設置字體粗細 */
+  color: #000000; /* 設置字體顏色為黑色 */
 }
 
+/* 設置內文區域的樣式 */
 .md-content {
-  background-color: #ffffff;  /* 设置为白色背景 */
-  border-radius: 10px;  /* 可选：为内容区域添加圆角 */
-  /* min-width: 80%;  设置内容区域的宽度为页面宽度的80%，你可以根据需要调整这个值 */
-  margin: 0 auto;  /* 将内容区域居中 */
-  box-sizing: border-box;  /* 确保 padding 不影响宽度 */
+  background-color: #ffffff; /* 設置背景顏色為白色 */
+  border-radius: 10px; /* 可選：為內容區域添加圓角 */
+  margin: 0 auto; /* 將內容區域居中 */
+  box-sizing: border-box; /* 確保 padding 不影響寬度 */
 }
 
+/* === 設置全站背景影片的容器 ============================================== */
 
-
-
-
-
-
-/* 要設置內文的東西，都要加上 .md-typeset-------------------------------------------------- */
-
-
-/* 設置全站背景影片的容器 */
+/* 背景影片容器的樣式 */
 .video-background {
-  position: fixed;
+  position: fixed; /* 固定定位，讓背景影片填滿整個頁面 */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  z-index: -1;  /* 确保视频在背景层 */
-  pointer-events: none; /* 确保背景视频不影响前景内容的操作 */
+  overflow: hidden; /* 隱藏超出的部分 */
+  z-index: -1; /* 確保影片在背景層 */
+  pointer-events: none; /* 確保背景影片不影響前景內容的操作 */
 }
 
+/* 背景影片的樣式 */
 .video-background video {
-  min-width: 100%;
-  min-height: 100%;
+  min-width: 100%; /* 確保影片的最小寬度覆蓋整個畫面 */
+  min-height: 100%; /* 確保影片的最小高度覆蓋整個畫面 */
   width: auto;
   height: auto;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-size: cover;
-  z-index: -1;
+  top: 50%; /* 垂直居中 */
+  left: 50%; /* 水平居中 */
+  transform: translate(-50%, -50%); /* 確保影片居中 */
+  background-size: cover; /* 確保影片覆蓋整個背景 */
+  z-index: -1; /* 確保影片在背景層 */
 }

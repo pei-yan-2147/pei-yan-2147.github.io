@@ -37,14 +37,31 @@
     
 
     <div class="video-background">
-        <video autoplay loop muted playsinline>
+        <video id="background-video" autoplay loop muted playsinline>
             <source src="./video/background.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
-    
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var tocContainer = document.querySelector('.custom-toc-container');
+        var leftNav = document.querySelector('.md-nav');
 
+        if (leftNav && tocContainer) {
+            // 初始定位 TOC
+            updateTocPosition();
+
+            // 监听滚动事件
+            window.addEventListener('scroll', updateTocPosition);
+        }
+
+        function updateTocPosition() {
+            var leftNavRect = leftNav.getBoundingClientRect();
+            tocContainer.style.top = (leftNavRect.top >= 0 ? leftNavRect.top : 0) + 'px';
+        }
+      });
+    </script>
 
     
       
@@ -218,6 +235,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    首頁
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
@@ -227,6 +255,34 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      把拔笨蛋
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -2175,6 +2231,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      把拔笨蛋
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2191,7 +2264,7 @@
 
 
 <h1 id="pei">PEI 演算法筆記<a class="headerlink" href="#pei" title="Permanent link">&para;</a></h1>
-<p>盡力而為</p>
+<h2 id="_1">把拔笨蛋<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
 
 
 
@@ -2208,11 +2281,18 @@
 
     <!-- 新增的 TOC 区块，引用 toc 扩展生成的永久链接 -->
     <div class="custom-toc-container">
+        <div class="custom-toc-title">目錄</div> <!-- 添加「目錄」标题 -->
         <nav class="custom-toc">
             <ul>
                 
                 <li>
                     <a href="#pei">PEI 演算法筆記</a>
+                    
+                    <ul>
+                        
+                        <li><a href="#_1">把拔笨蛋</a></li>
+                        
+                    </ul>
                     
                 </li>
                 

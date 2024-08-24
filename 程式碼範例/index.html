@@ -2265,6 +2265,70 @@ int gcd(int a, int b) {
 </li>
 </ul>
 </div>
+<!-- 
+
+
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>複製程式碼範例</title>
+    <style>
+        /* 設定「複製程式碼」按鈕的樣式 */
+        .copy-button {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            border: none;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .copy-button:hover {
+            background: #e0e0e0;
+        }
+        /* 設定程式碼容器的樣式 */
+        .code-container {
+            position: relative;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="code-container">
+        <button class="copy-button" onclick="copyToClipboard('#code-block-1')">複製</button>
+        <pre id="code-block-1"><code>
+int gcd(int a, int b) {
+    for (int i = min(a, b); i >= 1; i--) {
+        if (a % i == 0 && b % i == 0) return i;
+    }
+    return 1;
+}
+        </code></pre>
+    </div>
+
+    <script>
+        function copyToClipboard(element) {
+            console.log('Button clicked, starting copy process');  // 用於調試
+            var text = document.querySelector(element).innerText;
+            var textarea = document.createElement("textarea");
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            var successful = document.execCommand("copy");
+            document.body.removeChild(textarea);
+            if (successful) {
+                alert("已複製到剪貼簿");
+            } else {
+                alert("複製失敗，請手動選取並複製");
+            }
+        }
+    </script>
+</body>
+</html> -->
 
 
 
@@ -2353,6 +2417,8 @@ int gcd(int a, int b) {
     
     
       <script src="../assets/javascripts/bundle.471ce7a9.min.js"></script>
+      
+        <script src="../assets/custom.js"></script>
       
     
   </body>

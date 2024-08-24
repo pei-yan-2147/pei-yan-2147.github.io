@@ -1,5 +1,5 @@
 function copyToClipboard(element) {
-  console.log('Button clicked, starting copy process');  // 添加這一行來測試
+  console.log('Button clicked, starting copy process');  // 用於調試
   var text = document.querySelector(element).innerText;
   var textarea = document.createElement("textarea");
   textarea.value = text;

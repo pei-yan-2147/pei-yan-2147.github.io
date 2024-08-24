@@ -4,25 +4,22 @@
 
 /* 設定「複製程式碼」按鈕的樣式 */
 .copy-button {
-  position: absolute !important; /* 讓按鈕固定在容器的右上角 */
-  right: 10px !important; /* 右邊距離10px */
-  top: 10px !important; /* 上方距離10px */
-  border: none !important; /* 移除邊框 */
-  background: #f0f0f0 !important; /* 設定背景顏色為淺灰色 */
-  padding: 5px 10px !important; /* 設定內邊距 */
-  cursor: pointer !important; /* 設定滑鼠指針為點擊狀態 */
-  font-size: 12px !important; /* 設定字體大小 */
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border: none;
+  background: #f0f0f0;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 12px;
 }
-
-/* 設定「複製程式碼」按鈕的懸停樣式 */
 .copy-button:hover {
-  background: #e0e0e0 !important; /* 懸停時，背景變成更深的灰色 */
+  background: #e0e0e0;
 }
-
 /* 設定程式碼容器的樣式 */
 .code-container {
-  position: relative !important; /* 讓容器內的元素相對定位 */
-  padding-top: 20px !important; /* 增加上方的內邊距 */
+  position: relative;
+  padding-top: 20px;
 }
 
 /* === 左側索引欄的設定 ============================================== */

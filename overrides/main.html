@@ -13,19 +13,22 @@
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         var tocContainer = document.querySelector('.custom-toc-container');
-        var leftNav = document.querySelector('.md-nav');
+        var contentInner = document.querySelector('.md-content__inner');
 
-        if (leftNav && tocContainer) {
+        if (contentInner && tocContainer) {
             // 初始定位 TOC
             updateTocPosition();
 
-            // 监听滚动事件
-            window.addEventListener('scroll', updateTocPosition);
+            // 添加点击事件以展开/收缩 TOC
+            tocContainer.addEventListener('click', function() {
+                tocContainer.classList.toggle('expanded');
+            });
         }
 
         function updateTocPosition() {
-            var leftNavRect = leftNav.getBoundingClientRect();
-            tocContainer.style.top = (leftNavRect.top >= 0 ? leftNavRect.top : 0) + 'px';
+            var contentInnerRect = contentInner.getBoundingClientRect();
+            tocContainer.style.top = contentInnerRect.top + 'px';
+            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
         }
       });
     </script>

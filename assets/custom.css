@@ -63,52 +63,71 @@
 
 /* 隱藏原本的右側導航欄 */
 .md-nav--secondary {
-  display: none; /* 隱藏原本的右側導航欄 */
+  display: none;
 }
 
-/* 自定義 TOC 容器樣式 */
+/* 初始的 TOC 樣式，顯示為縮小的方塊，固定定位在中間區塊的右上角 */
 .custom-toc-container {
-  position: fixed; /* 固定定位，確保 TOC 在頁面滾動時保持在固定位置 */
-  top: 10px; /* 調整 TOC 的頂部對齊 */
-  left: calc(100% - 28vw); /* 使 TOC 左側與中間內容的右側對齊 */
-  width: 20vw; /* 固定寬度為視口寬度的 20% */
-  background-color: #f9f9f9; /* 設定背景顏色為淺灰色 */
-  overflow-y: auto; /* 如果內容超出範圍，允許垂直滾動 */
-  border-radius: 10px; /* 為內容區域添加圓角 */
-  z-index: 1; /* 確保 TOC 位於內容上方 */
-  font-weight: bold; /* 設定字體粗細 */
+  position: fixed; /* 固定定位，确保 TOC 固定在页面上 */
+  top: 10px;
+  right: 10px;
+  width: 100px;
+  height: 50px;
+  background-color: #f9f9f9;
+  overflow-y: hidden;
+  border-radius: 10px;
+  z-index: 1;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
 }
 
-/* 去除 TOC 列表項的黑點 */
+/* 展開後的 TOC 樣式 */
+.custom-toc-container.expanded {
+  left: calc(100% - 46.5vw) !important; /* 向左移动以与内容区对齐 */
+  width: 20vw;
+  height: 80vh; /* 设置最大高度 */
+  overflow-y: auto; /* 启用垂直滚动条 */
+  overflow-x: hidden; /* 禁用水平滚动条，确保文字被隐藏时不会水平滚动 */
+}
+
+/* TOC 中的列表和連結樣式 */
 .custom-toc-container nav ul {
-  list-style-type: none; /* 去除列表項的默認黑點 */
+  list-style-type: none; /* 去除列表項的黑點 */
 }
 
-/* 設定 TOC 連結樣式 */
+.custom-toc-container.expanded nav {
+  display: block;
+}
+
+.custom-toc-container nav {
+  display: none;
+}
+
 .custom-toc a {
-  color: #000000; /* 設定連結文字顏色為黑色 */
-  text-decoration: none; /* 移除連結下劃線 */
-  display: block; /* 讓連結成為區塊元素 */
-  padding: 0px 0; /* 設定內邊距 */
+  color: #000000;
+  text-decoration: none;
+  display: block;
+  padding: 0px 0;
 }
 
-/* 設定 TOC 連結懸停樣式 */
 .custom-toc a:hover {
-  background-color: #e9ecef; /* 懸停時，背景變成淺灰色 */
-  color: #0056b3; /* 懸停時，文字顏色變成藍色 */
+  background-color: #e9ecef;
+  color: #0056b3;
 }
 
 /* TOC 標題的樣式 */
 .custom-toc-title {
-  font-size: 1.5em;  /* 設定標題字體大小 */
-  font-weight: bold;  /* 設定標題字體粗細 */
-  color: #ffffff;  /* 設定標題文字顏色為白色 */
-  background-color: #000000;  /* 設定背景顏色為黑色 */
-  padding: 10px;  /* 設定內邊距 */
-  text-align: center;  /* 使標題居中 */
-  border-radius: 10px 10px 0 0;  /* 左上、右上角圓角 */
-  margin: 0 -10px 10px -10px;  /* 去掉左邊和右邊的外邊距，使背景擴展到容器邊緣 */
-  box-sizing: border-box;  /* 確保 padding 不影響寬度 */
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #000000;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px 10px 0 0;
+  margin: 0 -10px 10px -10px;
+  box-sizing: border-box;
 }
 
 /* === 內文樣式的設定 ============================================== */

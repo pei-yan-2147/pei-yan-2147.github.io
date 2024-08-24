@@ -4,25 +4,25 @@
 
 /* 設定「複製程式碼」按鈕的樣式 */
 .copy-button {
-  position: absolute; /* 讓按鈕固定在容器的右上角 */
-  right: 10px; /* 右邊距離10px */
-  top: 10px; /* 上方距離10px */
-  border: none; /* 移除邊框 */
-  background: #f0f0f0; /* 設定背景顏色為淺灰色 */
-  padding: 5px 10px; /* 設定內邊距 */
-  cursor: pointer; /* 設定滑鼠指針為點擊狀態 */
-  font-size: 12px; /* 設定字體大小 */
+  position: absolute !important; /* 讓按鈕固定在容器的右上角 */
+  right: 10px !important; /* 右邊距離10px */
+  top: 10px !important; /* 上方距離10px */
+  border: none !important; /* 移除邊框 */
+  background: #f0f0f0 !important; /* 設定背景顏色為淺灰色 */
+  padding: 5px 10px !important; /* 設定內邊距 */
+  cursor: pointer !important; /* 設定滑鼠指針為點擊狀態 */
+  font-size: 12px !important; /* 設定字體大小 */
 }
 
 /* 設定「複製程式碼」按鈕的懸停樣式 */
 .copy-button:hover {
-  background: #e0e0e0; /* 懸停時，背景變成更深的灰色 */
+  background: #e0e0e0 !important; /* 懸停時，背景變成更深的灰色 */
 }
 
 /* 設定程式碼容器的樣式 */
 .code-container {
-  position: relative; /* 讓容器內的元素相對定位 */
-  padding-top: 20px; /* 增加上方的內邊距 */
+  position: relative !important; /* 讓容器內的元素相對定位 */
+  padding-top: 20px !important; /* 增加上方的內邊距 */
 }
 
 /* === 左側索引欄的設定 ============================================== */
@@ -85,7 +85,7 @@
 
 /* 展開後的 TOC 樣式 */
 .custom-toc-container.expanded {
-  left: calc(100% - 46.5vw) !important; /* 向左移动以与内容区对齐 */
+  left: calc(100% - 40.7%) !important; /* 向左移动以与内容区对齐 */
   width: 20vw;
   height: 80vh; /* 设置最大高度 */
   overflow-y: auto; /* 启用垂直滚动条 */

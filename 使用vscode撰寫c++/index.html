@@ -532,6 +532,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      執行程式：
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2225,26 +2234,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../好看.html" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    好看
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -2307,6 +2296,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      執行程式：
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2346,11 +2344,11 @@ https://sourceforge.net/projects/mingw/files/
 按下後可設定
 <img alt="" src="https://hackmd.io/_uploads/S1N4vV9an.png" /></p>
 <p>選這些
-<img alt="image" src="https://hackmd.io/_uploads/Bknj7saYC.png" />
-<img alt="image" src="https://hackmd.io/_uploads/r1ShQjatR.png" />
-<img alt="image" src="https://hackmd.io/_uploads/H123XoTtR.png" />
-<img alt="image" src="https://hackmd.io/_uploads/HJLRmoptA.png" />
-<img alt="image" src="https://hackmd.io/_uploads/ry5RmiTt0.png" /></p>
+<img alt="alt text" src="../image.png" />
+<img alt="alt text" src="../image-1.png" />
+<img alt="alt text" src="../image-2.png" />
+<img alt="alt text" src="../image-3.png" />
+<img alt="alt text" src="../image-4.png" /></p>
 <blockquote>
 <p>以下為其他網站之資料：https://hackmd.io/@smallshawn95/vscode_write_cpp_2</p>
 </blockquote>
@@ -2361,88 +2359,83 @@ https://sourceforge.net/projects/mingw/files/
 <h2 id="vscode_1">設置 Vscode 環境：<a class="headerlink" href="#vscode_1" title="Permanent link">&para;</a></h2>
 <p>查詢框輸入 <code>&gt; Open User Settings</code>，打開 Vscode Setting Json 檔。</p>
 <p><img alt="image" src="https://hackmd.io/_uploads/rJZiiasF0.png" /></p>
-<p>```json=
-{
+<pre><code class="language-cpp">{
     // 讓 Code Runner 將 C++ 執行在終端機中
-    "code-runner.runInTerminal": true,
+    &quot;code-runner.runInTerminal&quot;: true,
     // 預設 C++ 程式碼的編碼方式為 Big5(繁體中文標準庫)
-    "[cpp]":{
-        "files.encoding": "cp950"
+    &quot;[cpp]&quot;:{
+        &quot;files.encoding&quot;: &quot;cp950&quot;
     },
     //先儲存再執行
-    "code-runner.saveFileBeforeRun": true
-}</p>
-<pre><code>
-## 執行程式：
-
-
-![image](https://hackmd.io/_uploads/BylvhTiY0.png)
-
-
-# 題外話
-
-
-## 執行時要儲存：ctrl+s，或是選擇自動儲存 
-
-1. ![螢幕擷取畫面 2024-08-05 090740](https://hackmd.io/_uploads/HJ4GLj6F0.png =50%x)
-2. 或是確保json設定檔有加上
-    ```
-    //先儲存再執行
     &quot;code-runner.saveFileBeforeRun&quot;: true
-    ```
+}
+</code></pre>
+<h2 id="_1">執行程式：<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p><img alt="image" src="https://hackmd.io/_uploads/BylvhTiY0.png" /></p>
+<h1 id="_2">題外話<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
+<h2 id="ctrls">執行時要儲存：ctrl+s，或是選擇自動儲存<a class="headerlink" href="#ctrls" title="Permanent link">&para;</a></h2>
+<ol>
+<li><img alt="alt text" src="../image-5.png" /></li>
+<li>或是確保json設定檔有加上
+    <code>cpp
+    //先儲存再執行
+    "code-runner.saveFileBeforeRun": true</code></li>
+</ol>
+<h2 id="_3">變更執行程式快捷鍵<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<ol>
+<li>找到快捷鍵設定
+<img alt="image" src="https://hackmd.io/_uploads/HkuWyCoFC.png" /></li>
+<li>輸入"ctrl+alt+n"，變更為F9</li>
+</ol>
+<h2 id="_4">設定左側檔案排序方式<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<ol>
+<li>找到設定
+<img alt="image" src="https://hackmd.io/_uploads/S1SZ06oF0.png" /></li>
+<li>選擇以type排序
+<img alt="image" src="https://hackmd.io/_uploads/ryA1ApotC.png" /></li>
+</ol>
+<hr />
+<details><summary> 使用chroombook </summary>
 
-## 變更執行程式快捷鍵
-
-1. 找到快捷鍵設定
-![image](https://hackmd.io/_uploads/HkuWyCoFC.png)
-2. 輸入&quot;ctrl+alt+n&quot;，變更為F9
+codeblocks-----
 
 
 
-
-## 設定左側檔案排序方式
-
-
-1. 找到設定
-![image](https://hackmd.io/_uploads/S1SZ06oF0.png)
-2. 選擇以type排序
-![image](https://hackmd.io/_uploads/ryA1ApotC.png)
-
-
-
-----
-
-:::spoiler 使用chroombook
-
-## codeblocks
-
-
-```cpp=
-sudo apt update
+<pre><code class="language-cpp">sudo apt update
 sudo apt install codeblocks
 </code></pre>
-<p>```cpp=
-sudo apt update
-sudo apt install g++</p>
-<pre><code>
 
 
-## vscode
-[來源](https://code.visualstudio.com/docs/setup/linux)
+
+<pre><code class="language-cpp">sudo apt update
+sudo apt install g++
+</code></pre>
+
+
+
+
+vscode-----
+
+來源：https://code.visualstudio.com/docs/setup/linux
 
 將下面全部執行
-```python
-sudo apt-get install wget gpg
+
+<pre><code class="language-cpp">sudo apt-get install wget gpg
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor &gt; packages.microsoft.gpg
 sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
 sudo sh -c 'echo &quot;deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main&quot; &gt; /etc/apt/sources.list.d/vscode.list'
 rm -f packages.microsoft.gpg
 </code></pre>
-<pre><code class="language-python">sudo apt install apt-transport-https
+
+
+<pre><code class="language-cpp">sudo apt install apt-transport-https
 sudo apt update
 sudo apt install code # or code-insiders
 </code></pre>
-<p>:::</p>
+
+
+
+</details>
 
 
 
@@ -2474,6 +2467,23 @@ sudo apt install code # or code-insiders
                         <li><a href="#code-runner">Code Runner</a></li>
                         
                         <li><a href="#vscode_1">設置 Vscode 環境：</a></li>
+                        
+                        <li><a href="#_1">執行程式：</a></li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_2">題外話</a>
+                    
+                    <ul>
+                        
+                        <li><a href="#ctrls">執行時要儲存：ctrl+s，或是選擇自動儲存</a></li>
+                        
+                        <li><a href="#_3">變更執行程式快捷鍵</a></li>
+                        
+                        <li><a href="#_4">設定左側檔案排序方式</a></li>
                         
                     </ul>
                     

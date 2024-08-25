@@ -3,24 +3,34 @@
 /* === 程式複製框的設定 ============================================== */
 
 /* 設定「複製程式碼」按鈕的樣式 */
-.copy-button {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  border: none;
-  background: #f0f0f0;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 12px;
-}
-.copy-button:hover {
-  background: #e0e0e0;
-}
-/* 設定程式碼容器的樣式 */
+/* 针对 c++ 代码块的自定义背景样式，添加复制按钮 */
+/* 针对代码块的自定义背景样式，添加复制按钮 */
+/* .code-container: 用于包裹代码块的容器样式 */
 .code-container {
-  position: relative;
-  padding-top: 20px;
+  position: relative;  /* 设置容器的相对定位，以便在内部放置绝对定位的元素 */
+  background-color: #f0f0f0; /* 设置代码块的背景颜色为浅灰色 */
+  border-radius: 5px; /* 为代码块增加圆角，使其边角更加柔和 */
 }
+
+/* .copy-button: 复制按钮的样式 */
+.copy-button {
+  position: absolute;  /* 设置按钮为绝对定位，以便在容器内自由定位 */
+  top: 10px;  /* 设置按钮距离容器顶部的距离为10px */
+  right: 10px;  /* 设置按钮距离容器右侧的距离为10px */
+  border: none;  /* 移除按钮的默认边框 */
+  background: #007bff;  /* 设置按钮的背景颜色为蓝色 */
+  color: #ffffff;  /* 设置按钮文字的颜色为白色 */
+  padding: 5px 10px;  /* 设置按钮的内边距，上下为5px，左右为10px */
+  cursor: pointer;  /* 将鼠标悬停在按钮上时的光标设置为指针样式 */
+  font-size: 12px;  /* 设置按钮文字的字体大小为12px */
+  border-radius: 3px;  /* 为按钮增加圆角，使其边角更加柔和 */
+}
+
+/* .copy-button:hover: 当鼠标悬停在复制按钮上时的样式 */
+.copy-button:hover {
+  background: #0056b3;  /* 当鼠标悬停时，改变按钮的背景颜色为更深的蓝色 */
+}
+
 
 /* === 左側索引欄的設定 ============================================== */
 
@@ -172,3 +182,5 @@
   background-size: cover; /* 確保影片覆蓋整個背景 */
   z-index: -1; /* 確保影片在背景層 */
 }
+
+

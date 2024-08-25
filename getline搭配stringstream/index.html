@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../hackmd%E7%89%B9%E6%AE%8A%E4%BD%BF%E7%94%A8/">
+        <link rel="prev" href="../%E6%8C%87%E6%A8%99/">
       
       
-        <link rel="next" href="../%E7%87%9F%E9%9A%8A/">
+        <link rel="next" href="../%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%AF%84%E4%BE%8B/">
       
       
       <link rel="icon" href="../logo/peilogo.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>優質網站 - PEI 演算法筆記</title>
+        <title>getline搭配stringstream - PEI 演算法筆記</title>
       
     
     
@@ -104,7 +104,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#cin" class="md-skip">
           Skip to content
         </a>
       
@@ -139,7 +139,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              優質網站
+              getline搭配stringstream
             
           </span>
         </div>
@@ -348,19 +348,17 @@
       
   
   
-    
   
   
-  
     
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
           <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
@@ -374,7 +372,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             前言
@@ -406,19 +404,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../%E5%84%AA%E8%B3%AA%E7%B6%B2%E7%AB%99/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -427,7 +416,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -528,17 +516,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -552,7 +542,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             概念、語法、技巧
@@ -626,10 +616,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../getline%E6%90%AD%E9%85%8Dstringstream/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -638,6 +637,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -2194,11 +2194,212 @@
                   
 
 
-<h1 id="_1">優質網站<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p><a href="https://hackmd.io/@pr3pony/HysEHoYe8">便宜的演算法比賽網路資源整理</a></p>
-<p><a href="https://hackmd.io/@CLKO/B18yT_i5Z?type=view">新竹實驗中學C++程式語言教學講義</a></p>
-<p><a href="https://hackmd.io/@yjk930805/share#%E7%AB%B6%E7%A8%8Bamp%E5%AD%B8%E7%BF%92amp%E5%88%B7%E9%A1%8C%E8%B3%87%E8%A8%8A%E5%88%86%E4%BA%AB">競程&amp;學習&amp;刷題資訊分享</a></p>
-<p><a href="https://hackmd.io/@valder/BJQSIzejn#%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90">競程資源整理</a></p>
+<blockquote>
+<p>這邊講解cin、getline的運作方式</p>
+</blockquote>
+<h1 id="cin">cin<a class="headerlink" href="#cin" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>從左至右忽略所有「<code>' '</code>或是<code>'\n'</code>」，當遇到非「<code>' '</code>或是<code>'\n'</code>」時認作<strong>輸入目標</strong>，直到再次遇到「<code>' '</code>或是<code>'\n'</code>」時，停止認作<strong>輸入目標</strong>，將<strong>輸入目標</strong>及<strong>輸入目標</strong>之前的所有元素捨棄。</p>
+</blockquote>
+<p>假設緩衝區</p>
+<pre><code>&quot; \n  \n   \n  123  \n 4 5&quot;
+</code></pre>
+<p>執行程式</p>
+<pre><code>cin&gt;&gt;n;
+</code></pre>
+<p>緩衝區會從</p>
+<pre><code>&quot; \n  \n   \n  123  \n 4 5&quot;
+</code></pre>
+<p>變為</p>
+<pre><code>&quot;  \n 4 5&quot;
+</code></pre>
+<p>而輸入目標(n)為</p>
+<pre><code>&quot;123&quot;
+</code></pre>
+<p>過程圖示：
+<img alt="image" src="https://hackmd.io/_uploads/SkEsUKqwA.png" /></p>
+<hr />
+<p>程式碼：</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    istringstream cin(&quot; \n  \n   \n  123  \n 4 5&quot;);
+    int n;
+    cin&gt;&gt;n;
+    cout&lt;&lt;n;
+}
+</code></pre>
+<p>output:</p>
+<pre><code>123
+</code></pre>
+<h1 id="getline">getline<a class="headerlink" href="#getline" title="Permanent link">&para;</a></h1>
+<h2 id="_1">介紹<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>getline(輸入流,字串,分割元素);
+getline(輸入流,string,char);</p>
+</blockquote>
+<pre><code>getline(cin,s);
+</code></pre>
+<ul>
+<li>輸入流：
+cin
+stringstream
+istringstream</li>
+<li>字串：
+必須是string</li>
+<li>分割元素：
+必須是char</li>
+</ul>
+<blockquote>
+<p>分割元素可以選擇要不要打，若沒有打，分割元素預設為<code>'\n'</code>。
+如果打了字元，會將分割元素變更為該字元</p>
+</blockquote>
+<p>範例：</p>
+<pre><code>getline(cin,s);     //遇到'\n'分割
+getline(cin,s,'2');  //遇到'2'分割
+</code></pre>
+<h2 id="_2">運作<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>從左至右將所有元素認作輸入目標，直到遇到<strong>分割元素</strong>，將<strong>分割元素</strong>以及<strong>分割元素</strong>之前所有元素捨棄。</p>
+</blockquote>
+<h3 id="1">1. 不選擇分割元素<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<p>假設緩衝區</p>
+<pre><code>&quot;545 1 \n 1 2 3&quot;
+</code></pre>
+<p>執行程式</p>
+<pre><code>getline(cin,s);
+</code></pre>
+<p>緩衝區會從</p>
+<pre><code>&quot;545 1 \n 1 2 3&quot;
+</code></pre>
+<p>變為</p>
+<pre><code>&quot; 1 2 3&quot;
+</code></pre>
+<p>而輸入目標(s)為</p>
+<pre><code>&quot;545 1 &quot;
+</code></pre>
+<p>過程圖示：
+<img alt="image" src="https://hackmd.io/_uploads/SJ4mDY5PR.png" /></p>
+<hr />
+<p>程式碼：</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    istringstream cin(&quot;545 1 \n 1 2 3&quot;);
+    string s;
+    getline(cin,s);
+    cout&lt;&lt;s&lt;&lt;&quot;;&quot;;
+}
+</code></pre>
+<p>output:</p>
+<pre><code>545 1 ;
+</code></pre>
+<h3 id="2">2. 選擇分割元素<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<p>假設緩衝區</p>
+<pre><code>&quot;545 1 \n 1 2 3&quot;
+</code></pre>
+<p>執行程式</p>
+<pre><code>getline(cin,s,'2');
+</code></pre>
+<p>緩衝區會從</p>
+<pre><code>&quot;545 1 \n 1 2 3&quot;
+</code></pre>
+<p>變為</p>
+<pre><code>&quot; 3&quot;
+</code></pre>
+<p>而輸入目標(s)為</p>
+<pre><code>&quot;545 1 \n 1 &quot;
+</code></pre>
+<p>過程圖示：
+<img alt="image" src="https://hackmd.io/_uploads/BkK7dYqPC.png" /></p>
+<hr />
+<p>程式碼：</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    istringstream cin(&quot;545 1 \n 1 2 3&quot;);
+    string s;
+    getline(cin,s,'2');
+    cout&lt;&lt;s&lt;&lt;&quot;;&quot;;
+}
+</code></pre>
+<p>output:</p>
+<pre><code>545 1
+ 1 ;
+</code></pre>
+<blockquote>
+<p>注意到了嗎
+因為s中有換行符號，所以會換行</p>
+</blockquote>
+<h1 id="_3">要注意的情形<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>有時候getline配合cin使用，會是空字串，原因如下：</p>
+</blockquote>
+<p>假設緩衝區為</p>
+<pre><code>&quot;1\n2 3 4\n5 6 7&quot;
+</code></pre>
+<p>也就是</p>
+<pre><code>1
+2 3 4
+5 6 7
+</code></pre>
+<p>執行程式</p>
+<pre><code>cin&gt;&gt;n;
+</code></pre>
+<p>緩衝區從</p>
+<pre><code>&quot;1\n2 3 4\n5 6 7&quot;
+</code></pre>
+<p>變為</p>
+<pre><code>&quot;\n2 3 4\n5 6 7&quot;
+</code></pre>
+<p>而輸入目標(n)為</p>
+<pre><code>&quot;1&quot;
+</code></pre>
+<p>執行程式</p>
+<pre><code>getline(cin,s);
+</code></pre>
+<p>緩衝區從</p>
+<pre><code>&quot;\n2 3 4\n5 6 7&quot;
+</code></pre>
+<p>變為</p>
+<pre><code>&quot;2 3 4\n5 6 7&quot;
+</code></pre>
+<p>而輸入目標(s)為</p>
+<pre><code>&quot;&quot;
+</code></pre>
+<p>這時候s不會有任何東西(因為\n前面沒有東西)，為空字串，需要注意!!!</p>
+<h1 id="_4">實作：不知道數量的問題<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h1>
+<p>當遇到問題：
+第一行給定數字n
+第二行給定未知數量數字
+請將第二行所有數字加總後乘以n輸出</p>
+<p>範例輸入：
+5
+1 2 3 7 8 9 4 5 6 4</p>
+<p>範例輸出：
+245</p>
+<p>範例講解:
+(1+2+3+7+8+9+4+5+6+4)*5=245</p>
+<p>程式碼：</p>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+#define nn &quot;\n&quot;
+int main(){
+    istringstream cin(&quot;5\n1 2 3 7 8 9 4 5 6 4&quot;);
+    int n;
+    cin&gt;&gt;n;
+    string s;
+    getline(cin,s);//此時s為空字串，以\n分割
+    getline(cin,s);//此時s才有東西，以\n分割
+    stringstream ss(s);
+    int sum=0;
+    while(getline(ss,s,' ')){//以空格分割
+        sum+=s[0]-'0';
+    }
+    cout&lt;&lt;sum*n;
+}
+
+</code></pre>
 
 
 
@@ -2219,7 +2420,30 @@
             <ul>
                 
                 <li>
-                    <a href="#_1">優質網站</a>
+                    <a href="#cin">cin</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="#getline">getline</a>
+                    
+                    <ul>
+                        
+                        <li><a href="#_1">介紹</a></li>
+                        
+                        <li><a href="#_2">運作</a></li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_3">要注意的情形</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_4">實作：不知道數量的問題</a>
                     
                 </li>
                 

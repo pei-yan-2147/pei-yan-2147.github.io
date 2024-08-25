@@ -1,5 +1,52 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
+/* === 折叠标题 ============================================== */
+
+/* 隐藏折叠部分的默认图标 */
+details summary::marker, /* 隐藏旧版浏览器使用的 ::marker */
+details summary::-webkit-details-marker, /* 隐藏 WebKit 浏览器使用的图标 */
+details summary::before /* 隐藏通过伪元素添加的图标 */ {
+    display: none;
+}
+
+/* 更改折叠标题的背景颜色和文本颜色 */
+details summary {
+  background-color: #ffffff !important; /* 更改背景颜色 */
+  color: #000000 !important; /* 更改文本颜色 */
+  /* border: 1px solid #ffffff !important; 更改边框颜色 */
+  border-radius: 5px !important; /* 为折叠部分添加圆角 */
+  padding: 10px !important; /* 添加内边距 */
+  /* cursor: pointer !important; 确保显示为可点击的手型光标 */
+}
+
+/* 当折叠内容被打开时更改背景色 */
+details[open] summary {
+  background-color: #ffffff !important; /* 更改展开后的背景颜色 */
+  border-color: #ffffff !important; /* 更改展开后的边框颜色 */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1) !important; /* 默认阴影颜色 */
+}
+details {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; /* 添加阴影 */
+  border-radius: 8px; /* 可选：为边框添加圆角 */
+  padding: 0px; /* 可选：增加内边距 */
+  margin: 0px 0; /* 可选：为元素上下方增加外边距 */
+  background-color: #f9f9f9; /* 可选：设置背景颜色 */
+}
+
+
+/* === 標題連結 ============================================== */
+
+/* 更改 headerlink 图标的颜色 */
+a.headerlink {
+  color: #cfcfcf !important; /* 设置为你想要的颜色 */
+}
+
+/* 当鼠标悬停时更改颜色 */
+a.headerlink:hover {
+  color: #000000 !important; /* 设置为你想要的悬停颜色 */
+}
+
+
 /* === 程式複製框的設定 ============================================== */
 
 /* 設定「複製程式碼」按鈕的樣式 */
@@ -15,10 +62,10 @@
 /* .copy-button: 复制按钮的样式 */
 .copy-button {
   position: absolute;  /* 设置按钮为绝对定位，以便在容器内自由定位 */
-  top: 10px;  /* 设置按钮距离容器顶部的距离为10px */
-  right: 10px;  /* 设置按钮距离容器右侧的距离为10px */
+  top: 0px;  /* 设置按钮距离容器顶部的距离为10px */
+  right: 0px;  /* 设置按钮距离容器右侧的距离为10px */
   border: none;  /* 移除按钮的默认边框 */
-  background: #007bff;  /* 设置按钮的背景颜色为蓝色 */
+  background: #000000;  /* 设置按钮的背景颜色为蓝色 */
   color: #ffffff;  /* 设置按钮文字的颜色为白色 */
   padding: 5px 10px;  /* 设置按钮的内边距，上下为5px，左右为10px */
   cursor: pointer;  /* 将鼠标悬停在按钮上时的光标设置为指针样式 */
@@ -142,7 +189,7 @@
 /* 設置內文標題的樣式 */
 .md-typeset h1 {
   font-family: 'Microsoft JhengHei', sans-serif; /* 設定字體為微軟正黑體 */
-  font-size: 2.5em; /* 根據需要調整字體大小 */
+  /* font-size: 2.5em; 根據需要調整字體大小 */
   font-weight: bold; /* 設置字體粗細 */
   color: #000000; /* 設置字體顏色為黑色 */
 }

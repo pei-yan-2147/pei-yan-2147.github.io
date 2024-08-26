@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/">
+        <link rel="prev" href="../scanf%20%26%20printf/">
       
       
-        <link rel="next" href="../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/">
+        <link rel="next" href="../%E4%BD%8D%E5%85%83%E9%81%8B%E7%AE%97/">
       
       
       <link rel="icon" href="../logo/peilogo.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>APCS - PEI 演算法筆記</title>
+        <title>定義#define - PEI 演算法筆記</title>
       
     
     
@@ -129,6 +129,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -160,7 +165,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              APCS
+              定義#define
             
           </span>
         </div>
@@ -309,17 +314,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../APCS/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -328,7 +326,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -545,17 +542,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -569,7 +568,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             概念、語法、技巧
@@ -685,10 +684,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../%E5%AE%9A%E7%BE%A9%23define/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -697,6 +705,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -2193,6 +2202,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -2209,50 +2220,86 @@
                   
 
 
-  <h1>APCS</h1>
+<h1 id="_1">功能<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>在 C++ 中，<code>#define</code> 是一個預處理指令，用來在編譯階段之前定義宏（macros）。<code>#define</code> 可以用於多種不同的情境，以下是一些主要的用法：</p>
+<ol>
+<li><strong>定義常數</strong>： <code>#define</code> 可以用來創建編譯時常數。這種用法可以代替 <code>const</code> 或 <code>constexpr</code>，特別是在需要保證值在編譯時就是已知的場合。</li>
+</ol>
+<pre><code class="language-cpp">#define MAX_SIZE 100
+#define COMPANY_NAME &quot;Example Corp.&quot;
+</code></pre>
+<ol>
+<li>
+<p><strong>創建宏函數</strong>： 宏可以被用來創建類似函數的結構，但它們不涉及函數調用的開銷，因為它們在編譯時就被展開。</p>
+<p>注意變數在運算時要注意先加減後乘除問題，如果#define SQUARE(x) ((x) * (x))，傳入x=2+1，如果沒有括號，會變成(2+1*2+1)，答案為5，不是3*3=9</p>
+</li>
+</ol>
+<pre><code class="language-cpp">#define SQUARE(x) ((x) * (x))
+#define MIN(a, b) ((a) &lt; (b) ? (a) : (b))
+</code></pre>
+<ol>
+<li><strong>條件編譯</strong>： <code>#define</code> 可用於控制哪些代碼段被編譯。這常用於依據不同的編譯環境或配置來包含或排除特定代碼。</li>
+</ol>
+<pre><code class="language-cpp">#define DEBUG
 
-<table>
-<thead>
-<tr>
-<th style="text-align: center;">科目</th>
-<th style="text-align: center;">節次</th>
-<th style="text-align: center;">入場</th>
-<th style="text-align: center;">檢測開始</th>
-<th style="text-align: center;">提前交卷開始時間</th>
-<th style="text-align: center;">提前交卷截止時間</th>
-<th style="text-align: center;">檢測結束</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: center;">觀念題</td>
-<td style="text-align: center;">第一節</td>
-<td style="text-align: center;">09:30</td>
-<td style="text-align: center;">09:40</td>
-<td style="text-align: center;">10:10</td>
-<td style="text-align: center;">10:30</td>
-<td style="text-align: center;">10:40</td>
-</tr>
-<tr>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">第二節</td>
-<td style="text-align: center;">11:00</td>
-<td style="text-align: center;">11:10</td>
-<td style="text-align: center;">11:40</td>
-<td style="text-align: center;">12:00</td>
-<td style="text-align: center;">12:10</td>
-</tr>
-<tr>
-<td style="text-align: center;">實作題</td>
-<td style="text-align: center;">第三節</td>
-<td style="text-align: center;">13:30</td>
-<td style="text-align: center;">13:40</td>
-<td style="text-align: center;">14:10</td>
-<td style="text-align: center;">16:00</td>
-<td style="text-align: center;">16:10</td>
-</tr>
-</tbody>
-</table>
+#ifdef DEBUG
+std::cout &lt;&lt; &quot;Debug mode is on.&quot; &lt;&lt; std::endl;
+#endif
+</code></pre>
+<ol>
+<li><strong>防止頭文件重複包含</strong>： 通過使用宏來防止頭文件被多次包含，這是預防編譯器多次處理同一頭文件的常用技術。</li>
+</ol>
+<pre><code class="language-cpp">#ifndef MY_HEADER_H
+#define MY_HEADER_H
+// 頭文件內容
+#endif
+</code></pre>
+<ol>
+<li><strong>平台特定代碼</strong>： 使用 <code>#define</code> 來根據不同操作系統或硬件配置啟用或禁用代碼塊。</li>
+</ol>
+<pre><code class="language-cpp">#ifdef WINDOWS
+#define OS_NAME &quot;Windows&quot;
+#elif defined(LINUX)
+#define OS_NAME &quot;Linux&quot;
+#else
+#define OS_NAME &quot;Unknown&quot;
+#endif
+</code></pre>
+<ol>
+<li><strong>簡化複雜的代碼</strong>： 有時 <code>#define</code> 用來簡化複雜或冗長的代碼結構，使其更容易閱讀和管理。</li>
+</ol>
+<pre><code class="language-cpp">#define LOG_ERROR(msg) std::cerr &lt;&lt; &quot;Error: &quot; &lt;&lt; msg &lt;&lt; std::endl
+</code></pre>
+<p>每種用法都有其特定的場景和考慮因素。使用 <code>#define</code> 需要謹慎，因為它只進行文本替換，不進行類型檢查，且可能導致難以追蹤的錯誤。在現代 C++ 中，通常推薦使用更安全的替代方案，如 <code>const</code>、<code>constexpr</code> 和模板，這些都提供更好的類型安全和錯誤檢查。</p>
+<h1 id="_2">優缺點<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
+<p>在 C++ 中，選擇使用宏函數還是直接創建函數，各有其優缺點，以下是比較兩者的主要因素：</p>
+<h3 id="define">宏函數 (使用 <code>#define</code>)<a class="headerlink" href="#define" title="Permanent link">&para;</a></h3>
+<p><strong>優點</strong>：</p>
+<ol>
+<li><strong>無額外調用開銷</strong>：宏是在編譯期進行文本替換，所以使用宏可以避免函數調用的開銷，特別是在微優化是重要的場景中。</li>
+<li><strong>類型獨立</strong>：宏可以用於任何類型的數據，因為它們進行的是文本替換，而不檢查類型。</li>
+<li><strong>條件編譯</strong>：可以在宏中嵌入預處理器指令，使得代碼的某些部分只在特定條件下編譯。</li>
+</ol>
+<p><strong>缺點</strong>：</p>
+<ol>
+<li><strong>易於引起錯誤</strong>：宏不進行類型檢查，且因為文本替換的特性，可能導致如運算優先級等錯誤。</li>
+<li><strong>調試困難</strong>：宏展開後的代碼可能很難理解和調試，因為它們在編譯時展開，錯誤定位通常不直觀。</li>
+<li><strong>代碼膨脹</strong>：每次使用宏時，代碼都會在該處展開，可能導致生成的二進制文件增大。</li>
+</ol>
+<h3 id="_3">直接創建函數<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p><strong>優點</strong>：</p>
+<ol>
+<li><strong>類型安全</strong>：函數提供類型檢查，減少類型錯誤的風險。</li>
+<li><strong>易於維護和調試</strong>：函數的行為更清晰，易於維護和調試，因為它們在編譯後保持結構清晰。</li>
+<li><strong>重用和封裝</strong>：函數允許代碼重用和更好的封裝，提高了代碼的模組化。</li>
+</ol>
+<p><strong>缺點</strong>：</p>
+<ol>
+<li><strong>可能有額外開銷</strong>：每次調用函數時可能有額外的開銷（如堆疊操作），但在現代編譯器優化和 <code>inline</code> 函數的幫助下，這通常不是問題。</li>
+<li><strong>不如宏靈活</strong>：函數無法像宏那樣進行條件編譯或包含預處理器指令。</li>
+</ol>
+<h3 id="_4">總結<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>在現代 C++ 程序設計中，除非有特定的理由（如微優化或需要在宏中使用預處理器指令），否則通常推薦使用函數而不是宏。函數提供更好的類型安全、易於維護和調試。使用 <code>inline</code> 函數可以結合宏的性能優勢和函數的安全特性，通常是一種更好的選擇。</p>
 
 
 
@@ -2271,6 +2318,26 @@
         <div class="custom-toc-title">目錄</div> <!-- 添加「目錄」标题 -->
         <nav class="custom-toc">
             <ul>
+                
+                <li>
+                    <a href="#_1">功能</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_2">優缺點</a>
+                    
+                    <ul>
+                        
+                        <li><a href="#define">宏函數 (使用 #define)</a></li>
+                        
+                        <li><a href="#_3">直接創建函數</a></li>
+                        
+                        <li><a href="#_4">總結</a></li>
+                        
+                    </ul>
+                    
+                </li>
                 
             </ul>
         </nav>

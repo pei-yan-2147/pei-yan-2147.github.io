@@ -1,6 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
+
+
+/* === 引用樣式(>) ============================================== */
+blockquote  {
+  color: #000000 !important;
+  font-size: 24px !important; /* 文字大小为 16px */
+/*     margin-left: 1px; 左边距为 20px */
+  border-left: 2px solid #F2BBFF !important; /* 左边框为红色 */
+  margin-top: 30px !important; /* 与前一行的间距为 10px */
+  margin-bottom: 30px !important; /* 与前一行的间距为 10px */
+  padding-left: 10px !important; /* 文字与左边框的间距为 20px */
+  font-family: Arial  !important; /* 文字字体为 Arial 或 sans-serif */
+}
 /* === 折叠标题 ============================================== */
+
 
 /* 隐藏折叠部分的默认图标 */
 details summary::marker, /* 隐藏旧版浏览器使用的 ::marker */
@@ -32,6 +46,11 @@ details {
   margin: 0px 0; /* 可选：为元素上下方增加外边距 */
   background-color: #f9f9f9; /* 可选：设置背景颜色 */
 }
+
+
+
+
+
 
 
 /* === 標題連結 ============================================== */
@@ -194,12 +213,30 @@ a.headerlink:hover {
   color: #000000; /* 設置字體顏色為黑色 */
 }
 
+.md-typeset h2 {
+  font-weight: bold; /* 設置字體粗細 */
+}
+
+.md-typeset h3 {
+  font-weight: bold; /* 設置字體粗細 */
+}
+.md-typeset h4 {
+  font-weight: bold; /* 設置字體粗細 */
+}
+
+.md-typeset h5 {
+  font-weight: bold; /* 設置字體粗細 */
+}
+
+
+
 /* 設置內文區域的樣式 */
 .md-content {
   background-color: #ffffff; /* 設置背景顏色為白色 */
   border-radius: 10px; /* 可選：為內容區域添加圓角 */
   margin: 0 auto; /* 將內容區域居中 */
   box-sizing: border-box; /* 確保 padding 不影響寬度 */
+  min-width: 80% !important;
 }
 
 /* === 設置全站背景影片的容器 ============================================== */

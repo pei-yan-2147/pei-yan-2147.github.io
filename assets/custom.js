@@ -25,3 +25,9 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   });
 });
+document.querySelectorAll('details').forEach(function(details) {
+  var markdownContent = details.querySelector('.markdown-content');
+  if (markdownContent) {
+      markdownContent.innerHTML = marked(markdownContent.innerHTML.trim());
+  }
+});

@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/">
+        <link rel="prev" href="../%E5%AE%9A%E7%BE%A9%23define/">
       
       
-        <link rel="next" href="../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/">
+        <link rel="next" href="../%E4%BD%BF%E7%94%A8%E4%BD%8D%E5%85%83%E7%AA%AE%E8%88%89/">
       
       
       <link rel="icon" href="../logo/peilogo.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>APCS - PEI 演算法筆記</title>
+        <title>位元運算 - PEI 演算法筆記</title>
       
     
     
@@ -129,6 +129,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -160,7 +165,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              APCS
+              位元運算
             
           </span>
         </div>
@@ -309,17 +314,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../APCS/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -328,7 +326,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -545,17 +542,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -569,7 +568,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             概念、語法、技巧
@@ -706,10 +705,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../%E4%BD%8D%E5%85%83%E9%81%8B%E7%AE%97/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -718,6 +726,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -2193,6 +2202,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -2209,56 +2220,651 @@
                   
 
 
-  <h1>APCS</h1>
-
+<h1 id="_1">二進制<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>int 是32位元有號整數，2147483647(最大值)表示如下</p>
+</blockquote>
 <table>
 <thead>
 <tr>
-<th style="text-align: center;">科目</th>
-<th style="text-align: center;">節次</th>
-<th style="text-align: center;">入場</th>
-<th style="text-align: center;">檢測開始</th>
-<th style="text-align: center;">提前交卷開始時間</th>
-<th style="text-align: center;">提前交卷截止時間</th>
-<th style="text-align: center;">檢測結束</th>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">32(符號位)</th>
+<th style="text-align: center;">31</th>
+<th style="text-align: center;">30</th>
+<th style="text-align: center;">29</th>
+<th style="text-align: center;">28</th>
+<th style="text-align: center;">27</th>
+<th style="text-align: center;">26</th>
+<th style="text-align: center;">25</th>
+<th style="text-align: center;">24</th>
+<th style="text-align: center;">23</th>
+<th style="text-align: center;">22</th>
+<th style="text-align: center;">21</th>
+<th style="text-align: center;">20</th>
+<th style="text-align: center;">19</th>
+<th style="text-align: center;">18</th>
+<th style="text-align: center;">17</th>
+<th style="text-align: center;">16</th>
+<th style="text-align: center;">15</th>
+<th style="text-align: center;">14</th>
+<th style="text-align: center;">13</th>
+<th style="text-align: center;">12</th>
+<th style="text-align: center;">11</th>
+<th style="text-align: center;">10</th>
+<th style="text-align: center;">9</th>
+<th style="text-align: center;">8</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;">觀念題</td>
-<td style="text-align: center;">第一節</td>
-<td style="text-align: center;">09:30</td>
-<td style="text-align: center;">09:40</td>
-<td style="text-align: center;">10:10</td>
-<td style="text-align: center;">10:30</td>
-<td style="text-align: center;">10:40</td>
-</tr>
-<tr>
-<td style="text-align: center;"></td>
-<td style="text-align: center;">第二節</td>
-<td style="text-align: center;">11:00</td>
-<td style="text-align: center;">11:10</td>
-<td style="text-align: center;">11:40</td>
-<td style="text-align: center;">12:00</td>
-<td style="text-align: center;">12:10</td>
-</tr>
-<tr>
-<td style="text-align: center;">實作題</td>
-<td style="text-align: center;">第三節</td>
-<td style="text-align: center;">13:30</td>
-<td style="text-align: center;">13:40</td>
-<td style="text-align: center;">14:10</td>
-<td style="text-align: center;">16:00</td>
-<td style="text-align: center;">16:10</td>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
 </tr>
 </tbody>
 </table>
+<blockquote>
+<p>第32位為0，因為它代表符號。所以int可以儲存的數字上限為2^31-1</p>
+<p>既然講到符號位，那就來講講。</p>
+</blockquote>
+<h1 id="_2">符號<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>已經知道2147483647(最大值)二進制表示法，那負數如何表示呢？
+在此之前我們需要先知道如何正負數轉換</p>
+<p>我們先操作如何將5變成-5，以8位元為例</p>
+<p>一、5的二進制</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">8(符號位)</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>二、取反所有位元(~運算)  (現在數字是-6</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">8(符號位)</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>三、加1  (現在數字是-5</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">8(符號位)</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>這樣就完成了5變成-5</p>
+<p><strong>為甚麼要這樣做呢？我們來看看GPT怎麼說~</strong></p>
+</blockquote>
+<h2 id="gpt">GPT回答<a class="headerlink" href="#gpt" title="Permanent link">&para;</a></h2>
+<hr />
+<blockquote>
+<p>這是一個非常好的問題，涉及到二補數（two's complement）系統中負數表示的根本原因。二補數系統之所以這麼設計，是為了簡化二進位數字的加減運算。</p>
+</blockquote>
+<h3 id="1">符號位變成1的限制<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>假設我們只改變符號位來表示負數，例如 <code>5</code> 的二進位是 <code>00000101</code>，將符號位變成 <code>1</code> 得到 <code>10000101</code>，這樣的表示法存在一些問題：</p>
+<ol>
+<li><strong>符號位單獨變更不是唯一的負數表示方法</strong>：</li>
+<li>
+<p>如果我們只改變符號位，會產生兩個零的表示：<code>00000000</code> 和 <code>10000000</code>。這樣有兩個零的表示是很不方便的，並且會帶來計算上的混亂。</p>
+</li>
+<li>
+<p><strong>簡化計算</strong>：</p>
+</li>
+<li>二補數系統的最大優點是它簡化了加減法運算。在二補數系統中，加法和減法可以使用相同的硬體電路來完成，而不需要特別處理符號位。
+</li>
+</ol>
+</blockquote>
+<h3 id="_3">二補數系統(表示有符號整數的方法)的優點<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<blockquote>
+<ol>
+<li><strong>唯一的零表示</strong>：</li>
+<li>
+<p>在二補數系統中，零只有一種表示，即 <code>00000000</code>。</p>
+</li>
+<li>
+<p><strong>簡化加減運算</strong>：</p>
+</li>
+<li>在二補數系統中，加法和減法都可以使用相同的硬體電路來完成。例如，<code>5 - 3</code> 可以轉化為 <code>5 + (-3)</code>。</li>
+</ol>
+</blockquote>
+<h3 id="5">如何將正數轉換為負數（以 <code>5</code> 為例）<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
+<blockquote>
+<ol>
+<li><strong>二進位表示</strong>：</li>
+<li>
+<p><code>5</code> 的二進位表示是 <code>00000101</code>。</p>
+</li>
+<li>
+<p><strong>取反</strong>：</p>
+</li>
+<li>
+<p>對 <code>5</code> 取反得到 <code>11111010</code>。</p>
+</li>
+<li>
+<p><strong>加1</strong>：</p>
+</li>
+<li>將 <code>11111010</code> 加 1，得到 <code>11111011</code>，這就是 <code>-5</code> 的二補數表示。</li>
+</ol>
+</blockquote>
+<h3 id="_4">直接改變符號位的問題<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>如果我們只改變符號位，來看看 <code>5</code> 的例子：</p>
+<ol>
+<li><strong>原始表示</strong>：</li>
+<li>
+<p><code>00000101</code>（5）</p>
+</li>
+<li>
+<p><strong>改變符號位</strong>：</p>
+</li>
+<li><code>10000101</code>（如果只改變符號位）</li>
+</ol>
+<p>這樣的表示法會帶來上述提到的問題。為了解決這些問題，我們使用二補數系統。</p>
+</blockquote>
+<h3 id="_5">結論<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p>通過二補數系統，我們能夠更高效地進行加減運算，並且避免了多重零表示的問題。這就是為什麼在計算機科學中，我們採用二補數系統來表示有符號的整數。</p>
+<p>希望這個解釋對你有所幫助。如果你有其他問題或需要進一步的澄清，請隨時告訴我！
+</p>
+</blockquote>
+<hr />
+<h1 id="overflow">位元溢出（overflow）<a class="headerlink" href="#overflow" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>我們在做加減法時，電腦是使用位元運算
+當我們要做5+1時(以8位元的話)，電腦就是把00000101 + 00000001
+就會變成00000102，也就是00000110，變成6</p>
+<p>那如果我們遇到 -1 + 1 = 0 時電腦會如何處裡呢？以8位元為例</p>
+<p>一、 -1 的二進制</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">8(符號位)</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>二、 -1+1(進位)</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">9(虛構)</th>
+<th style="text-align: center;">8(符號位)</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>三、溢出的並不會儲存，便直接刪除變成0 </p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">8(符號位)</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>這是基本的溢出處理方式，那為甚麼超過 int 上限 2147483647 會稱為位元溢出（overflow）呢？</p>
+<p>我們都知道int n=2147483647，若 +1 換變成-2147483648
+我們來看看過程</p>
+<p>一、 2147483647 的二進制</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">32(符號位)</th>
+<th style="text-align: center;">31</th>
+<th style="text-align: center;">30</th>
+<th style="text-align: center;">29</th>
+<th style="text-align: center;">28</th>
+<th style="text-align: center;">27</th>
+<th style="text-align: center;">26</th>
+<th style="text-align: center;">25</th>
+<th style="text-align: center;">24</th>
+<th style="text-align: center;">23</th>
+<th style="text-align: center;">22</th>
+<th style="text-align: center;">21</th>
+<th style="text-align: center;">20</th>
+<th style="text-align: center;">19</th>
+<th style="text-align: center;">18</th>
+<th style="text-align: center;">17</th>
+<th style="text-align: center;">16</th>
+<th style="text-align: center;">15</th>
+<th style="text-align: center;">14</th>
+<th style="text-align: center;">13</th>
+<th style="text-align: center;">12</th>
+<th style="text-align: center;">11</th>
+<th style="text-align: center;">10</th>
+<th style="text-align: center;">9</th>
+<th style="text-align: center;">8</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>二、 2147483647+1</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">編號</th>
+<th style="text-align: center;">32(符號位)</th>
+<th style="text-align: center;">31</th>
+<th style="text-align: center;">30</th>
+<th style="text-align: center;">29</th>
+<th style="text-align: center;">28</th>
+<th style="text-align: center;">27</th>
+<th style="text-align: center;">26</th>
+<th style="text-align: center;">25</th>
+<th style="text-align: center;">24</th>
+<th style="text-align: center;">23</th>
+<th style="text-align: center;">22</th>
+<th style="text-align: center;">21</th>
+<th style="text-align: center;">20</th>
+<th style="text-align: center;">19</th>
+<th style="text-align: center;">18</th>
+<th style="text-align: center;">17</th>
+<th style="text-align: center;">16</th>
+<th style="text-align: center;">15</th>
+<th style="text-align: center;">14</th>
+<th style="text-align: center;">13</th>
+<th style="text-align: center;">12</th>
+<th style="text-align: center;">11</th>
+<th style="text-align: center;">10</th>
+<th style="text-align: center;">9</th>
+<th style="text-align: center;">8</th>
+<th style="text-align: center;">7</th>
+<th style="text-align: center;">6</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">二進制數字</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>可以發現他的符號位變成1了，「溢出」了數字位，變成 -2147483648 ，所以稱為位元溢出（overflow），無法得到預想中的 2147483648</p>
+</blockquote>
+<h1 id="_6">位元基本操作<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h1>
+<h2 id="_7">&amp;(與)<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<p>都有才有</p>
+<blockquote>
+<p>將兩個數字的二進位表示形式中的每一位進行「與」運算，只有當兩個對應位都是1時，結果才為1，否則為0。</p>
+</blockquote>
+<pre><code class="language-cpp">int a = 5; // 0101
+int b = 3; // 0011
+int result = a &amp; b; // 0001 -&gt; 1
+</code></pre>
+<h2 id="_8">|(或)<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<p>其一有就有</p>
+<blockquote>
+<p>將兩個數字的二進位表示形式中的每一位進行「或」運算，只要兩個對應位中有一個是1，結果就為1。</p>
+</blockquote>
+<pre><code class="language-cpp">int a = 5; // 0101
+int b = 3; // 0011
+int result = a | b; // 0111 -&gt; 7
+</code></pre>
+<h2 id="_9">^(異或)<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<p>不同才有</p>
+<blockquote>
+<p>將兩個數字的二進位表示形式中的每一位進行「異或」運算，當兩個對應位不同時，結果為1，相同時結果為0。</p>
+</blockquote>
+<pre><code class="language-cpp">int a = 5; // 0101
+int b = 3; // 0011
+int result = a ^ b; // 0110 -&gt; 6
+</code></pre>
+<h2 id="_10">~(反)<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h2>
+<p>造反</p>
+<blockquote>
+<p>將數字的每一位進行取反操作，0變為1，1變為0。</p>
+</blockquote>
+<pre><code class="language-cpp">int a = 5; // 0101
+int result = ~a; // 1010 -&gt; -6 (因為有符號位元，這裡顯示的是補碼)
+</code></pre>
+<h2 id="_11">&lt;&lt;(左移)<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
+<p>全部左移</p>
+<blockquote>
+<p>將數字的二進位表示形式中的所有位向左移動指定的位數，右側補0。這相當於數字乘以2的指定次方。</p>
+</blockquote>
+<pre><code class="language-cpp">int a = 5; // 0101
+int result = a &lt;&lt; 1; // 1010 -&gt; 10
+</code></pre>
+<h2 id="_12">&gt;&gt;(右移)<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h2>
+<p>全部右移</p>
+<blockquote>
+<p>將數字的二進位表示形式中的所有位向右移動指定的位數，左側根據數字是否有符號進行補位。這相當於數字除以2的指定次方。</p>
+</blockquote>
+<pre><code class="language-cpp">int a = 5; // 0101
+int result = a &gt;&gt; 1; // 0010 -&gt; 2
+</code></pre>
+<h1 id="_13">注意事項：&lt;&lt;(左移)<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>先看到以下程式碼</p>
+</blockquote>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    long long n=1&lt;&lt;31;
+    cout&lt;&lt;n;
+}
+</code></pre>
+<p>輸出</p>
+<pre><code class="language-cpp">-2147483648
+</code></pre>
+<p>這時會有個疑問，為何會溢位呢？</p>
+<blockquote>
+<p>因為「long long n=1&lt;&lt;31;」裡面的「1」資料型態為int</p>
+<p>正確寫法：</p>
+<p>一、</p>
+</blockquote>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;int main(){
+    long long n=((long long)1)&lt;&lt;35;
+    cout&lt;&lt;n;
+}
+</code></pre>
+<blockquote>
+<p>二、
+</p>
+</blockquote>
+<pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    long long n=1;
+    n=n&lt;&lt;35;
+    cout&lt;&lt;n;
+}
+</code></pre>
+<blockquote>
+<p>輸出：</p>
+</blockquote>
+<pre><code class="language-cpp">34359738368
+</code></pre>
+<h1 id="_14">把位元當作陣列的操作<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>From 2024 IONC</p>
+</blockquote>
+<pre><code class="language-cpp">// 查詢第i個元素是否在集合s中
+bool inSet(int i, int s) { return (s &gt;&gt; i) &amp; 1; }
+
+// 將第i個元素加入集合中
+void ins(int i, int &amp;s) { s |= (1 &lt;&lt; i); }
+
+// 將第i個元素移除集合
+void rm(int i, int &amp;s) { s &amp;= ~(1 &lt;&lt; i); }
+
+// 取兩集合s1, s2交集
+int inter(int s1, int s2) { return s1 &amp; s2; }
+
+// 取兩集合s1, s2聯集
+int uni(int s1, int s2) { return s1 | s2; }
+
+// 取集合s的補集
+int comp(int s) { return ~s; }
+
+</code></pre>
 
 
 
 
 
 
+
+  
+  
 
 
 
@@ -2271,6 +2877,58 @@
         <div class="custom-toc-title">目錄</div> <!-- 添加「目錄」标题 -->
         <nav class="custom-toc">
             <ul>
+                
+                <li>
+                    <a href="#_1">二進制</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_2">符號</a>
+                    
+                    <ul>
+                        
+                        <li><a href="#gpt">GPT回答</a></li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="#overflow">位元溢出（overflow）</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_6">位元基本操作</a>
+                    
+                    <ul>
+                        
+                        <li><a href="#_7">&amp;(與)</a></li>
+                        
+                        <li><a href="#_8">|(或)</a></li>
+                        
+                        <li><a href="#_9">^(異或)</a></li>
+                        
+                        <li><a href="#_10">~(反)</a></li>
+                        
+                        <li><a href="#_11">&lt;&lt;(左移)</a></li>
+                        
+                        <li><a href="#_12">&gt;&gt;(右移)</a></li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_13">注意事項：&lt;&lt;(左移)</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_14">把位元當作陣列的操作</a>
+                    
+                </li>
                 
             </ul>
         </nav>

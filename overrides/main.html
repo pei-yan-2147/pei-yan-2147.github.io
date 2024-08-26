@@ -3,6 +3,21 @@
 {% block libs %}
     {{ super() }}
 
+    <script type="text/javascript">
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            },
+            options: {
+                processEscapes: true  // 允许转义美元符号，例如 \$ 显示为普通的 $
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    
     <div class="video-background">
         <video id="background-video" autoplay loop muted playsinline>
             <source src="{{ base_url }}/video/background.mp4" type="video/mp4">
@@ -30,12 +45,20 @@
             tocContainer.style.top = contentInnerRect.top + 'px';
             tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
         }
+
+        // 处理图像大小调整的逻辑
+        document.querySelectorAll('img').forEach(function(img) {
+            const match = img.src.match(/=(\d+)%x$/);
+            if (match) {
+                const widthPercentage = match[1];
+                img.style.width = widthPercentage + '%';
+                img.style.height = 'auto';
+                img.src = img.src.replace(/=(\d+)%x$/, ''); // 移除 URL 中的自定义语法
+            }
+        });
       });
     </script>
 {% endblock %}
-
-
-
 
 {% block content %}
 <div class="md-content__inner">
@@ -62,4 +85,3 @@
     </div>
 </div>
 {% endblock %}
-

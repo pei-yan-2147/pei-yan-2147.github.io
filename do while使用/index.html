@@ -9,8 +9,10 @@
       
       
       
-        <link rel="prev" href="../%E6%A8%A1%E9%81%8B%E7%AE%97/">
+        <link rel="prev" href="../switch%E4%B9%8B%E4%BD%BF%E7%94%A8/">
       
+      
+        <link rel="next" href="../%E5%88%A4%E6%96%B7%E6%98%AF%E5%90%A6%E7%82%BA%E6%95%B8%E5%AD%97%E3%80%81%E5%AD%97%E6%AF%8D/">
       
       
       <link rel="icon" href="../logo/peilogo.png">
@@ -18,7 +20,7 @@
     
     
       
-        <title>程式碼範例 - PEI 演算法筆記</title>
+        <title>do while使用 - PEI 演算法筆記</title>
       
     
     
@@ -129,7 +131,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#do-while" class="md-skip">
           Skip to content
         </a>
       
@@ -164,7 +166,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              程式碼範例
+              do while使用
             
           </span>
         </div>
@@ -541,17 +543,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -565,7 +569,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             概念、語法、技巧
@@ -891,10 +895,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../do%20while%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -903,6 +916,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -2156,19 +2170,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%AF%84%E4%BE%8B/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2177,7 +2182,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -2217,62 +2221,68 @@
                   
 
 
+<h1 id="do-while">do while 使用<a class="headerlink" href="#do-while" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>from：2024清華大學IONC講義</p>
+<p>while 是先判斷，再重複執行「要執行的內容」</p>
+<p>而 do wheile 是先執行「要執行的內容」再進行判斷，接著重複執行「要執行的內容」</p>
 </blockquote>
-<h1 id="_1">函數製作<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。</p>
-<div class="code-container">
-  <button class="copy-button">複製</button>
-  <pre id="code-block-1"><code>int gcd(int a, int b) {
-    for (int i = min(a, b); i >= 1; i--) {
-        if (a % i == 0 && b % i == 0) return i;
-    }
-    return 1;
-}</code></pre>
-</div>
+<h1 id="_1">使用時機<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>假設要製作一個簡易加法計算機：</p>
+</blockquote>
+<p>系統先輸出<code>Enter two numbers</code>
+輸入兩個數字，輸出相加結果，並提供防呆機制：若其中一個數字輸入為字母，就持續輸出<code>Enter two numbers</code>並讓使用者重新輸入。</p>
+<p>範例輸入：
+1 a
+a 1
+a a
+1 1</p>
+<p>範例輸出：
+Enter two numbers
+Enter two numbers
+Enter two numbers
+Enter two numbers
+2</p>
+<blockquote>
+<p>用while做：</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
-<p>！！！？？？？</p>
+<span class="cp">#define nn &quot;\n&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;Enter two numbers&quot;</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"> </span><span class="c1">//先輸入</span>
+<span class="w">    </span><span class="k">while</span><span class="p">((</span><span class="o">!</span><span class="n">isdigit</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isdigit</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="w"> </span><span class="p">){</span><span class="w"> </span><span class="c1">//判斷一次</span>
+<span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;Enter two numbers&quot;</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="p">;</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w">  </span><span class="c1">//輸入第二次</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="o">+</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
 <blockquote>
-<p>引用</p>
+<p>用do while做：</p>
 </blockquote>
-<h1 id="h1">h1<a class="headerlink" href="#h1" title="Permanent link">&para;</a></h1>
-<h2 id="h2">h2<a class="headerlink" href="#h2" title="Permanent link">&para;</a></h2>
-<h3 id="h3">h3<a class="headerlink" href="#h3" title="Permanent link">&para;</a></h3>
-<h4 id="h4">h4<a class="headerlink" href="#h4" title="Permanent link">&para;</a></h4>
-<h5 id="h5">h5<a class="headerlink" href="#h5" title="Permanent link">&para;</a></h5>
-<h1 id="h1_1">主要标题 (h1)<a class="headerlink" href="#h1_1" title="Permanent link">&para;</a></h1>
-<h2 id="h2_1">次级标题 (h2)<a class="headerlink" href="#h2_1" title="Permanent link">&para;</a></h2>
-<h3 id="h3_1">第三级标题 (h3)<a class="headerlink" href="#h3_1" title="Permanent link">&para;</a></h3>
-<h4 id="h4_1">第四级标题 (h4)<a class="headerlink" href="#h4_1" title="Permanent link">&para;</a></h4>
-<div class="toc">
-<ul>
-<li><a href="#_1">函數製作</a></li>
-<li><a href="#h1">h1</a><ul>
-<li><a href="#h2">h2</a><ul>
-<li><a href="#h3">h3</a><ul>
-<li><a href="#h4">h4</a><ul>
-<li><a href="#h5">h5</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#h1_1">主要标题 (h1)</a><ul>
-<li><a href="#h2_1">次级标题 (h2)</a><ul>
-<li><a href="#h3_1">第三级标题 (h3)</a><ul>
-<li><a href="#h4_1">第四级标题 (h4)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="cp">#define nn &quot;\n&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">do</span><span class="p">{</span>
+<span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;Enter two numbers&quot;</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="p">;</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span><span class="k">while</span><span class="p">((</span><span class="o">!</span><span class="n">isdigit</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">isdigit</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">])));</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="o">+</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="sc">&#39;0&#39;</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p>可以發現，差別就是do while在執行第一次之後才判斷。</p>
+</blockquote>
 
 
 
@@ -2293,29 +2303,12 @@
             <ul>
                 
                 <li>
-                    <a href="#_1">函數製作</a>
+                    <a href="#do-while">do while 使用</a>
                     
                 </li>
                 
                 <li>
-                    <a href="#h1">h1</a>
-                    
-                    <ul>
-                        
-                        <li><a href="#h2">h2</a></li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="#h1_1">主要标题 (h1)</a>
-                    
-                    <ul>
-                        
-                        <li><a href="#h2_1">次级标题 (h2)</a></li>
-                        
-                    </ul>
+                    <a href="#_1">使用時機</a>
                     
                 </li>
                 

@@ -49,6 +49,7 @@
             }
         };
     </script>
+    
     <script type="text/javascript" id="MathJax-script" async
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
@@ -837,7 +838,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/HkzxzGtP0" class="md-nav__link">
+      <a href="../%E5%AE%9A%E7%BE%A9%E6%AF%94%E8%BC%83%E8%A6%8F%E5%89%87/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -858,7 +859,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/SyqZ-8LZ0" class="md-nav__link">
+      <a href="../%E6%8E%92%E5%88%97%E7%94%9F%E6%88%90permutation%E7%AA%AE%E8%88%89/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -879,7 +880,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/SJpkfAEW0" class="md-nav__link">
+      <a href="../switch%E4%B9%8B%E4%BD%BF%E7%94%A8/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -900,7 +901,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/SJHPye_Z0" class="md-nav__link">
+      <a href="../do%20while%E4%BD%BF%E7%94%A8/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -921,7 +922,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/Bk2DcbO-R" class="md-nav__link">
+      <a href="../%E5%88%A4%E6%96%B7%E6%98%AF%E5%90%A6%E7%82%BA%E6%95%B8%E5%AD%97%E3%80%81%E5%AD%97%E6%AF%8D/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -942,7 +943,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/HJ6p-dGSA" class="md-nav__link">
+      <a href="../%E5%A4%A7%E5%B0%8F%E5%AF%AB%E8%BD%89%E6%8F%9B/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -963,7 +964,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/HyW7MCN-C" class="md-nav__link">
+      <a href="../%E5%B0%8F%E6%95%B8%E9%BB%9E%E5%BE%8C%E5%B9%BE%E4%BD%8D/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -984,7 +985,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/BJ-7JdL-0" class="md-nav__link">
+      <a href="../%E8%BC%B8%E5%87%BA%E7%B5%90%E5%B0%BE%E7%A9%BA%E7%99%BD/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1005,7 +1006,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/Syv5a3yDA" class="md-nav__link">
+      <a href="../%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E3%80%81%E5%BE%8C%E5%BA%8F/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1068,7 +1069,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/rJK-6y3PR" class="md-nav__link">
+      <a href="../log/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1089,7 +1090,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/B14yMCzSA" class="md-nav__link">
+      <a href="../%CE%A3%20sigma%20%28%E8%A5%BF%E6%A0%BC%E7%91%AA%29/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1110,7 +1111,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://hackmd.io/@peicpp/r1T0rBbPR" class="md-nav__link">
+      <a href="../%E6%A8%A1%E9%81%8B%E7%AE%97/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2218,39 +2219,39 @@
 </blockquote>
 <p>細心的讀者可能會發現 <code>bool</code> 這個型別明明只能表示 <code>true</code> 或 <code>false</code>，通常卻佔了 1 Byte 的記憶體空間。這主要的原因是因為電腦的架構通常不需要也很難去操作 1 bit 的空間。單純宣告一個 <code>bool</code> 影響可能不大，但若是宣告 <code>bool</code> 陣列可能會造成很多記憶體的浪費。因此 STL 就包含了一個好用的工具 <code>bitset</code> 可以宣告固定長度的 bits。</p>
 <p>基本上你可以把 <code>bitset</code> 當成一個效率很快的 <code>bool</code> 陣列，而越低位是在 <code>bitset</code> 的越右邊。<code>bitset</code> 也支援位元運算。也能將 <code>bitset</code> 轉換成 <code>string</code> 或 <code>unsigned integer</code>。通常在 <code>bitset</code> 上做操作的時間是 <code>vector&lt;bool&gt;</code> 的 $\frac{1}{32}$ 倍。</p>
-<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
-using namespace std;
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
-int  main(){
-    bitset&lt;5&gt; b; // 宣告大小為 5 的 bitset 初始為 00000
-    cout&lt;&lt;&quot;b: &quot;&lt;&lt;b&lt;&lt;&quot;\n&quot;;
+<span class="kt">int</span><span class="w">  </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">bitset</span><span class="o">&lt;</span><span class="mi">5</span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"> </span><span class="c1">// 宣告大小為 5 的 bitset 初始為 00000</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;b: &quot;</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
-    b[0] = 1; // 將第 0 個 bit 設為 1 也就是 bitset 變成了 00001
-    cout&lt;&lt;&quot;b: &quot;&lt;&lt;b&lt;&lt;&quot;\n&quot;;
+<span class="w">    </span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="c1">// 將第 0 個 bit 設為 1 也就是 bitset 變成了 00001</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;b: &quot;</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
-    b.reset(); // set all bits to 0
-    cout&lt;&lt;&quot;b: &quot;&lt;&lt;b&lt;&lt;&quot;\n&quot;;
+<span class="w">    </span><span class="n">b</span><span class="p">.</span><span class="n">reset</span><span class="p">();</span><span class="w"> </span><span class="c1">// set all bits to 0</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;b: &quot;</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
-    b.set(); // set all bits to 1
-    cout&lt;&lt;&quot;b: &quot;&lt;&lt;b&lt;&lt;&quot;\n&quot;;
+<span class="w">    </span><span class="n">b</span><span class="p">.</span><span class="n">set</span><span class="p">();</span><span class="w"> </span><span class="c1">// set all bits to 1</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;b: &quot;</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
-    bitset&lt;5&gt; a(10011);
-    cout&lt;&lt;&quot;a.count(): &quot; &lt;&lt; a.count() &lt;&lt; '\n'; // 輸出 bitset 中有幾個 1
-    cout&lt;&lt;&quot;a: &quot;&lt;&lt;a&lt;&lt;&quot;\n&quot;;
+<span class="w">    </span><span class="n">bitset</span><span class="o">&lt;</span><span class="mi">5</span><span class="o">&gt;</span><span class="w"> </span><span class="n">a</span><span class="p">(</span><span class="mi">10011</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;a.count(): &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">count</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span><span class="w"> </span><span class="c1">// 輸出 bitset 中有幾個 1</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;a: &quot;</span><span class="o">&lt;&lt;</span><span class="n">a</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
-    b=5;
-    cout&lt;&lt;&quot;b: &quot;&lt;&lt;b&lt;&lt;&quot;\n&quot;;
+<span class="w">    </span><span class="n">b</span><span class="o">=</span><span class="mi">5</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;b: &quot;</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
-    cout&lt;&lt;&quot;(a &amp; b): &quot; &lt;&lt; (a &amp; b) &lt;&lt; endl; // 因為運算子優先順序的關係，() 是必須的
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;(a &amp; b): &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span><span class="w"> </span><span class="c1">// 因為運算子優先順序的關係，() 是必須的</span>
 
-    string str = a.to_string();
-    unsigned long val = a.to_ulong();
-    cout&lt;&lt;&quot;a: &quot;&lt;&lt;str&lt;&lt;&quot;\n&quot;;
+<span class="w">    </span><span class="n">string</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">to_string</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">to_ulong</span><span class="p">();</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;a: &quot;</span><span class="o">&lt;&lt;</span><span class="n">str</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 
-    bitset&lt;20&gt; c=10;
-    cout&lt;&lt;c;
-}
-</code></pre>
+<span class="w">    </span><span class="n">bitset</span><span class="o">&lt;</span><span class="mi">20</span><span class="o">&gt;</span><span class="w"> </span><span class="n">c</span><span class="o">=</span><span class="mi">10</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 

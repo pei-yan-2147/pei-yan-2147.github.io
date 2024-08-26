@@ -9,8 +9,10 @@
       
       
       
-        <link rel="prev" href="../%E6%A8%A1%E9%81%8B%E7%AE%97/">
+        <link rel="prev" href="../log/">
       
+      
+        <link rel="next" href="../%E6%A8%A1%E9%81%8B%E7%AE%97/">
       
       
       <link rel="icon" href="../logo/peilogo.png">
@@ -18,7 +20,7 @@
     
     
       
-        <title>程式碼範例 - PEI 演算法筆記</title>
+        <title>Σ sigma (西格瑪) - PEI 演算法筆記</title>
       
     
     
@@ -164,7 +166,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              程式碼範例
+              Σ sigma (西格瑪)
             
           </span>
         </div>
@@ -1024,17 +1026,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
         
           
           <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
@@ -1048,7 +1052,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             數論
@@ -1080,10 +1084,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../%CE%A3%20sigma%20%28%E8%A5%BF%E6%A0%BC%E7%91%AA%29/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Σ sigma (西格瑪)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1092,6 +1116,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      ∑ 的性質
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2156,19 +2209,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%AF%84%E4%BE%8B/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2177,7 +2221,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -2202,6 +2245,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      ∑ 的性質
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2217,62 +2277,48 @@
                   
 
 
-<blockquote>
-<p>from：2024清華大學IONC講義</p>
-</blockquote>
-<h1 id="_1">函數製作<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。</p>
-<div class="code-container">
-  <button class="copy-button">複製</button>
-  <pre id="code-block-1"><code>int gcd(int a, int b) {
-    for (int i = min(a, b); i >= 1; i--) {
-        if (a % i == 0 && b % i == 0) return i;
-    }
-    return 1;
-}</code></pre>
-</div>
-
-<p>！！！？？？？</p>
-<blockquote>
-<p>引用</p>
-</blockquote>
-<h1 id="h1">h1<a class="headerlink" href="#h1" title="Permanent link">&para;</a></h1>
-<h2 id="h2">h2<a class="headerlink" href="#h2" title="Permanent link">&para;</a></h2>
-<h3 id="h3">h3<a class="headerlink" href="#h3" title="Permanent link">&para;</a></h3>
-<h4 id="h4">h4<a class="headerlink" href="#h4" title="Permanent link">&para;</a></h4>
-<h5 id="h5">h5<a class="headerlink" href="#h5" title="Permanent link">&para;</a></h5>
-<h1 id="h1_1">主要标题 (h1)<a class="headerlink" href="#h1_1" title="Permanent link">&para;</a></h1>
-<h2 id="h2_1">次级标题 (h2)<a class="headerlink" href="#h2_1" title="Permanent link">&para;</a></h2>
-<h3 id="h3_1">第三级标题 (h3)<a class="headerlink" href="#h3_1" title="Permanent link">&para;</a></h3>
-<h4 id="h4_1">第四级标题 (h4)<a class="headerlink" href="#h4_1" title="Permanent link">&para;</a></h4>
-<div class="toc">
-<ul>
-<li><a href="#_1">函數製作</a></li>
-<li><a href="#h1">h1</a><ul>
-<li><a href="#h2">h2</a><ul>
-<li><a href="#h3">h3</a><ul>
-<li><a href="#h4">h4</a><ul>
-<li><a href="#h5">h5</a></li>
-</ul>
+<h1 id="_1">公式<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p><a href="https://www.youtube.com/watch?v=p5z0O_L1Z0U">https://www.youtube.com/watch?v=p5z0O_L1Z0U</a></p>
+<ol>
+<li>
+<p>$\sum_{k=1}^{n} k = \frac{n(n+1)}{2}$</p>
 </li>
-</ul>
+<li>
+<p>$\sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6}$</p>
 </li>
-</ul>
+<li>
+<p>$\sum_{k=1}^{n} k^3 = \left[\frac{n(n+1)}{2}\right]^2$</p>
 </li>
-</ul>
+<li>
+<p>$\sum_{k=1}^{n} k(k+1) = \frac{n(n+1)(n+2)}{3}$</p>
 </li>
-<li><a href="#h1_1">主要标题 (h1)</a><ul>
-<li><a href="#h2_1">次级标题 (h2)</a><ul>
-<li><a href="#h3_1">第三级标题 (h3)</a><ul>
-<li><a href="#h4_1">第四级标题 (h4)</a></li>
-</ul>
+</ol>
+<h2 id="_2">∑ 的性質<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>常數和：
+    $$ \sum_{k=1}^{n} c = nc \quad (c表示任一常數) $$</p>
 </li>
-</ul>
+<li>
+<p>係數可以提：
+    $$ \sum_{k=1}^{n} c \cdot a_k = c \cdot \sum_{k=1}^{n} a_k \quad (c表示任一常數，k表示變數) $$</p>
 </li>
-</ul>
+<li>
+<p>∑ 的後面有加減可以拆：
+    $$ \sum_{k=1}^{n} (a_k \pm b_k) = \sum_{k=1}^{n} a_k \pm \sum_{k=1}^{n} b_k $$</p>
 </li>
-</ul>
-</div>
+<li>
+<p>∑ 的後面很多相乘：
+     乘開再拆
+ $$
+ \sum_{k=1}^{n} (2k-1)(3k+1)
+ $$</p>
+<p>變成</p>
+</li>
+</ol>
+<p>$$
+ \sum_{k=1}^{n} (6k^2 - k - 1)
+ $$</p>
 
 
 
@@ -2293,27 +2339,11 @@
             <ul>
                 
                 <li>
-                    <a href="#_1">函數製作</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="#h1">h1</a>
+                    <a href="#_1">公式</a>
                     
                     <ul>
                         
-                        <li><a href="#h2">h2</a></li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="#h1_1">主要标题 (h1)</a>
-                    
-                    <ul>
-                        
-                        <li><a href="#h2_1">次级标题 (h2)</a></li>
+                        <li><a href="#_2">∑ 的性質</a></li>
                         
                     </ul>
                     

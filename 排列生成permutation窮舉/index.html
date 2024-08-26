@@ -9,8 +9,10 @@
       
       
       
-        <link rel="prev" href="../%E6%A8%A1%E9%81%8B%E7%AE%97/">
+        <link rel="prev" href="../%E5%AE%9A%E7%BE%A9%E6%AF%94%E8%BC%83%E8%A6%8F%E5%89%87/">
       
+      
+        <link rel="next" href="../switch%E4%B9%8B%E4%BD%BF%E7%94%A8/">
       
       
       <link rel="icon" href="../logo/peilogo.png">
@@ -18,7 +20,7 @@
     
     
       
-        <title>程式碼範例 - PEI 演算法筆記</title>
+        <title>排列生成permutation窮舉 - PEI 演算法筆記</title>
       
     
     
@@ -129,7 +131,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#_1" class="md-skip">
+        <a href="#permutation" class="md-skip">
           Skip to content
         </a>
       
@@ -164,7 +166,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              程式碼範例
+              排列生成permutation窮舉
             
           </span>
         </div>
@@ -541,17 +543,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -565,7 +569,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             概念、語法、技巧
@@ -849,10 +853,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../%E6%8E%92%E5%88%97%E7%94%9F%E6%88%90permutation%E7%AA%AE%E8%88%89/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    排列生成permutation窮舉
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -861,6 +885,68 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#is_permutation" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_permutation( )
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="is_permutation( )">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      舉例：
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prev_permutation" class="md-nav__link">
+    <span class="md-ellipsis">
+      prev_permutation( )
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next_permutation" class="md-nav__link">
+    <span class="md-ellipsis">
+      next_permutation( )
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2156,19 +2242,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%AF%84%E4%BE%8B/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2177,7 +2254,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -2202,6 +2278,56 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#is_permutation" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_permutation( )
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="is_permutation( )">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      舉例：
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prev_permutation" class="md-nav__link">
+    <span class="md-ellipsis">
+      prev_permutation( )
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next_permutation" class="md-nav__link">
+    <span class="md-ellipsis">
+      next_permutation( )
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -2217,62 +2343,151 @@
                   
 
 
+<h1 id="permutation">排列生成permutation<a class="headerlink" href="#permutation" title="Permanent link">&para;</a></h1>
+<p><a href="https://yuihuang.com/cpp-algorithm-next-permutation/">資料來源</a></p>
+<p>有三個函數可使用</p>
+<p>支援陣列資料結構 ( 記憶體位置連續儲存 )
+如：
+- int v[N]
+- vector\&lt;int&gt; v</p>
+<h2 id="is_permutation">is_permutation( )<a class="headerlink" href="#is_permutation" title="Permanent link">&para;</a></h2>
 <blockquote>
-<p>from：2024清華大學IONC講義</p>
+<p>is_permutation( 陣列A開頭指針 , 陣列A結尾指針 , 陣列B );</p>
+<p>判斷陣列 B 是否為陣列 A 排序後的結果</p>
+<p>也可把它看成集合比對器(集合不看順序)，如下：</p>
 </blockquote>
-<h1 id="_1">函數製作<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<p>要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。要設計一個演算法去計算 (a, b) 的最大公因數。最直觀的想法是枚舉所有可能的因數。</p>
-<div class="code-container">
-  <button class="copy-button">複製</button>
-  <pre id="code-block-1"><code>int gcd(int a, int b) {
-    for (int i = min(a, b); i >= 1; i--) {
-        if (a % i == 0 && b % i == 0) return i;
-    }
-    return 1;
-}</code></pre>
-</div>
+<div class="highlight"><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">is_permutation</span><span class="p">(</span><span class="w"> </span><span class="n">陣列A開頭指針</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">陣列A結尾指針</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">陣列B</span><span class="w"> </span><span class="p">){</span>
 
-<p>！！！？？？？</p>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">A集合包含於B集合</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">reurn</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="_1">舉例：<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<details><summary>回傳true： </summary>
+程式碼：
+
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[](</span><span class="s">&quot;123&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">v</span><span class="p">[](</span><span class="s">&quot;132&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">is_permutation</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span><span class="n">v</span><span class="p">);</span>
+
+<span class="p">}</span>
+</code></pre></div>
+
+輸出：
+<div class="highlight"><pre><span></span><code>1
+</code></pre></div>
+</details>
+
+<details><summary>回傳false：</summary>
+程式碼：
+
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[](</span><span class="s">&quot;123&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">v</span><span class="p">[](</span><span class="s">&quot;133&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">is_permutation</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span><span class="n">v</span><span class="p">);</span>
+
+<span class="p">}</span>
+</code></pre></div>
+
+輸出：
+<div class="highlight"><pre><span></span><code>0
+</code></pre></div>
+</details>
+
+<details><summary>不同長度，回傳true：</summary>
+
+程式碼：
+
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[](</span><span class="s">&quot;123&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">v</span><span class="p">[](</span><span class="s">&quot;1234&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">is_permutation</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span><span class="n">v</span><span class="p">);</span>
+
+<span class="p">}</span>
+</code></pre></div>
+
+輸出：
+<div class="highlight"><pre><span></span><code><span class="mi">1</span>
+</code></pre></div>
+</details>
+
+<h2 id="prev_permutation">prev_permutation( )<a class="headerlink" href="#prev_permutation" title="Permanent link">&para;</a></h2>
 <blockquote>
-<p>引用</p>
+<p>prev_permutation( 陣列開頭指針 , 陣列結尾指針 );</p>
+<p>找出前一個字典序排列，找到回傳true，沒找到回傳false</p>
 </blockquote>
-<h1 id="h1">h1<a class="headerlink" href="#h1" title="Permanent link">&para;</a></h1>
-<h2 id="h2">h2<a class="headerlink" href="#h2" title="Permanent link">&para;</a></h2>
-<h3 id="h3">h3<a class="headerlink" href="#h3" title="Permanent link">&para;</a></h3>
-<h4 id="h4">h4<a class="headerlink" href="#h4" title="Permanent link">&para;</a></h4>
-<h5 id="h5">h5<a class="headerlink" href="#h5" title="Permanent link">&para;</a></h5>
-<h1 id="h1_1">主要标题 (h1)<a class="headerlink" href="#h1_1" title="Permanent link">&para;</a></h1>
-<h2 id="h2_1">次级标题 (h2)<a class="headerlink" href="#h2_1" title="Permanent link">&para;</a></h2>
-<h3 id="h3_1">第三级标题 (h3)<a class="headerlink" href="#h3_1" title="Permanent link">&para;</a></h3>
-<h4 id="h4_1">第四级标题 (h4)<a class="headerlink" href="#h4_1" title="Permanent link">&para;</a></h4>
-<div class="toc">
-<ul>
-<li><a href="#_1">函數製作</a></li>
-<li><a href="#h1">h1</a><ul>
-<li><a href="#h2">h2</a><ul>
-<li><a href="#h3">h3</a><ul>
-<li><a href="#h4">h4</a><ul>
-<li><a href="#h5">h5</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#h1_1">主要标题 (h1)</a><ul>
-<li><a href="#h2_1">次级标题 (h2)</a><ul>
-<li><a href="#h3_1">第三级标题 (h3)</a><ul>
-<li><a href="#h4_1">第四级标题 (h4)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
+<p>程式碼
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[](</span><span class="s">&quot;321&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="n">prev_permutation</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">+</span><span class="mi">3</span><span class="p">)){</span>
+<span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+輸出：
+<div class="highlight"><pre><span></span><code>312
+231
+213
+132
+123
+</code></pre></div></p>
+<h2 id="next_permutation">next_permutation( )<a class="headerlink" href="#next_permutation" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>next_permutation( 陣列開頭指針 , 陣列結尾指針 );</p>
+<p>找出前一個字典序排列，找到回傳true，沒找到回傳false</p>
+</blockquote>
+<p>程式碼
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[](</span><span class="s">&quot;123&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="n">next_permutation</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">+</span><span class="mi">3</span><span class="p">)){</span>
+<span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+輸出：
+<div class="highlight"><pre><span></span><code>132
+213
+231
+312
+321
+</code></pre></div></p>
+<h1 id="_2">製作窮舉<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
+<p>程式碼：
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[](</span><span class="s">&quot;12345&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="n">next_permutation</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="o">+</span><span class="n">strlen</span><span class="p">(</span><span class="n">c</span><span class="p">))){</span>
+<span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="o">&lt;&lt;</span><span class="s">&quot;;&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<details><summary>輸出 </summary>
+<div class="highlight"><pre><span></span><code><span class="mi">12354</span><span class="p">;</span><span class="mi">12435</span><span class="p">;</span><span class="mi">12453</span><span class="p">;</span><span class="mi">12534</span><span class="p">;</span><span class="mi">12543</span><span class="p">;</span><span class="mi">13245</span><span class="p">;</span><span class="mi">13254</span><span class="p">;</span><span class="mi">13425</span><span class="p">;</span><span class="mi">13452</span><span class="p">;</span><span class="mi">13524</span><span class="p">;</span><span class="mi">13542</span><span class="p">;</span><span class="mi">14235</span><span class="p">;</span><span class="mi">14253</span><span class="p">;</span><span class="mi">14325</span><span class="p">;</span><span class="mi">14352</span><span class="p">;</span><span class="mi">14523</span><span class="p">;</span><span class="mi">14532</span><span class="p">;</span><span class="mi">15234</span><span class="p">;</span><span class="mi">15243</span><span class="p">;</span><span class="mi">15324</span><span class="p">;</span><span class="mi">15342</span><span class="p">;</span><span class="mi">15423</span><span class="p">;</span><span class="mi">15432</span><span class="p">;</span><span class="mi">21345</span><span class="p">;</span><span class="mi">21354</span><span class="p">;</span><span class="mi">21435</span><span class="p">;</span><span class="mi">21453</span><span class="p">;</span><span class="mi">21534</span><span class="p">;</span><span class="mi">21543</span><span class="p">;</span><span class="mi">23145</span><span class="p">;</span><span class="mi">23154</span><span class="p">;</span><span class="mi">23415</span><span class="p">;</span><span class="mi">23451</span><span class="p">;</span><span class="mi">23514</span><span class="p">;</span><span class="mi">23541</span><span class="p">;</span><span class="mi">24135</span><span class="p">;</span><span class="mi">24153</span><span class="p">;</span><span class="mi">24315</span><span class="p">;</span><span class="mi">24351</span><span class="p">;</span><span class="mi">24513</span><span class="p">;</span><span class="mi">24531</span><span class="p">;</span><span class="mi">25134</span><span class="p">;</span><span class="mi">25143</span><span class="p">;</span><span class="mi">25314</span><span class="p">;</span><span class="mi">25341</span><span class="p">;</span><span class="mi">25413</span><span class="p">;</span><span class="mi">25431</span><span class="p">;</span><span class="mi">31245</span><span class="p">;</span><span class="mi">31254</span><span class="p">;</span><span class="mi">31425</span><span class="p">;</span><span class="mi">31452</span><span class="p">;</span><span class="mi">31524</span><span class="p">;</span><span class="mi">31542</span><span class="p">;</span><span class="mi">32145</span><span class="p">;</span><span class="mi">32154</span><span class="p">;</span><span class="mi">32415</span><span class="p">;</span><span class="mi">32451</span><span class="p">;</span><span class="mi">32514</span><span class="p">;</span><span class="mi">32541</span><span class="p">;</span><span class="mi">34125</span><span class="p">;</span><span class="mi">34152</span><span class="p">;</span><span class="mi">34215</span><span class="p">;</span><span class="mi">34251</span><span class="p">;</span><span class="mi">34512</span><span class="p">;</span><span class="mi">34521</span><span class="p">;</span><span class="mi">35124</span><span class="p">;</span><span class="mi">35142</span><span class="p">;</span><span class="mi">35214</span><span class="p">;</span><span class="mi">35241</span><span class="p">;</span><span class="mi">35412</span><span class="p">;</span><span class="mi">35421</span><span class="p">;</span><span class="mi">41235</span><span class="p">;</span><span class="mi">41253</span><span class="p">;</span><span class="mi">41325</span><span class="p">;</span><span class="mi">41352</span><span class="p">;</span><span class="mi">41523</span><span class="p">;</span><span class="mi">41532</span><span class="p">;</span><span class="mi">42135</span><span class="p">;</span><span class="mi">42153</span><span class="p">;</span><span class="mi">42315</span><span class="p">;</span><span class="mi">42351</span><span class="p">;</span><span class="mi">42513</span><span class="p">;</span><span class="mi">42531</span><span class="p">;</span><span class="mi">43125</span><span class="p">;</span><span class="mi">43152</span><span class="p">;</span><span class="mi">43215</span><span class="p">;</span><span class="mi">43251</span><span class="p">;</span><span class="mi">43512</span><span class="p">;</span><span class="mi">43521</span><span class="p">;</span><span class="mi">45123</span><span class="p">;</span><span class="mi">45132</span><span class="p">;</span><span class="mi">45213</span><span class="p">;</span><span class="mi">45231</span><span class="p">;</span><span class="mi">45312</span><span class="p">;</span><span class="mi">45321</span><span class="p">;</span><span class="mi">51234</span><span class="p">;</span><span class="mi">51243</span><span class="p">;</span><span class="mi">51324</span><span class="p">;</span><span class="mi">51342</span><span class="p">;</span><span class="mi">51423</span><span class="p">;</span><span class="mi">51432</span><span class="p">;</span><span class="mi">52134</span><span class="p">;</span><span class="mi">52143</span><span class="p">;</span><span class="mi">52314</span><span class="p">;</span><span class="mi">52341</span><span class="p">;</span><span class="mi">52413</span><span class="p">;</span><span class="mi">52431</span><span class="p">;</span><span class="mi">53124</span><span class="p">;</span><span class="mi">53142</span><span class="p">;</span><span class="mi">53214</span><span class="p">;</span><span class="mi">53241</span><span class="p">;</span><span class="mi">53412</span><span class="p">;</span><span class="mi">53421</span><span class="p">;</span><span class="mi">54123</span><span class="p">;</span><span class="mi">54132</span><span class="p">;</span><span class="mi">54213</span><span class="p">;</span><span class="mi">54231</span><span class="p">;</span><span class="mi">54312</span><span class="p">;</span><span class="mi">54321</span><span class="p">;</span>
+</code></pre></div>
+</details>
 
 
 
@@ -2293,29 +2508,22 @@
             <ul>
                 
                 <li>
-                    <a href="#_1">函數製作</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="#h1">h1</a>
+                    <a href="#permutation">排列生成permutation</a>
                     
                     <ul>
                         
-                        <li><a href="#h2">h2</a></li>
+                        <li><a href="#is_permutation">is_permutation( )</a></li>
+                        
+                        <li><a href="#prev_permutation">prev_permutation( )</a></li>
+                        
+                        <li><a href="#next_permutation">next_permutation( )</a></li>
                         
                     </ul>
                     
                 </li>
                 
                 <li>
-                    <a href="#h1_1">主要标题 (h1)</a>
-                    
-                    <ul>
-                        
-                        <li><a href="#h2_1">次级标题 (h2)</a></li>
-                        
-                    </ul>
+                    <a href="#_2">製作窮舉</a>
                     
                 </li>
                 

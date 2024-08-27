@@ -75,7 +75,27 @@
                     {% if section.children %}
                     <ul>
                         {% for child in section.children %}
-                        <li><a href="#{{ child.id }}">{{ child.title }}</a></li>
+                        <li>
+                            <a href="#{{ child.id }}">{{ child.title }}</a>
+                            {% if child.children %}
+                            <ul>
+                                {% for grandchild in child.children %}
+                                <li>
+                                    <a href="#{{ grandchild.id }}">{{ grandchild.title }}</a>
+                                    {% if grandchild.children %}
+                                    <ul>
+                                        {% for greatgrandchild in grandchild.children %}
+                                        <li>
+                                            <a href="#{{ greatgrandchild.id }}">{{ greatgrandchild.title }}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </li>
                         {% endfor %}
                     </ul>
                     {% endif %}

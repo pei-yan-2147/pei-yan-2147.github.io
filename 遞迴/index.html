@@ -1,0 +1,3200 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../%E7%B7%9A%E6%AE%B5%E6%A8%B9/">
+      
+      
+        <link rel="next" href="../%E7%88%86%E6%90%9C/">
+      
+      
+      <link rel="icon" href="../logo/peilogo.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.32">
+    
+    
+      
+        <title>遞迴 - PEI 演算法筆記</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.3cba04c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+    
+      
+    
+
+    <script type="text/javascript">
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            },
+            options: {
+                processEscapes: true  // 允许转义美元符号，例如 \$ 显示为普通的 $
+            }
+        };
+    </script>
+    
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    
+    <div class="video-background">
+        <video id="background-video" autoplay loop muted playsinline>
+            <source src="../video/background.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var tocContainer = document.querySelector('.custom-toc-container');
+        var contentInner = document.querySelector('.md-content__inner');
+
+        if (contentInner && tocContainer) {
+            // 初始定位 TOC
+            updateTocPosition();
+
+            // 添加点击事件以展开/收缩 TOC
+            tocContainer.addEventListener('click', function() {
+                tocContainer.classList.toggle('expanded');
+            });
+        }
+
+        function updateTocPosition() {
+            var contentInnerRect = contentInner.getBoundingClientRect();
+            tocContainer.style.top = contentInnerRect.top + 'px';
+            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
+        }
+
+        // 处理图像大小调整的逻辑
+        document.querySelectorAll('img').forEach(function(img) {
+            const match = img.src.match(/=(\d+)%x$/);
+            if (match) {
+                const widthPercentage = match[1];
+                img.style.width = widthPercentage + '%';
+                img.style.height = 'auto';
+                img.src = img.src.replace(/=(\d+)%x$/, ''); // 移除 URL 中的自定义语法
+            }
+        });
+      });
+    </script>
+
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/custom.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="black" data-md-color-accent="deep-orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="PEI 演算法筆記" class="md-header__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
+      
+  <img src="../logo/peilogo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PEI 演算法筆記
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              遞迴
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="PEI 演算法筆記" class="md-nav__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
+      
+  <img src="../logo/peilogo.png" alt="logo">
+
+    </a>
+    PEI 演算法筆記
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    首頁
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%BE%85%E8%BE%A6%E4%BA%8B%E9%A0%85/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    待辦事項
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    學習資源
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../APCS/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    APCS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    考前必看
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%9C%89%E4%BA%8B%E6%B2%92%E4%BA%8B%E6%89%93%E4%B8%80%E6%AC%A1/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    有事沒事打一次
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    前言
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            前言
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hackmd%E7%89%B9%E6%AE%8A%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    hackmd特殊使用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%84%AA%E8%B3%AA%E7%B6%B2%E7%AB%99/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    優質網站
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%87%9F%E9%9A%8A/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    營隊
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E4%BD%BF%E7%94%A8vscode%E6%92%B0%E5%AF%ABc%2B%2B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    使用vscode撰寫c++
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%89%93%E5%AD%97%E9%9F%B3%E6%95%88/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    打字音效
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E8%B3%87%E6%96%99%E4%BE%86%E6%BA%90/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    資料來源
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    概念、語法、技巧
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            概念、語法、技巧
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%B6%93%E5%85%B8%E5%A0%B1%E9%8C%AF/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    經典報錯
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%81%B7%E6%87%B6%E6%96%B9%E6%B3%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    偷懶方法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%8C%87%E6%A8%99/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    指標(\*、\&)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getline%E6%90%AD%E9%85%8Dstringstream/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    getline搭配stringstream
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scanf%20%26%20printf/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    scanf & printf
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%AE%9A%E7%BE%A9%23define/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    定義#define
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E4%BD%8D%E5%85%83%E9%81%8B%E7%AE%97/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    位元運算
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E4%BD%BF%E7%94%A8%E4%BD%8D%E5%85%83%E7%AA%AE%E8%88%89/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    使用位元窮舉
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bitset%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    bitset使用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%87%B6%E4%BA%BA%E8%BC%B8%E5%85%A5%E6%B3%95%EF%BC%8C%E6%AF%94%E8%B3%BD%E6%99%82%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    懶人輸入法，比賽時用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E8%A4%87%E9%9B%9C%E5%BA%A6/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    複雜度
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%8E%92%E5%BA%8Fsort/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    排序sort
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%AE%9A%E7%BE%A9%E6%AF%94%E8%BC%83%E8%A6%8F%E5%89%87/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    定義比較規則
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%8E%92%E5%88%97%E7%94%9F%E6%88%90permutation%E7%AA%AE%E8%88%89/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    排列生成permutation窮舉
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../switch%E4%B9%8B%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    switch之使用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../do%20while%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    do while使用
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%88%A4%E6%96%B7%E6%98%AF%E5%90%A6%E7%82%BA%E6%95%B8%E5%AD%97%E3%80%81%E5%AD%97%E6%AF%8D/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    判斷是否為數字、字母
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%A4%A7%E5%B0%8F%E5%AF%AB%E8%BD%89%E6%8F%9B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    大小寫轉換
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%B0%8F%E6%95%B8%E9%BB%9E%E5%BE%8C%E5%B9%BE%E4%BD%8D/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    小數點後幾位
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E8%BC%B8%E5%87%BA%E7%B5%90%E5%B0%BE%E7%A9%BA%E7%99%BD/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    輸出結尾空白
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E3%80%81%E5%BE%8C%E5%BA%8F/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    前序、中序、後序
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    數論
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            數論
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../log/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    log
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%CE%A3%20sigma%20%28%E8%A5%BF%E6%A0%BC%E7%91%AA%29/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Σ sigma (西格瑪)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%A8%A1%E9%81%8B%E7%AE%97/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    %模運算
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%85%83%E7%B4%A0/%E8%B2%BB%E9%A6%AC%E5%B0%8F%E5%AE%9A%E7%90%86/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    元素/費馬小定理
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%9C%88%E7%B5%90%E6%A7%8B%26%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    圈結構&約瑟夫問題
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E4%B8%83%E6%A9%8B%E5%95%8F%E9%A1%8C%26%E4%B8%80%E7%AD%86%E7%95%AB%E5%95%8F%E9%A1%8C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    七橋問題&一筆畫問題
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E8%B3%AA%E6%95%B8%E3%80%81%E6%89%BE%E8%B3%AA%E5%9B%A0%E6%95%B8%28%E5%9F%83%E5%BC%8F%E7%AF%A9%29/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    質數、找質因數(埃式篩)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%9B%A0%E6%95%B8%E5%80%8D%E6%95%B8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    因數倍數
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%AD%90%E5%B9%BE%E9%87%8C%E5%BE%97%E5%BC%95%E7%90%86/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    歐幾里得引理
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%AD%90%E5%B9%BE%E9%87%8C%E5%BE%97%E6%BC%94%E7%AE%97%E6%B3%95%EF%BC%9A%E8%BC%BE%E8%BD%89%E7%9B%B8%E9%99%A4%E6%B3%95%EF%BC%9A%E6%9C%80%E5%A4%A7%E5%85%AC%E5%9B%A0%E6%95%B8gcd/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    歐幾里得演算法：輾轉相除法：最大公因數gcd
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%93%B4%E5%B1%95%E6%AD%90%E5%B9%BE%E9%87%8C%E5%BE%97%E6%BC%94%E7%AE%97%E6%B3%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    擴展歐幾里得演算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%AD%90%E6%8B%89%E5%87%BD%E6%95%B8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    歐拉函數
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%9F%A9%E9%99%A3%E9%81%8B%E7%AE%97/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    矩陣運算
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    資料結構
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            資料結構
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../STL/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    STL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%96%87%E5%AD%97%E9%99%A3%E5%88%97/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    文字陣列
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E9%8F%88%E7%B5%90%E7%B5%90%E6%A7%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    鏈結結構
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../map/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    map
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%84%AA%E5%85%88%E6%9F%B1%E5%88%97%28priority_queue%29/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    優先柱列(priority_queue)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%B7%9A%E6%AE%B5%E6%A8%B9/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    線段樹
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    演算法
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            演算法
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    遞迴
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    遞迴
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#p-1-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      例題 P-1-1. 合成函數(1)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#q-1-2-2-apcs201902" class="md-nav__link">
+    <span class="md-ellipsis">
+      習題 Q-1-2. 合成函數(2) (APCS201902)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#p-1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      例題 P-1-3. 棍子中點切割
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#q-1-4-apcs201802" class="md-nav__link">
+    <span class="md-ellipsis">
+      習題Q-1-4. 支點切割 (APCS201802) (@@)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#q-1-5-apcs201810" class="md-nav__link">
+    <span class="md-ellipsis">
+      習題 Q-1-5. 二維黑白影像編碼 (APCS201810)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%88%86%E6%90%9C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    爆搜
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%89%8D%E7%B6%B4%E5%92%8C%26%E5%B7%AE%E5%88%86/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    前綴和&差分
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%90%9C%E5%B0%8B%E3%80%81%E4%BA%8C%E5%88%86%E6%90%9C%E5%B0%8B%E3%80%81%E8%B7%B3%E8%BA%8D%E4%BA%8C%E5%88%86%E6%90%9C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    搜尋、二分搜尋、跳躍二分搜
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%93%88%E5%B8%8C%E8%A1%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    哈希表
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E9%9B%A2%E6%95%A3%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    離散化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%BF%AB%E9%80%9F%E5%86%AA/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    快速冪
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E6%BB%91%E5%8B%95%E8%A6%96%E7%AA%97%28Sliding%20window%29%28%E6%8A%80%E5%B7%A7%29/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    滑動視窗(Sliding window)(技巧)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../掃瞄線演算法.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    掃瞄線演算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/rJPQc1-w0#%E4%B8%89%E3%80%81%E6%8A%98%E5%8D%8A%E6%9E%9A%E8%88%89" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    折半枚舉
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/BJaVUR4WA" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    貪心演算法(Greedy)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/BkU9804bR" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    動態規劃(dp)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/S1p2IAV-A" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    圖論
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/HJPzMV7NR" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    樹論
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    APCS歷屆
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            APCS歷屆
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.google.com/spreadsheets/d/15ANYkk1BhHBNcZINYVzdzh2dG11dVd4kMIbcF5l6_h8/edit?usp=sharing" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    統整
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.google.com/spreadsheets/d/1B1qI4OE_O4UAc3L77vzmrFFC27ZiMnlh96KpgyUQAgs/edit#gid=0" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    編年/題庫(by YUI HUANG)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/BkydrymzC" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    實作一
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/ryXipJZm0" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    實作二
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/SkGJC1-mC" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    實作三
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/H1DZkgbmC" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    實作四
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    刷題
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_13">
+            <span class="md-nav__icon md-icon"></span>
+            刷題
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/HJEeEnZVR" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    CSEC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/rJSZjdwFR" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    北市學科能力競賽
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/Hy_wpZ-KC" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    常用英文
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://hackmd.io/@peicpp/SJlXoY1tA" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    加深加廣
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E7%A8%8B%E5%BC%8F%E7%A2%BC%E7%AF%84%E4%BE%8B/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    程式碼範例
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#p-1-1-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      例題 P-1-1. 合成函數(1)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#q-1-2-2-apcs201902" class="md-nav__link">
+    <span class="md-ellipsis">
+      習題 Q-1-2. 合成函數(2) (APCS201902)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#p-1-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      例題 P-1-3. 棍子中點切割
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#q-1-4-apcs201802" class="md-nav__link">
+    <span class="md-ellipsis">
+      習題Q-1-4. 支點切割 (APCS201802) (@@)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#q-1-5-apcs201810" class="md-nav__link">
+    <span class="md-ellipsis">
+      習題 Q-1-5. 二維黑白影像編碼 (APCS201810)
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+<div class="md-content__inner">
+    
+                  
+
+
+<h1 id="_1">遞迴<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>函數呼叫函數</p>
+<h2 id="p-1-1-1"><a href="https://judge.tcirc.tw/ShowProblem?problemid=d001">例題 P-1-1. 合成函數(1)</a><a class="headerlink" href="#p-1-1-1" title="Permanent link">&para;</a></h2>
+<p>令 f(x)=2x-1, g(x,y)=x+2y-3。本題要計算一個合成函數的值，例如 f(g(f(1),3))=f(g(1,3))=f(4)=7。 </p>
+<p>Time limit: 1 秒 </p>
+<p>輸入格式：輸入一行，長度不超過 1000，它是一個 f 與 g 的合成函數，但所有的括 弧與逗號都換成空白。輸入的整數絕對值皆不超過 1000。 </p>
+<p>輸出：輸出函數值。最後答案與運算過程不會超過正負 10 億的區間。 </p>
+<p>範例輸入： f g f 1 3 </p>
+<p>範例輸出： 7</p>
+<blockquote>
+<p>利用遞迴式處理
+1. 輸入
+2. 取後面值</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="cp">#define N 10000</span>
+<span class="n">istream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ss</span><span class="o">=</span><span class="n">cin</span><span class="p">;</span>
+<span class="c1">//stringstream ss(&quot;f g f 1 3&quot;);</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">a</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;f&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">()</span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;g&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">()</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">()</span><span class="mi">-3</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">atoi</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">a</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<details><summary>程式碼</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="cp">#define N 10000</span>
+<span class="n">istream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ss</span><span class="o">=</span><span class="n">cin</span><span class="p">;</span>
+<span class="c1">//stringstream ss(&quot;f g f 1 3&quot;);</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">a</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;f&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">()</span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;g&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">()</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">()</span><span class="mi">-3</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">atoi</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">a</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<h2 id="q-1-2-2-apcs201902"><a href="https://judge.tcirc.tw/ShowProblem?problemid=d002">習題 Q-1-2. 合成函數(2) (APCS201902)</a><a class="headerlink" href="#q-1-2-2-apcs201902" title="Permanent link">&para;</a></h2>
+<p>令 f(x)=2x–3；g(x,y)=2x+y–7；h(x,y,z)=3x–2y+z。本題要計算一個合成函 數的值，例如 h(f(5),g(3,4),3)=h(7,3,3)=18。 </p>
+<p>Time limit: 1 秒 </p>
+<p>輸入格式：輸入一行，長度不超過 1000，它是一個 f, g, 與 h 的合成函數，但所有的括弧與逗號都換成空白。輸入的整數絕對值皆不超過 1000。</p>
+<p>輸出：輸出函數值。最後答案與運算過程不會超過正負 10 億的區間。 </p>
+<p>範例輸入： h f 5 g 3 4 3 </p>
+<p>範例輸出： 18</p>
+<details><summary>程式碼</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+<span class="cp">#define N 1001</span>
+
+<span class="n">istream</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ss</span><span class="w"> </span><span class="o">=</span><span class="n">cin</span><span class="p">;</span>
+<span class="c1">//stringstream ss(&quot;h f 5 g 3 4 3&quot;);</span>
+
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">a</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;f&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">()</span><span class="mi">-3</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;g&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">()</span><span class="o">+</span><span class="n">a</span><span class="p">()</span><span class="mi">-7</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;h&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="n">a</span><span class="p">()</span><span class="mi">-2</span><span class="o">*</span><span class="n">a</span><span class="p">()</span><span class="o">+</span><span class="n">a</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">atoi</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">a</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<h2 id="p-1-3"><a href="https://judge.tcirc.tw/ShowProblem?problemid=d003">例題 P-1-3. 棍子中點切割</a><a class="headerlink" href="#p-1-3" title="Permanent link">&para;</a></h2>
+<p>有一台切割棍子的機器，每次將一段棍子會送入此台機器時，機器會偵測棍子上標示 的可切割點，然後計算出最接近中點的切割點，並於此切割點將棍子切割成兩段，切 割後的每一段棍子都會被繼續送入機器進行切割，直到每一段棍子都沒有切割點為 止。請注意，如果最接近中點的切割點有二，則會選擇座標較小的切割點。每一段棍 子的切割成本是該段棍子的長度，輸入一根長度 L 的棍子上面 N 個切割點位置的座 標，請計算出切割總成本。 </p>
+<p>Time limit: 1 秒</p>
+<p>輸入格式：第一行有兩個正整數 N 與 L。第二行有 N 個正整數，依序代表由小到大的 切割點座標 p[1]~p[N]，數字間以空白隔開，座標的標示的方式是以棍子左端為 0， 而右端為 L。N  5e4，L&lt; 1e9。 </p>
+<p>輸出：切割總成本點。 </p>
+<p>範例輸入： 
+4 10
+1 2 4 6 </p>
+<p>範例輸出： 22 </p>
+<p>範例說明：第一次會切割在座標 4 的位置，切成兩段 [0, 4], [4, 10]，成本 10； [0, 4] 切成 [0, 2] 與 [2, 4]，成本 4； [4, 10] 切成 [4, 6] 與 [6, 10]，成本 6； [0, 2] 切成 [0, 1] 與 [1, 2]；成本 2； 總成本 10+4+6+2 = 22</p>
+<blockquote>
+<p>可以建一個陣列</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>v</th>
+<th style="text-align: center;">v[0]</th>
+<th style="text-align: center;">v[1]</th>
+<th style="text-align: center;">v[2]</th>
+<th style="text-align: center;">v[3]</th>
+<th style="text-align: center;">v[4]</th>
+<th>v[5]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>value</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">6</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<details><summary>程式碼：線性搜尋</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define N 50001</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+
+<span class="n">istream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ss</span><span class="o">=</span><span class="n">cin</span><span class="p">;</span>
+<span class="c1">//stringstream ss(&quot;4 10 \</span>
+<span class="c1">1 2 4 6&quot;);</span>
+
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">b</span><span class="p">){</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">len</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">m</span><span class="o">=</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">+</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">w</span><span class="o">=</span><span class="n">a</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">w</span><span class="p">]</span><span class="o">&lt;</span><span class="n">m</span><span class="p">){</span>
+<span class="w">        </span><span class="n">w</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">w</span><span class="mi">-1</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">w</span><span class="p">]){</span>
+<span class="w">        </span><span class="n">w</span><span class="o">--</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">len</span><span class="o">+</span><span class="n">cut</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">)</span><span class="o">+</span><span class="n">cut</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">v</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">cut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<details><summary>程式碼：跳躍二分搜尋</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define N 50001</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+
+<span class="n">istream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ss</span><span class="o">=</span><span class="n">cin</span><span class="p">;</span>
+<span class="c1">//stringstream ss(&quot;4 10 \</span>
+<span class="c1">1 2 4 6&quot;);</span>
+
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">b</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">m</span><span class="o">=</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">+</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">w</span><span class="o">=</span><span class="n">a</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//jump-----------------------------------------------</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">jump</span><span class="o">=</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span><span class="n">jump</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">jump</span><span class="o">&gt;&gt;=</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="o">+</span><span class="n">jump</span><span class="o">&lt;</span><span class="n">b</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">w</span><span class="o">+</span><span class="n">jump</span><span class="p">]</span><span class="o">&lt;</span><span class="n">m</span><span class="p">){</span>
+<span class="w">            </span><span class="n">w</span><span class="o">+=</span><span class="n">jump</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">w</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">w</span><span class="o">+</span><span class="mi">1</span><span class="p">]){</span>
+<span class="w">        </span><span class="n">w</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">//jump-----------------------------------------------</span>
+
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="n">cut</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">w</span><span class="p">)</span><span class="o">+</span><span class="n">cut</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">v</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">cut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<details><summary>程式碼：lower_bound</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define N 50001</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+
+<span class="n">istream</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ss</span><span class="o">=</span><span class="n">cin</span><span class="p">;</span>
+<span class="c1">//stringstream ss(&quot;4 10 \</span>
+<span class="c1">1 2 4 6&quot;);</span>
+
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+
+
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">b</span><span class="p">){</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">len</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">+</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">//lower_bound---------------------------------------</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">m</span><span class="o">=</span><span class="n">lower_bound</span><span class="p">(</span><span class="n">v</span><span class="o">+</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="o">+</span><span class="n">b</span><span class="p">,</span><span class="n">k</span><span class="p">)</span><span class="o">-</span><span class="n">v</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">m</span><span class="mi">-1</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">v</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">m</span><span class="p">]){</span>
+<span class="w">        </span><span class="n">m</span><span class="o">--</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">//lower_bound---------------------------------------</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">len</span><span class="o">+</span><span class="n">cut</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">m</span><span class="p">)</span><span class="o">+</span><span class="n">cut</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">v</span><span class="p">[</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">cut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<h2 id="q-1-4-apcs201802"><a href="https://judge.tcirc.tw/ShowProblem?problemid=d004">習題Q-1-4. 支點切割 (APCS201802) (@@)</a><a class="headerlink" href="#q-1-4-apcs201802" title="Permanent link">&para;</a></h2>
+<p>輸入一個大小為 N 的一維整數陣列 p[]，要找其中一個所謂的最佳切點將陣列切成 左右兩塊，然後針對左右兩個子陣列繼續切割，切割的終止條件有兩個：子陣列範圍 小於 3 或切到給定的層級 K 就不再切割。而所謂最佳切點的要求是讓左右各點數字 與到切點距離的乘積總和差異盡可能的小，但不可以是兩端點，也就是說，若區段的 範圍是[s,t]，則要找出切點 m屬於[s+1,t-1]，使得<img alt="image" src="https://hackmd.io/_uploads/r1RdJrrbA.png" />越小越好，如果有兩個最佳切點，則選擇編號較小的。所謂切割層級的限制，第一次切以第 一層計算。 </p>
+<p>Time limit: 1 秒 </p>
+<p>輸入格式：第一行有兩個正整數 N 與 K。第二行有 N 個正整數，代表陣列內容 p[1] ~ p[N]，數字間以空白隔開，總和不超過 109。N &lt;= 50000，切割層級限制 K&lt;30。 </p>
+<p>輸出：所有切點的 p[ ]值總和。</p>
+<p>範例一輸入： 
+7 3 
+2 4 1 3 7 6 9 </p>
+<p>範例一輸出： 
+11</p>
+<p>範例二輸入： 
+5 1 
+1 2 3 4 100</p>
+<p>範例二輸出： 
+4</p>
+<p>範例一說明：第一層切在 7，切成第二層的[2,4,1,3]與[6,9]。左邊[2,4,1,3] 切在 4 與 1 都是最佳，選擇 4 來切，切成[2]與[1,3]，右邊[6,9]不到 3 個就不切 了。第三層都不到 3 個，所以終止。總計切兩個位置 7+4=11。 範例二說明：</p>
+<p>第一層切在 4(注意切點不可在端點)，切出[1,2,3]與[100]，因為 K=1，所以不再切。 提示：與 P_1_3 類似，只是找切割點的定義不同，終端條件多了一個切割層級。</p>
+<details><summary>暴力解 TLE</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+<span class="cp">#define N 50000</span>
+<span class="n">istream</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ss</span><span class="o">=</span><span class="n">cin</span><span class="p">;</span>
+<span class="c1">//stringstream ss(&quot;7 3 \</span>
+<span class="c1">2 4 1 3 7 6 9&quot;);</span>
+
+
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">;</span>
+
+<span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">z</span><span class="p">){</span>
+
+<span class="w">    </span><span class="c1">//cout&lt;&lt;v[x]&lt;&lt;&quot; &quot;&lt;&lt;v[y]&lt;&lt;&quot; &quot;&lt;&lt;z&lt;&lt;nn;</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">len</span><span class="o">=</span><span class="n">y</span><span class="o">-</span><span class="n">x</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">x</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">len</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">k</span><span class="o">==</span><span class="n">z</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">sum</span><span class="o">=</span><span class="mi">100000000000</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">sub_value</span><span class="o">=</span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">m</span><span class="o">=</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span><span class="n">m</span><span class="o">&lt;=</span><span class="n">y</span><span class="mi">-1</span><span class="p">;</span><span class="n">m</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="c1">//cout&lt;&lt;&quot;m:&quot;&lt;&lt;m&lt;&lt;nn;</span>
+<span class="w">        </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">sub_sum</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="n">x</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">y</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">            </span><span class="n">sub_sum</span><span class="o">+=</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">m</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">sub_sum</span><span class="o">&lt;</span><span class="n">sum</span><span class="p">){</span>
+<span class="w">            </span><span class="c1">//cout&lt;&lt;&quot;m:&quot;&lt;&lt;m&lt;&lt;&quot; sub_sum:&quot;&lt;&lt;sub_sum&lt;&lt;nn;</span>
+<span class="w">            </span><span class="n">sum</span><span class="o">=</span><span class="n">sub_sum</span><span class="p">;</span>
+<span class="w">            </span><span class="n">sub_value</span><span class="o">=</span><span class="n">m</span><span class="p">;</span>
+<span class="w">            </span><span class="c1">//cout&lt;&lt;&quot;M:&quot;&lt;&lt;m&lt;&lt;nn;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">//cout&lt;&lt;nn&lt;&lt;sub_value&lt;&lt;nn;</span>
+
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">sub_value</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">sub_value</span><span class="mi">-1</span><span class="p">,</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cut</span><span class="p">(</span><span class="n">sub_value</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+
+
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">k</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">cut</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="mi">-1</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<h2 id="q-1-5-apcs201810"><a href="https://judge.tcirc.tw/ShowProblem?problemid=d005">習題 Q-1-5. 二維黑白影像編碼 (APCS201810)</a><a class="headerlink" href="#q-1-5-apcs201810" title="Permanent link">&para;</a></h2>
+<p><a href="https://zerojudge.tw/ShowProblem?problemid=f637">ZJ網址(題目較詳細)</a></p>
+<p>假設 n 是 2 的冪次，也就是存在某個非負整數 k 使得 n = 2k 。將一個 n*n 的黑白 影像以下列遞迴方式編碼： 如果每一格像素都是白色，我們用 0 來表示； 如果每一格像素都是黑色，我們用 1 來表示； 否則，並非每一格像素都同色，先將影像均等劃分為四個邊長為 n/2 的小正方形 後，然後表示如下：先寫下 2，之後依續接上左上、右上、左下、右下四塊的編碼。 輸入編碼字串 S 以及影像尺寸 n，請計算原始影像中有多少個像素是 1。 </p>
+<p>Time limit: 1 秒</p>
+<p>輸入格式：第一行是影像的編碼 S，字串長度小於 1,100,000。第二行為正整數 n， 1 &lt;= n &lt;= 1024，中 n 必為 2 的冪次。 </p>
+<p>輸出格式：輸出有多少個像素是 1。 </p>
+<p>範例輸入： 
+2020020100010 
+8 </p>
+<p>範例輸出： 
+17</p>
+<blockquote>
+<p>這題想法和<a href="#例題-P-1-1-合成函數1">例題 P-1-1. 合成函數(1)</a>差不多，直接一個字一個字處裡，找到2就往後找4個數字</p>
+</blockquote>
+<details><summary>程式碼</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define N 11000000</span>
+
+<span class="n">istream</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ss</span><span class="o">=</span><span class="n">cin</span><span class="p">;</span>
+<span class="c1">//stringstream ss(&quot;2020020100010 \</span>
+<span class="c1">//8&quot;);</span>
+<span class="c1">//stringstream ss(&quot;2200101020110 \</span>
+<span class="c1">//4&quot;);</span>
+
+<span class="kt">char</span><span class="w"> </span><span class="n">s</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">ans</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">){</span>
+<span class="w">    </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;2&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="p">(</span><span class="n">len</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">(</span><span class="n">len</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">(</span><span class="n">len</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">(</span><span class="n">len</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="sc">&#39;1&#39;</span><span class="p">){</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">len</span><span class="o">*</span><span class="n">len</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ss</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">a</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+<h1 id="_2">以遞迴窮舉暴搜<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
+<h2 id="p-2-11"><a href="https://judge.tcirc.tw/ShowProblem?problemid=d020" title="[]">例題 P-2-11. 最接近的區間和 (*)</a><a class="headerlink" href="#p-2-11" title="Permanent link">&para;</a></h2>
+<p>假設陣列 A[1..n]中存放著某些整數，另外給了一個整數 K，請計算哪一個連續區 段的和最接近 K 而不超過 K。 (這個問題有更有效率的解，在此我們先說明窮舉的解法。)</p>
+<p>範例輸入 1
+5 10
+5 -5 8 -3 4</p>
+<p>範例輸出 1
+9</p>
+<p>範例輸入 2
+1 1
+-1</p>
+<p>範例輸出 2
+0</p>
+<details><summary>暴力解 「NA (score:12%)」</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+<span class="cp">#define N 100001</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">ans</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">            </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;=</span><span class="n">j</span><span class="p">;</span><span class="n">k</span><span class="o">++</span><span class="p">){</span>
+<span class="w">                </span><span class="n">sum</span><span class="o">+=</span><span class="n">v</span><span class="p">[</span><span class="n">k</span><span class="p">];</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">sum</span><span class="o">&gt;</span><span class="n">ans</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sum</span><span class="o">&lt;=</span><span class="n">m</span><span class="p">){</span>
+<span class="w">                </span><span class="n">ans</span><span class="o">=</span><span class="n">sum</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<details><summary>暴力解 + 前綴 「NA (score:37%)」</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+<span class="cp">#define N 100001</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">ans</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">//前綴和-------------------------------</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">]</span><span class="o">+</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">//前綴和-------------------------------</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="mi">-1</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">sum</span><span class="o">&gt;</span><span class="n">ans</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sum</span><span class="o">&lt;=</span><span class="n">m</span><span class="p">){</span>
+<span class="w">                </span><span class="n">ans</span><span class="o">=</span><span class="n">sum</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<details><summary>前綴和、二分搜 AC</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+<span class="cp">#define N 100011</span>
+<span class="cp">#define int  long long</span>
+<span class="c1">//---------------------------</span>
+
+
+
+<span class="c1">//---------------------------main</span>
+<span class="cp">#undef int</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="cp">#define int long long</span>
+<span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="c1">//---------------------------main</span>
+
+<span class="w">    </span><span class="c1">//istringstream cin(&quot;5 10 \</span>
+<span class="c1">5 -5 8 -3 4&quot;);</span>
+
+<span class="w">    </span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">s</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">ans</span><span class="o">=-</span><span class="n">LONG_LONG_MIN</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">k</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">p</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">x</span><span class="p">;</span>
+<span class="w">        </span><span class="n">p</span><span class="o">+=</span><span class="n">x</span><span class="p">;</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="o">=</span><span class="n">s</span><span class="p">.</span><span class="n">lower_bound</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="n">k</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">it</span><span class="o">!=</span><span class="n">s</span><span class="p">.</span><span class="n">end</span><span class="p">()){</span>
+<span class="w">            </span><span class="n">ans</span><span class="o">=</span><span class="n">max</span><span class="p">(</span><span class="n">ans</span><span class="p">,</span><span class="n">p</span><span class="o">-*</span><span class="n">it</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">s</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<h2 id="p-1-7-"><a href="https://judge.tcirc.tw/ShowProblem?problemid=d006" title="[Recursion]">例題 P-1-7. 子集合乘積</a> -<a class="headerlink" href="#p-1-7-" title="Permanent link">&para;</a></h2>
+<p>輸入 n 個正整數，請計算其中有多少組合的相乘積除以 P 的餘數為 1，每個數字可以 選取或不選取但不可重複選，輸入的數字可能重複。P=10009，0</p>
+<p>範例輸入 #1
+3
+1 1 2</p>
+<p>範例輸出 #1
+3</p>
+<details><summary>位元窮舉 「NA (score:80%)(TLE)」</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+<span class="cp">#define N 100001</span>
+<span class="cp">#define P 10009</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">ans</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">n</span><span class="p">);</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">pow</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">j</span><span class="p">){</span>
+<span class="w">                </span><span class="n">pow</span><span class="o">*=</span><span class="n">v</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<span class="w">                </span><span class="n">pow</span><span class="o">%=</span><span class="n">P</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">pow</span><span class="o">==</span><span class="mi">1</span><span class="p">){</span>
+<span class="w">            </span><span class="n">ans</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<blockquote>
+<p>寫遞迴的話就是直接想像樹狀圖，每一個數字有兩個選擇：選、不選
+所以是：
+</p>
+<p>前一個數字
+|
+|------------選下一個數字(加入計算)
+|
+|
+|------------不選下一個數字(不加入計算)</p>
+</blockquote>
+<details><summary>遞迴 「AC (1/10  s, 304KB)」</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+<span class="cp">#define N 100001</span>
+<span class="cp">#define P 10009</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">],</span><span class="n">ans</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">p</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="n">n</span><span class="p">){</span><span class="c1">//跑完全部</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">==</span><span class="mi">1</span><span class="p">){</span>
+<span class="w">            </span><span class="n">ans</span><span class="o">++</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">a</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,(</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">p</span><span class="p">)</span><span class="o">%</span><span class="n">P</span><span class="p">);</span>
+<span class="w">    </span><span class="n">a</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">p</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">a</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="mi">-1</span><span class="p">;</span><span class="c1">//減去空字串</span>
+<span class="p">}</span>
+</code></pre></div>
+
+</details>
+
+<h2 id="q-1-8-apcs201810-subtask"><a href="https://judge.tcirc.tw/ShowProblem?problemid=d007">習題 Q-1-8. 子集合的和 (APCS201810, subtask)</a><a class="headerlink" href="#q-1-8-apcs201810-subtask" title="Permanent link">&para;</a></h2>
+<p>輸入 n 個正整數，請計算各種組合中，其和最接近 P 但不超過 P 的和是多少。每個元 素可以選取或不選取但不可重複選，輸入的數字可能重複。P&lt;=1000000009，0 &lt; n &lt; 26。 </p>
+<p>Time limit: 1 秒 </p>
+<p>輸入格式：第一行是 n 與 P，第二行是 n 個可挑選的正整數，大小不會超過 P，同行 數字以空白間隔。 </p>
+<p>輸出格式：最接近 P 但不超過 P 的和。 </p>
+<p>範例輸入： 
+5 17 
+5 5 8 3 10</p>
+<p>範例輸出： 
+16</p>
+<details><summary>dp(MLE (64MB))</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="cp">#define nn &quot;\n&quot;</span>
+<span class="c1">//#define int long long</span>
+
+
+<span class="c1">//#undef int</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="c1">//#define int long long</span>
+
+
+<span class="w">    </span><span class="c1">//istringstream cin(&quot;5 17 \</span>
+<span class="c1">5 5 8 3 10&quot;);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">ans</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">k</span><span class="p">;</span>
+
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">30</span><span class="p">];</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">//int dp[100000100]={0};//總大小為i的方法數</span>
+
+<span class="w">    </span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">mp</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span><span class="c1">//商品數v[i]為商品價錢</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="n">k</span><span class="p">;</span><span class="n">j</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">--</span><span class="p">){</span><span class="c1">//17~0</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">){</span>
+<span class="w">                </span><span class="n">mp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">max</span><span class="p">(</span><span class="n">mp</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">mp</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">+</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">mp</span><span class="p">[</span><span class="n">k</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<details><summary>bit解 O(2^n*m) WA(60%)</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="cp">#define N 100</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">ans</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+
+
+
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">n</span><span class="p">);</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">j</span><span class="p">)){</span>
+<span class="w">                </span><span class="n">sum</span><span class="o">+=</span><span class="n">v</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">sum</span><span class="o">&gt;</span><span class="n">ans</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sum</span><span class="o">&lt;=</span><span class="n">m</span><span class="p">){</span>
+<span class="w">                </span><span class="n">ans</span><span class="o">=</span><span class="n">sum</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<details><summary>遞迴解 O(2^n) AC</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="cp">#define N 100</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">ans</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="p">){</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">i</span><span class="o">&gt;=</span><span class="n">n</span><span class="p">){</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">sum</span><span class="o">&gt;</span><span class="n">ans</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">sum</span><span class="o">&lt;</span><span class="n">m</span><span class="p">){</span>
+<span class="w">            </span><span class="n">ans</span><span class="o">=</span><span class="n">sum</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">a</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">sum</span><span class="o">+</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">    </span><span class="n">a</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">sum</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+
+<span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">a</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<h2 id="n">n皇后問題<a class="headerlink" href="#n" title="Permanent link">&para;</a></h2>
+<details><summary>遞迴</summary>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+
+<span class="kt">int</span><span class="w"> </span><span class="n">col</span><span class="p">,</span><span class="w"> </span><span class="n">uldr</span><span class="p">,</span><span class="w"> </span><span class="n">dlur</span><span class="p">;</span><span class="w"> </span><span class="c1">// 將 int 用二進位的角度去維護直線、斜線上有沒有皇后</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">queen</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">c</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="p">((</span><span class="n">col</span><span class="o">&gt;&gt;</span><span class="n">c</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">uldr</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="n">c</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">dlur</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">c</span><span class="o">+</span><span class="n">n</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">        </span><span class="n">col</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="n">uldr</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="n">c</span><span class="p">)),</span><span class="w"> </span><span class="n">dlur</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">c</span><span class="o">+</span><span class="n">n</span><span class="p">));</span>
+<span class="w">        </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">queen</span><span class="p">(</span><span class="n">r</span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">);</span>
+<span class="w">        </span><span class="n">col</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="p">),</span><span class="w"> </span><span class="n">uldr</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">r</span><span class="o">+</span><span class="n">c</span><span class="p">)),</span><span class="w"> </span><span class="n">dlur</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">c</span><span class="o">+</span><span class="n">n</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sum</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+
+
+<span class="w">    </span><span class="n">stringstream</span><span class="w"> </span><span class="n">cin</span><span class="p">(</span><span class="s">&quot;5&quot;</span><span class="p">);</span>
+
+
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">    </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uldr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">queen</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+    <!-- 新增的 TOC 区块，引用 toc 扩展生成的永久链接 -->
+    <div class="custom-toc-container">
+        <div class="custom-toc-title">目錄</div> <!-- 添加「目錄」标题 -->
+        <nav class="custom-toc">
+            <ul>
+                
+                <li>
+                    <a href="#_1">遞迴</a>
+                    
+                    <ul>
+                        
+                        <li><a href="#p-1-1-1">例題 P-1-1. 合成函數(1)</a></li>
+                        
+                        <li><a href="#q-1-2-2-apcs201902">習題 Q-1-2. 合成函數(2) (APCS201902)</a></li>
+                        
+                        <li><a href="#p-1-3">例題 P-1-3. 棍子中點切割</a></li>
+                        
+                        <li><a href="#q-1-4-apcs201802">習題Q-1-4. 支點切割 (APCS201802) (@@)</a></li>
+                        
+                        <li><a href="#q-1-5-apcs201810">習題 Q-1-5. 二維黑白影像編碼 (APCS201810)</a></li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="#_2">以遞迴窮舉暴搜</a>
+                    
+                    <ul>
+                        
+                        <li><a href="#p-2-11">例題 P-2-11. 最接近的區間和 (*)</a></li>
+                        
+                        <li><a href="#p-1-7-">例題 P-1-7. 子集合乘積 -</a></li>
+                        
+                        <li><a href="#q-1-8-apcs201810-subtask">習題 Q-1-8. 子集合的和 (APCS201810, subtask)</a></li>
+                        
+                        <li><a href="#n">n皇后問題</a></li>
+                        
+                    </ul>
+                    
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.471ce7a9.min.js"></script>
+      
+        <script src="../assets/custom.js"></script>
+      
+    
+  </body>
+</html>

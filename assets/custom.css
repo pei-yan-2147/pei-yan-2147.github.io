@@ -1,6 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 
+/* === 滚动条 ============================================== */
+
+/* 设置所有滚动条的样式 */
+::-webkit-scrollbar {
+  width: 6px; /* 滚动条宽度 */
+  height: 6px; /* 水平滚动条高度（如果需要） */
+  background-color: #ffffff !important;
+}
+
+/* 设置滚动条的滑块（thumb）的样式 */
+::-webkit-scrollbar-thumb {
+  background-color: #b7b7b7 !important;
+  border-radius: 10px !important; /* 为滑块添加圆角 */
+}
+
+
+
+/* === 圖片 ============================================== */
+
+img[alt="alt text"] {
+  width: 80%; /* 设置宽度为70% */
+  height: auto; /* 保持高度比例 */
+}
+
+/* === 警告框 ============================================== */
+
+.alert-danger { 
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
 /* === 引用樣式(>) ============================================== */
 
 p {
@@ -32,10 +68,9 @@ details summary::before /* 隐藏通过伪元素添加的图标 */ {
 details summary {
   background-color: #ffffff !important; /* 更改背景颜色 */
   color: #000000 !important; /* 更改文本颜色 */
-  /* border: 1px solid #ffffff !important; 更改边框颜色 */
   border-radius: 5px !important; /* 为折叠部分添加圆角 */
   padding: 10px !important; /* 添加内边距 */
-  /* cursor: pointer !important; 确保显示为可点击的手型光标 */
+  font-size: 20px; /* 設定字體大小 */
 }
 
 /* 当折叠内容被打开时更改背景色 */
@@ -43,20 +78,20 @@ details[open] summary {
   background-color: #ffffff !important; /* 更改展开后的背景颜色 */
   border-color: #ffffff !important; /* 更改展开后的边框颜色 */
   box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1) !important; /* 默认阴影颜色 */
-}
-details {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; /* 添加阴影 */
-  border-radius: 8px; /* 可选：为边框添加圆角 */
-  padding: 0px; /* 可选：增加内边距 */
-  margin: 0px 0; /* 可选：为元素上下方增加外边距 */
-  background-color: #f9f9f9; /* 可选：设置背景颜色 */
+
 }
 
+details[open] {
+  background-color: #ffffff !important; /* 更改展开后的背景颜色 */
+  border-color: #000000 !important; /* 更改展开后的边框颜色 */
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1) !important; /* 默认阴影颜色 */
+  padding: 10px 15px !important; /* 增加内文的内边距 */
+  font-size: 20px; /* 設定字體大小 */
+}
 
-
-
-
-
+details{
+  border-color: #000000 !important; /* 更改展开后的边框颜色 */
+}
 
 /* === 標題連結 ============================================== */
 
@@ -136,6 +171,13 @@ a.headerlink:hover {
   padding-top: 0; /* 設置導航欄頂部的內邊距為0 */
   margin-top: 0; /* 設置導航欄頂部的外邊距為0 */
 }
+
+/* 设置导航栏的链接在悬停时的背景颜色和文字颜色 */
+.md-nav__link:hover {
+  color: #e570ff !important; /* 悬停时的文字颜色 */
+}
+
+
 
 /* === 右側索引欄的設定 ============================================== */
 
@@ -233,7 +275,9 @@ a.headerlink:hover {
   font-weight: bold; /* 設置字體粗細 */
 }
 
-
+p {
+  white-space: pre-wrap; /* 设置硬换行 */
+}
 
 /* 設置內文區域的樣式 */
 .md-content {

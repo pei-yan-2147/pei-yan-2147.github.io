@@ -217,6 +217,14 @@ a.headerlink:hover {
   overflow-x: hidden; /* 禁用水平滾動條，確保文字被隱藏時不會水平滾動 */
 }
 
+/* 這段樣式僅在屏幕寬度小於或等於 768px 時生效 */
+@media (max-width: 768px) {
+  .custom-toc-container.expanded {
+    width: 80%; /* 在小屏幕設備上，讓元素佔用 80% 的屏幕寬度 */
+    max-width: none; /* 取消最大寬度限制 */
+  }
+}
+
 /* TOC 中的列表和連結樣式 */
 .custom-toc-container nav ul {
   list-style-type: none; /* 去除列表項的黑點 */

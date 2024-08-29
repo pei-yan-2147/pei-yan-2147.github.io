@@ -154,7 +154,7 @@ a.headerlink:hover {
 /* 自定義主導航欄標題的樣式 */
 .md-nav__title {
   color: #ffffff; /* 設定文字顏色為白色 */
-  font-size: 30px; /* 設定字體大小 */
+  font-size: 30px !important; /* 設定字體大小 */
   font-weight: bold; /* 設定字體粗細 */
   padding: 10px; /* 設定上下內邊距 */
   text-align: center; /* 文字居中 */
@@ -165,7 +165,7 @@ a.headerlink:hover {
   box-sizing: border-box; /* 確保 padding 不影響寬度 */
 }
 
-@media screen and (min-width: 76.234375em) {
+@media screen and (min-width: 76.234375em) {/* 電腦螢幕時 */
   /* 自定義主導航欄標題的樣式 */
   .md-nav__title {
     background-color: #000000 !important; 
@@ -199,7 +199,16 @@ a.headerlink:hover {
   color: #47ffd7; /* 這裡可以設置你想要的顏色 */
 }
 
-
+.md-nav--primary .md-nav__title .md-nav__icon:after {
+  content: "87" !important; /* 在這裡替換成你想要顯示的文字 */
+  color: #000000; /* 設置文字顏色 */
+  font-size: 300px; /* 設置文字大小，根據需要調整 */
+  /* font-weight: bold; 設置文字粗細，根據需要調整 */
+  /* text-align: center; 設置文字居中對齊 */
+  /* display: block;
+  width: max-content; 根據文字內容自動調整寬度 */
+  transform: translate(200%, 250%) !important; /* 右下角偏移 20%，根據需要調整 */
+}
 
 /* === 右側索引欄的設定 ============================================== */
 

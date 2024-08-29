@@ -229,7 +229,7 @@ a.headerlink:hover {
   z-index: 1;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
   box-sizing: border-box;
 }
 

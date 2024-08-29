@@ -142,7 +142,7 @@ a.headerlink:hover {
 
 /* 主導航背景樣式 */
 .md-nav {
-  background-color: #f8f9fa; /* 主導航背景顏色 */
+  background-color: #ffffff; /* 主導航背景顏色 */
   color: #000000; /* 主導航文字顏色 */
   font-size: 20px; /* 設定字體大小 */
   padding: 0; /* 移除內邊距 */
@@ -164,6 +164,7 @@ a.headerlink:hover {
   width: calc(100% + 20px); /* 讓背景寬度比父容器多 20px */
   margin: 0 -10px; /* 將背景左右擴展10px */
   box-sizing: border-box; /* 確保 padding 不影響寬度 */
+  background-color: #000000 !important;
 }
 
 /* 去除導航欄整體的額外內邊距 */

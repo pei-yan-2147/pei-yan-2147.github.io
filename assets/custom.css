@@ -207,7 +207,7 @@ a.headerlink:hover {
   /* text-align: center; 設置文字居中對齊 */
   /* display: block;
   width: max-content; 根據文字內容自動調整寬度 */
-  transform: translate(200%, 250%) !important; /* 右下角偏移 20%，根據需要調整 */
+  transform: translate(450%, 100%) !important; /* 右下角偏移 20%，根據需要調整 */
 }
 
 /* === 右側索引欄的設定 ============================================== */
@@ -263,7 +263,7 @@ a.headerlink:hover {
   color: #000000;
   text-decoration: none;
   display: block;
-  padding: 0px 0;
+  padding: 5px 0;
 }
 
 .custom-toc a:hover {

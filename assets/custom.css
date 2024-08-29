@@ -156,7 +156,7 @@ a.headerlink:hover {
   color: #ffffff; /* 設定文字顏色為白色 */
   font-size: 30px; /* 設定字體大小 */
   font-weight: bold; /* 設定字體粗細 */
-  background-color: #000000 !important; /* 設定背景顏色為黑色 */
+  /* background-color: #000000 !important; 設定背景顏色為黑色 */
   padding: 10px; /* 設定上下內邊距 */
   text-align: center; /* 文字居中 */
   text-decoration: none; /* 移除下劃線 */
@@ -178,6 +178,9 @@ a.headerlink:hover {
 }
 
 
+.md-nav__item--active > .md-nav__link .md-nav__title {
+  color: #47ffd7; /* 這裡可以設置你想要的顏色 */
+}
 
 /* === 右側索引欄的設定 ============================================== */
 

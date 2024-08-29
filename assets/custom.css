@@ -156,7 +156,6 @@ a.headerlink:hover {
   color: #ffffff; /* 設定文字顏色為白色 */
   font-size: 30px; /* 設定字體大小 */
   font-weight: bold; /* 設定字體粗細 */
-  /* background-color: #000000 !important; 設定背景顏色為黑色 */
   padding: 10px; /* 設定上下內邊距 */
   text-align: center; /* 文字居中 */
   text-decoration: none; /* 移除下劃線 */
@@ -164,7 +163,6 @@ a.headerlink:hover {
   width: calc(100% + 20px); /* 讓背景寬度比父容器多 20px */
   margin: 0 -10px; /* 將背景左右擴展10px */
   box-sizing: border-box; /* 確保 padding 不影響寬度 */
-  background-color: #000000 !important;
 }
 
 /* 去除導航欄整體的額外內邊距 */
@@ -217,13 +215,7 @@ a.headerlink:hover {
   overflow-x: hidden; /* 禁用水平滾動條，確保文字被隱藏時不會水平滾動 */
 }
 
-/* 這段樣式僅在屏幕寬度小於或等於 768px 時生效 */
-@media (max-width: 768px) {
-  .custom-toc-container.expanded {
-    width: 80%; /* 在小屏幕設備上，讓元素佔用 80% 的屏幕寬度 */
-    max-width: none; /* 取消最大寬度限制 */
-  }
-}
+
 
 /* TOC 中的列表和連結樣式 */
 .custom-toc-container nav ul {

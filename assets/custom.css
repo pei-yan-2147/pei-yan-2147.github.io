@@ -190,7 +190,7 @@ a.headerlink:hover {
 .custom-toc-container {
   position: fixed; /* 固定定位，确保 TOC 固定在页面上 */
   top: 10px;
-  right: 10px;
+  right: 0px;
   width: 100px;
   height: 50px;
   background-color: #f9f9f9;
@@ -205,7 +205,7 @@ a.headerlink:hover {
 
 /* 展開後的 TOC 樣式 */
 .custom-toc-container.expanded {
-  left: calc(100% - 40.7%) !important; /* 向左移动以与内容区对齐 */
+  left: calc(100% - 30.7%) !important; /* 向左移动以与内容区对齐 */
   width: 20vw;
   height: 80vh; /* 设置最大高度 */
   overflow-y: auto; /* 启用垂直滚动条 */

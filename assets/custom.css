@@ -192,27 +192,27 @@ a.headerlink:hover {
 /* 初始的 TOC 樣式，顯示為縮小的方塊，固定定位在中間區塊的右上角 */
 .custom-toc-container {
   position: fixed; /* 固定定位，确保 TOC 固定在页面上 */
-  top: 10px;
+  top: 50px !important;
   right: 0px;
   width: 100px;
   height: 50px;
-  background-color: #f9f9f9;
+  background-color: #f9f9f9 !important;
   overflow-y: hidden;
   border-radius: 10px;
   z-index: 1;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
 }
 
 /* 展開後的 TOC 樣式 */
 .custom-toc-container.expanded {
-  left: calc(100% - 30.7%) !important; /* 向左移动以与内容区对齐 */
-  width: 20vw;
-  height: 80vh; /* 设置最大高度 */
-  overflow-y: auto; /* 启用垂直滚动条 */
-  overflow-x: hidden; /* 禁用水平滚动条，确保文字被隐藏时不会水平滚动 */
+  left: auto !important; /* 取消 left 屬性，使其無效 */
+  right: 0 !important; /* 讓右側貼齊畫面右側 */
+  width: 500px !important; /* 設置寬度 */
+  height: 80vh; /* 設置最大高度 */
+  overflow-y: auto; /* 啟用垂直滾動條 */
+  overflow-x: hidden; /* 禁用水平滾動條，確保文字被隱藏時不會水平滾動 */
 }
 
 /* TOC 中的列表和連結樣式 */

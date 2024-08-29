@@ -193,7 +193,6 @@ a.headerlink:hover {
 /* 初始的 TOC 樣式，顯示為縮小的方塊，固定定位在中間區塊的右上角 */
 .custom-toc-container {
   position: fixed; /* 固定定位，确保 TOC 固定在页面上 */
-  top: 50px !important;
   right: 0px;
   width: 100px;
   height: 50px;
@@ -210,7 +209,8 @@ a.headerlink:hover {
 .custom-toc-container.expanded {
   left: auto !important; /* 取消 left 屬性，使其無效 */
   right: 0 !important; /* 讓右側貼齊畫面右側 */
-  width: 500px !important; /* 設置寬度 */
+  width: 50% !important; /* 設置寬度 */
+  max-width: 500px;
   height: 80vh; /* 設置最大高度 */
   overflow-y: auto; /* 啟用垂直滾動條 */
   overflow-x: hidden; /* 禁用水平滾動條，確保文字被隱藏時不會水平滾動 */

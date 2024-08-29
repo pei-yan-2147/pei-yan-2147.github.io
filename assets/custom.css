@@ -203,6 +203,7 @@ a.headerlink:hover {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 /* 展開後的 TOC 樣式 */

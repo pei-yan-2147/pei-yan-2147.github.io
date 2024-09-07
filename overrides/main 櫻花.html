@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block libs %}
+    {{ super() }}
+
+    <script type="text/javascript">
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            },
+            options: {
+                processEscapes: true
+            }
+        };
+    </script>
+
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- 背景圖片 -->
+    <div class="image-background"></div>
+
+    <!-- 粒子效果的Canvas背景，放置在背景圖片前面 -->
+    <canvas id="particleCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        // 設置粒子效果的 Canvas 尺寸
+        var particleCanvas = document.getElementById('particleCanvas');
+        var particleCtx = particleCanvas.getContext('2d');
+
+        function resizeParticleCanvas() {
+          particleCanvas.width = window.innerWidth;
+          particleCanvas.height = window.innerHeight;
+        }
+        resizeParticleCanvas();
+        window.addEventListener('resize', resizeParticleCanvas);
+
+        // 櫻花類別，定義滑鼠生成的粒子 (櫻花)
+        class Sakura {
+          constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 1.5 + 1;  // 櫻花較小
+            this.speedY = Math.random() * 2 + 0.1;
+            this.speedX = Math.random() * 2 - 1;
+            this.alpha = Math.random() * 0.8 + 0.2;
+            this.angle = Math.random() * Math.PI * 2;
+            this.angleSpeed = Math.random() * 0.05;
+          }
+
+          update() {
+            this.y += this.speedY;
+            this.x += this.speedX;
+            this.angle += this.angleSpeed;
+            if (this.y > particleCanvas.height) {
+              this.y = -this.size;
+            }
+            if (this.x > particleCanvas.width || this.x < 0) {
+              this.speedX *= -1;
+            }
+          }
+
+          draw() {
+            particleCtx.save();
+            particleCtx.translate(this.x, this.y);
+            particleCtx.rotate(this.angle);
+            particleCtx.fillStyle = `rgba(255, 182, 193, ${this.alpha})`;
+            particleCtx.beginPath();
+            particleCtx.moveTo(0, 0);
+            for (let i = 0; i < 5; i++) {
+              particleCtx.ellipse(
+                this.size * 0.8 * Math.cos((i * 2 * Math.PI) / 5),
+                this.size * 1.2 * Math.sin((i * 2 * Math.PI) / 5),
+                this.size * 0.8, this.size * 1.2,
+                Math.random() * 0.3, 0, 2 * Math.PI
+              );
+            }
+            particleCtx.closePath();
+            particleCtx.fill();
+            particleCtx.restore();
+          }
+        }
+
+        // 初始化粒子數組
+        let particlesArray = [];
+
+        // 生成粒子並更新
+        function createMouseSakura(event) {
+          const x = event.x;
+          const y = event.y;
+          particlesArray.push(new Sakura(x, y));
+        }
+
+        // 繪製粒子之間的連線
+        function connectParticles() {
+          let maxDistance = 100;  // 設置連線的最大距離
+          for (let a = 0; a < particlesArray.length; a++) {
+            for (let b = a + 1; b < particlesArray.length; b++) {
+              let dx = particlesArray[a].x - particlesArray[b].x;
+              let dy = particlesArray[a].y - particlesArray[b].y;
+              let distance = Math.sqrt(dx * dx + dy * dy);
+              if (distance < maxDistance) {
+                let opacity = 1 - distance / maxDistance;
+                particleCtx.strokeStyle = `rgba(255, 182, 193, ${opacity})`;
+                particleCtx.lineWidth = 1;
+                particleCtx.beginPath();
+                particleCtx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                particleCtx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                particleCtx.stroke();
+              }
+            }
+          }
+        }
+
+        // 更新並繪製粒子
+        function handleParticles() {
+          for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+            particlesArray[i].draw();
+            if (particlesArray[i].alpha <= 0) {
+              particlesArray.splice(i, 1);  // 移除已消失的粒子
+              i--;
+            }
+          }
+        }
+
+        // 動畫循環
+        function animate() {
+          particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+          handleParticles();
+          connectParticles();  // 繪製粒子間的連線
+          requestAnimationFrame(animate);
+        }
+
+        // 開始動畫
+        animate();
+
+        // 滑鼠移動生成粒子
+        window.addEventListener('mousemove', createMouseSakura);
+
+        // TOC 相關邏輯（保持原有邏輯）
+        var tocContainer = document.querySelector('.custom-toc-container');
+        var contentInner = document.querySelector('.md-content__inner');
+        if (contentInner && tocContainer) {
+            updateTocPosition();
+            tocContainer.addEventListener('click', function() {
+                tocContainer.classList.toggle('expanded');
+            });
+        }
+
+        function updateTocPosition() {
+            var contentInnerRect = contentInner.getBoundingClientRect();
+            tocContainer.style.top = contentInnerRect.top + 'px';
+            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
+        }
+
+        // 处理图像大小调整的逻辑
+        document.querySelectorAll('img').forEach(function(img) {
+            const match = img.src.match(/=(\d+)%x$/);
+            if (match) {
+                const widthPercentage = match[1];
+                img.style.width = widthPercentage + '%';
+                img.style.height = 'auto';
+                img.src = img.src.replace(/=(\d+)%x$/, ''); // 移除 URL 中的自定义语法
+            }
+        });
+      });
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="md-content__inner">
+    {{ super() }}
+    <!-- 新增的 TOC 區塊，引用 toc 擴展生成的永久鏈接 -->
+    <div class="custom-toc-container">
+        <div class="custom-toc-title">目錄</div>
+        <nav class="custom-toc">
+            <ul>
+                {% for section in page.toc %}
+                <li>
+                    <a href="#{{ section.id }}">{{ section.title }}</a>
+                    {% if section.children %}
+                    <ul>
+                        {% for child in section.children %}
+                        <li>
+                            <a href="#{{ child.id }}">{{ child.title }}</a>
+                            {% if child.children %}
+                            <ul>
+                                {% for grandchild in child.children %}
+                                <li>
+                                    <a href="#{{ grandchild.id }}">{{ grandchild.title }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}

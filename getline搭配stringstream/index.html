@@ -61,7 +61,6 @@
     <!-- 粒子效果的Canvas背景，放置在背景圖片前面 -->
     <canvas id="particleCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
 
-    
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         var particleCanvas = document.getElementById('particleCanvas');
@@ -90,8 +89,9 @@
             this.y += this.speedY;
             this.x += this.speedX;
             this.angle += this.angleSpeed;
+            // 如果櫻花超出畫布底部，將其從粒子數組中移除
             if (this.y > particleCanvas.height) {
-              this.y = -this.size;
+              particlesArray.splice(particlesArray.indexOf(this), 1);
             }
             if (this.x > particleCanvas.width || this.x < 0) {
               this.speedX *= -1;
@@ -121,8 +121,18 @@
     
         let particlesArray = [];
     
+        // 每次固定間隔時間生成一個新的櫻花
+        function generateFixedRateSakura() {
+          if (particlesArray.length < 500) {  // 限制粒子數量
+            const x = Math.random() * particleCanvas.width;
+            const y = -10;  // 櫻花從畫布上方生成
+            particlesArray.push(new Sakura(x, y));
+          }
+        }
+    
+        // 滑鼠移動時生成新的櫻花
         function createMouseSakura(event) {
-          if (particlesArray.length < 500) {  // 櫻花數量小於200時才生成新粒子
+          if (particlesArray.length < 500) {  // 限制粒子數量
             const x = event.x;
             const y = event.y;
             particlesArray.push(new Sakura(x, y));
@@ -153,10 +163,6 @@
           for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
             particlesArray[i].draw();
-            if (particlesArray[i].alpha <= 0) {
-              particlesArray.splice(i, 1);
-              i--;
-            }
           }
         }
     
@@ -167,7 +173,13 @@
           requestAnimationFrame(animate);
         }
     
+        // 開始動畫循環
         animate();
+    
+        // 以固定間隔（例如每100毫秒）生成櫻花
+        setInterval(generateFixedRateSakura, 100);  // 每100毫秒生成一個櫻花
+    
+        // 監聽滑鼠移動事件來生成櫻花
         window.addEventListener('mousemove', createMouseSakura);
     
         var tocContainer = document.querySelector('.custom-toc-container');
@@ -197,7 +209,6 @@
       });
     </script>
     
-
 
     
       

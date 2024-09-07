@@ -56,20 +56,20 @@
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
     
-    <!-- 背景圖片，替換原本的影片背景 -->
+    <!-- 背景圖片 -->
     <div class="image-background"></div>
 
-    <!-- 粒子效果的Canvas背景，放置在圖片前面，但不干擾頁面其他元素 -->
-    <canvas id="particleCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+    <!-- 星空和流星效果的Canvas背景 -->
+    <canvas id="starCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
 
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         var tocContainer = document.querySelector('.custom-toc-container');
         var contentInner = document.querySelector('.md-content__inner');
-        var canvas = document.getElementById('particleCanvas');
+        var canvas = document.getElementById('starCanvas');
         var ctx = canvas.getContext('2d');
 
-        // 設置 Canvas 尺寸和層級
+        // 設置 Canvas 尺寸
         function resizeCanvas() {
           canvas.width = window.innerWidth;
           canvas.height = window.innerHeight;
@@ -77,24 +77,50 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // 粒子類別
-        class Particle {
-          constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 5 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
+        // 星星類別
+        class Star {
+          constructor() {
+            this.reset();  // 隨機初始化星星的位置、大小和透明度
+          }
+
+          reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.originalSize = Math.random() * 2 + 1;  // 原始大小
+            this.size = 0;  // 初始大小為 0
+            this.alpha = 0;  // 初始透明度為 0
+            this.growthSpeed = 0.02;  // 增長速度
+            this.shrinkSpeed = 0.01;  // 減小速度
+            this.life = Math.random() * 200 + 100;  // 星星壽命
           }
 
           update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
+            // 星星出現時逐漸變大變亮
+            if (this.life > 100) {
+              this.size += this.growthSpeed;
+              this.alpha += this.growthSpeed;
+              if (this.size > this.originalSize) {
+                this.size = this.originalSize;  // 達到最大值
+              }
+              if (this.alpha > 1) {
+                this.alpha = 1;  // 最大透明度
+              }
+            } else {
+              // 星星消失時逐漸變小變暗
+              this.size -= this.shrinkSpeed;
+              this.alpha -= this.shrinkSpeed;
+              if (this.size < 0) this.size = 0;
+              if (this.alpha < 0) this.alpha = 0;
+            }
+
+            this.life -= 1;  // 壽命減少
+            if (this.life <= 0) {
+              this.reset();  // 星星消失後重新生成
+            }
           }
 
           draw() {
-            ctx.fillStyle = 'rgba(242, 187, 255, 0.7)';
+            ctx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;  // 星星顏色
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.closePath();
@@ -102,24 +128,114 @@
           }
         }
 
-        let particlesArray = [];
+        // 流星類別
+        class Meteor {
+          constructor() {
+            this.reset();  // 初始化流星位置、速度等
+          }
 
-        // 生成粒子
-        function createParticle(event) {
-          const x = event.x;
-          const y = event.y;
-          for (let i = 0; i < 5; i++) {
-            particlesArray.push(new Particle(x, y));
+          reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height / 2;  // 流星從上半部分生成
+            this.originalSize = Math.random() * 2 + 2;  // 流星頭部的原始大小
+            this.size = 0;  // 初始大小為 0
+            this.alpha = 0;  // 初始透明度為 0
+            this.growthSpeed = 0.03;  // 流星頭部增長速度
+            this.speedX = Math.random() * 8 + 4;
+            this.speedY = Math.random() * 4 + 2;
+          }
+
+          update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+
+            // 流星逐漸變大變亮，隨著運動逐漸消失
+            this.size += this.growthSpeed;
+            this.alpha += this.growthSpeed;
+            if (this.size > this.originalSize) {
+              this.size = this.originalSize;
+            }
+            if (this.alpha > 1) {
+              this.alpha = 1;
+            }
+            this.alpha -= 0.025;  // 流星逐漸消失
+            if (this.isOutOfView()) {
+              this.reset();  // 流星移出畫布後重置
+            }
+          }
+
+          draw() {
+            // 流星的尾巴
+            ctx.strokeStyle = `rgba(242, 187, 255, ${this.alpha})`;
+            ctx.lineWidth = this.size;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5);  // 尾巴
+            ctx.stroke();
+
+            // 流星的頭部：星星形狀
+            ctx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
+            this.drawStarShape(this.x, this.y, this.size, 5);  // 繪製流星的頭部為星星
+          }
+
+          drawStarShape(cx, cy, spikes, outerRadius, innerRadius) {
+            let rot = Math.PI / 2 * 3;
+            let step = Math.PI / spikes;
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - outerRadius);
+            for (let i = 0; i < spikes; i++) {
+              let x = cx + Math.cos(rot) * outerRadius;
+              let y = cy + Math.sin(rot) * outerRadius;
+              ctx.lineTo(x, y);
+              rot += step;
+
+              x = cx + Math.cos(rot) * innerRadius;
+              y = cy + Math.sin(rot) * innerRadius;
+              ctx.lineTo(x, y);
+              rot += step;
+            }
+            ctx.lineTo(cx, cy - outerRadius);
+            ctx.closePath();
+            ctx.fill();
+          }
+
+          isOutOfView() {
+            return this.x > canvas.width || this.y > canvas.height || this.alpha <= 0;
           }
         }
 
-        // 更新和繪製粒子
-        function handleParticles() {
-          for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-            particlesArray[i].draw();
-            if (particlesArray[i].size <= 0.3) {
-              particlesArray.splice(i, 1);
+        let starsArray = [];
+        let meteorsArray = [];
+        const maxMeteors = 5;  // 限制流星總數量
+
+        // 初始化星星
+        function initStars() {
+          starsArray = [];
+          for (let i = 0; i < 150; i++) {  // 增加星星數量
+            starsArray.push(new Star());
+          }
+        }
+
+        // 生成更多流星
+        function createMeteor() {
+          if (meteorsArray.length < maxMeteors) {  // 確保流星總數量不超過5個
+            meteorsArray.push(new Meteor());
+          }
+        }
+
+        // 更新並繪製星星和流星
+        function handleStarsAndMeteors() {
+          for (let i = 0; i < starsArray.length; i++) {
+            starsArray[i].update();
+            starsArray[i].draw();
+          }
+
+          for (let i = 0; i < meteorsArray.length; i++) {
+            meteorsArray[i].update();
+            meteorsArray[i].draw();
+            if (meteorsArray[i].isOutOfView()) {
+              meteorsArray.splice(i, 1);  // 流星消失後從陣列中移除
               i--;
             }
           }
@@ -128,15 +244,16 @@
         // 動畫循環
         function animate() {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          handleParticles();
+          handleStarsAndMeteors();
           requestAnimationFrame(animate);
         }
 
-        // 開始動畫
+        // 初始化並開始動畫
+        initStars();
         animate();
 
-        // 監聽滑鼠事件
-        window.addEventListener('mousemove', createParticle);
+        // 流星的生成頻率增加
+        setInterval(createMeteor, 1000);  // 每秒嘗試生成一個流星，且不超過最大數量
 
         // TOC 相關邏輯
         if (contentInner && tocContainer) {

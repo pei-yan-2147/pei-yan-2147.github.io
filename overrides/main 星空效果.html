@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block libs %}
+    {{ super() }}
+
+    <script type="text/javascript">
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            },
+            options: {
+                processEscapes: true  // 允许转义美元符号，例如 \$ 显示为普通的 $
+            }
+        };
+    </script>
+    
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    
+    <!-- 背景圖片，替換原本的影片背景 -->
+    <div class="image-background"></div>
+
+    <!-- 星空效果的Canvas背景，放置在圖片前面，但不干擾頁面其他元素 -->
+    <canvas id="starCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var tocContainer = document.querySelector('.custom-toc-container');
+        var contentInner = document.querySelector('.md-content__inner');
+        var canvas = document.getElementById('starCanvas');
+        var ctx = canvas.getContext('2d');
+
+        // 設置 Canvas 尺寸和層級
+        function resizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // 星空粒子類別
+        class Star {
+          constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 2 + 1;  // 星星大小較小
+            this.alpha = Math.random() * 0.5 + 0.5;  // 星星透明度
+            this.twinkleSpeed = Math.random() * 0.02 + 0.01;  // 閃爍速度
+          }
+
+          update() {
+            this.alpha += this.twinkleSpeed;
+            if (this.alpha >= 1 || this.alpha <= 0.5) {
+              this.twinkleSpeed *= -1;
+            }
+          }
+
+          draw() {
+            ctx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;  // 使用指定的顏色
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+
+        let starsArray = [];
+
+        // 生成星星
+        function initStars() {
+          starsArray = [];
+          let numberOfStars = 100;  // 星星數量
+          for (let i = 0; i < numberOfStars; i++) {
+            let x = Math.random() * canvas.width;
+            let y = Math.random() * canvas.height;
+            starsArray.push(new Star(x, y));
+          }
+        }
+
+        // 更新和繪製星星
+        function handleStars() {
+          for (let i = 0; i < starsArray.length; i++) {
+            starsArray[i].update();
+            starsArray[i].draw();
+          }
+        }
+
+        // 動畫循環
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          handleStars();
+          requestAnimationFrame(animate);
+        }
+
+        // 初始化星星並開始動畫
+        initStars();
+        animate();
+
+        // TOC 相關邏輯
+        if (contentInner && tocContainer) {
+            // 初始定位 TOC
+            updateTocPosition();
+
+            // 添加点击事件以展开/收缩 TOC
+            tocContainer.addEventListener('click', function() {
+                tocContainer.classList.toggle('expanded');
+            });
+        }
+
+        function updateTocPosition() {
+            var contentInnerRect = contentInner.getBoundingClientRect();
+            tocContainer.style.top = contentInnerRect.top + 'px';
+            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
+        }
+
+        // 处理图像大小调整的逻辑
+        document.querySelectorAll('img').forEach(function(img) {
+            const match = img.src.match(/=(\d+)%x$/);
+            if (match) {
+                const widthPercentage = match[1];
+                img.style.width = widthPercentage + '%';
+                img.style.height = 'auto';
+                img.src = img.src.replace(/=(\d+)%x$/, ''); // 移除 URL 中的自定义语法
+            }
+        });
+      });
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="md-content__inner">
+    {{ super() }}
+    <!-- 新增的 TOC 区块，引用 toc 扩展生成的永久链接 -->
+    <div class="custom-toc-container">
+        <div class="custom-toc-title">目錄</div> <!-- 添加「目錄」标题 -->
+        <nav class="custom-toc">
+            <ul>
+                {% for section in page.toc %}
+                <li>
+                    <a href="#{{ section.id }}">{{ section.title }}</a>
+                    {% if section.children %}
+                    <ul>
+                        {% for child in section.children %}
+                        <li>
+                            <a href="#{{ child.id }}">{{ child.title }}</a>
+                            {% if child.children %}
+                            <ul>
+                                {% for grandchild in child.children %}
+                                <li>
+                                    <a href="#{{ grandchild.id }}">{{ grandchild.title }}</a>
+                                    {% if grandchild.children %}
+                                    <ul>
+                                        {% for greatgrandchild in grandchild.children %}
+                                        <li>
+                                            <a href="#{{ greatgrandchild.id }}">{{ greatgrandchild.title }}</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}

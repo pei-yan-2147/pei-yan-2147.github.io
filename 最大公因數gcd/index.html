@@ -62,270 +62,137 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        var tocContainer = document.querySelector('.custom-toc-container');
-        var contentInner = document.querySelector('.md-content__inner');
-
-        // 設置星空流星的 Canvas 尺寸
         var starCanvas = document.getElementById('starCanvas');
+        var particleCanvas = document.getElementById('particleCanvas');
         var starCtx = starCanvas.getContext('2d');
-        function resizeStarCanvas() {
+        var particleCtx = particleCanvas.getContext('2d');
+
+        // 設置Canvas尺寸
+        function resizeCanvas() {
           starCanvas.width = window.innerWidth;
           starCanvas.height = window.innerHeight;
-        }
-        resizeStarCanvas();
-        window.addEventListener('resize', resizeStarCanvas);
-
-        // 設置粒子效果的 Canvas 尺寸
-        var particleCanvas = document.getElementById('particleCanvas');
-        var particleCtx = particleCanvas.getContext('2d');
-        function resizeParticleCanvas() {
           particleCanvas.width = window.innerWidth;
           particleCanvas.height = window.innerHeight;
         }
-        resizeParticleCanvas();
-        window.addEventListener('resize', resizeParticleCanvas);
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
 
-        // 星星類別
-        class Star {
-          constructor() {
-            this.reset();  // 隨機初始化星星的位置、大小和透明度
-          }
-
-          reset() {
-            this.x = Math.random() * starCanvas.width;
-            this.y = Math.random() * starCanvas.height;
-            this.originalSize = Math.random() * 2 + 1;
-            this.size = 0;
-            this.alpha = 0;
-            this.growthSpeed = 0.02;
-            this.shrinkSpeed = 0.01;
-            this.life = Math.random() * 200 + 100;
-          }
-
-          update() {
-            if (this.life > 100) {
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-            } else {
-              this.size -= this.shrinkSpeed;
-              this.alpha -= this.shrinkSpeed;
-              if (this.size < 0) this.size = 0;
-              if (this.alpha < 0) this.alpha = 0;
-            }
-
-            this.life -= 1;
-            if (this.life <= 0) this.reset();
-          }
-
-          draw() {
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.beginPath();
-            starCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-        }
-
-        // 流星類別
-        class Meteor {
-          constructor() {
+        // 櫻花類別
+        class Sakura {
+          constructor(x, y) {
+            this.x = x || Math.random() * particleCanvas.width;
+            this.y = y || Math.random() * -particleCanvas.height;
             this.reset();
           }
 
           reset() {
-            this.x = Math.random() * starCanvas.width / 2;
-            this.y = Math.random() * starCanvas.height;
-            this.originalSize = Math.random() * 2 + 2;
-            this.size = 0;
-            this.alpha = 0;
-            this.growthSpeed = 0.03;
-            this.speedX = Math.random() * 8 + 4;
-            this.speedY = Math.random() * 4 + 2;
+            this.size = Math.random() * 1 + 2;
+            this.speedY = Math.random() * 2 + 0.1;
+            this.speedX = Math.random() * 2 - 1;
+            this.angle = Math.random() * Math.PI * 2;
+            this.angleSpeed = Math.random() * 0.05;
+            this.alpha = Math.random() * 0.5 + 0.5;
           }
 
           update() {
-            this.x += this.speedX;
             this.y += this.speedY;
-
-            this.size += this.growthSpeed;
-            this.alpha += this.growthSpeed;
-            if (this.size > this.originalSize) this.size = this.originalSize;
-            if (this.alpha > 1) this.alpha = 1;
-            this.alpha -= 0.025;
-
-            if (this.isOutOfView()) this.reset();
-          }
-
-          draw() {
-            starCtx.strokeStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.lineWidth = this.size;
-            starCtx.beginPath();
-            starCtx.moveTo(this.x, this.y);
-            starCtx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5);
-            starCtx.stroke();
-
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            this.drawStarShape(this.x, this.y, this.size, 5);
-          }
-
-          drawStarShape(cx, cy, spikes, outerRadius, innerRadius) {
-            let rot = Math.PI / 2 * 3;
-            let step = Math.PI / spikes;
-
-            starCtx.beginPath();
-            starCtx.moveTo(cx, cy - outerRadius);
-            for (let i = 0; i < spikes; i++) {
-              let x = cx + Math.cos(rot) * outerRadius;
-              let y = cy + Math.sin(rot) * outerRadius;
-              starCtx.lineTo(x, y);
-              rot += step;
-
-              x = cx + Math.cos(rot) * innerRadius;
-              y = cy + Math.sin(rot) * innerRadius;
-              starCtx.lineTo(x, y);
-              rot += step;
+            this.x += Math.sin(this.angle) * 2;
+            this.angle += this.angleSpeed;
+            if (this.y > particleCanvas.height) {
+              this.reset();
             }
-            starCtx.lineTo(cx, cy - outerRadius);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-
-          isOutOfView() {
-            return this.x > starCanvas.width || this.y > starCanvas.height || this.alpha <= 0;
-          }
-        }
-
-        // 粒子類別
-        class Particle {
-          constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 3 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-            this.alpha = 1;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
-            this.alpha -= 0.02;  // 粒子逐漸消失
           }
 
           draw() {
-            particleCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
+            particleCtx.save();
+            particleCtx.translate(this.x, this.y);
+            particleCtx.rotate(this.angle);
+
+            particleCtx.fillStyle = `rgba(255, 182, 193, ${this.alpha})`;
             particleCtx.beginPath();
-            particleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            for (let i = 0; i < 5; i++) {
+              let startAngle = this.angle + i * (Math.PI / 2.5);
+              let petalX = this.size * Math.cos(startAngle) * 0.8;
+              let petalY = this.size * Math.sin(startAngle) * 1.2;
+              particleCtx.ellipse(petalX, petalY, this.size * 0.8, this.size * 1.2, startAngle, Math.PI / 2.5, Math.PI * 2);
+            }
             particleCtx.closePath();
             particleCtx.fill();
+            particleCtx.restore();
           }
         }
 
-        // 初始化粒子、星星、流星數組
-        let starsArray = [];
-        let meteorsArray = [];
-        let particlesArray = [];
-        const maxMeteors = 10;
+        // 初始化櫻花數組
+        let sakuraArray = [];
 
-        // 初始化星星
-        function initStars() {
-          starsArray = [];
+        // 初始化櫻花
+        function initSakura() {
+          sakuraArray = [];
           for (let i = 0; i < 150; i++) {
-            starsArray.push(new Star());
+            sakuraArray.push(new Sakura());
           }
         }
 
-        // 生成更多流星
-        function createMeteor() {
-          if (meteorsArray.length < maxMeteors) {
-            meteorsArray.push(new Meteor());
-          }
-        }
-
-        // 生成粒子
-        function createParticle(event) {
-          const x = event.x;
-          const y = event.y;
-          for (let i = 0; i < 5; i++) {
-            particlesArray.push(new Particle(x, y));
-          }
-        }
-
-        // 更新並繪製星星、流星和粒子
-        function handleParticles() {
-          for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-            particlesArray[i].draw();
-            if (particlesArray[i].alpha <= 0) {
-              particlesArray.splice(i, 1);
-              i--;
+        // 連線效果
+        function connectSakura() {
+          let maxDistance = 100;
+          for (let a = 0; a < sakuraArray.length; a++) {
+            for (let b = a; b < sakuraArray.length; b++) {
+              let distance = Math.sqrt(
+                (sakuraArray[a].x - sakuraArray[b].x) ** 2 +
+                (sakuraArray[a].y - sakuraArray[b].y) ** 2
+              );
+              if (distance < maxDistance) {
+                let opacity = 1 - distance / maxDistance;
+                particleCtx.strokeStyle = `rgba(255, 182, 193, ${opacity})`;
+                particleCtx.lineWidth = 1;
+                particleCtx.beginPath();
+                particleCtx.moveTo(sakuraArray[a].x, sakuraArray[a].y);
+                particleCtx.lineTo(sakuraArray[b].x, sakuraArray[b].y);
+                particleCtx.stroke();
+              }
             }
           }
         }
 
-        function handleStarsAndMeteors() {
-          for (let i = 0; i < starsArray.length; i++) {
-            starsArray[i].update();
-            starsArray[i].draw();
+        // 更新並繪製櫻花
+        function handleSakura() {
+          for (let i = 0; i < sakuraArray.length; i++) {
+            sakuraArray[i].update();
+            sakuraArray[i].draw();
           }
-
-          for (let i = 0; i < meteorsArray.length; i++) {
-            meteorsArray[i].update();
-            meteorsArray[i].draw();
-            if (meteorsArray[i].isOutOfView()) {
-              meteorsArray.splice(i, 1);
-              i--;
-            }
-          }
+          connectSakura();
         }
 
         // 動畫循環
         function animate() {
-          starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
           particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-          handleStarsAndMeteors();
-          handleParticles();
+          handleSakura();
           requestAnimationFrame(animate);
         }
 
         // 初始化並開始動畫
-        initStars();
+        initSakura();
         animate();
 
-        // 流星的生成頻率增加
-        setInterval(createMeteor, 1000);
+        // 滑鼠生成櫻花（移動後生成一片，並根據移動距離控制生成頻率）
+        let lastX = 0, lastY = 0;
+        const minDistance = 50;  // 滑鼠移動超過這個距離後才生成櫻花
 
-        // 監聽滑鼠事件生成粒子
-        window.addEventListener('mousemove', createParticle);
+        function createMouseSakura(event) {
+          const x = event.x;
+          const y = event.y;
+          const distance = Math.sqrt((x - lastX) ** 2 + (y - lastY) ** 2);
 
-        // TOC 相關邏輯
-        if (contentInner && tocContainer) {
-            updateTocPosition();
-
-            tocContainer.addEventListener('click', function() {
-                tocContainer.classList.toggle('expanded');
-            });
+          if (distance > minDistance) {
+            sakuraArray.push(new Sakura(x, y));  // 滑鼠移動超過一定距離才生成 1 片櫻花
+            lastX = x;
+            lastY = y;
+          }
         }
 
-        function updateTocPosition() {
-            var contentInnerRect = contentInner.getBoundingClientRect();
-            tocContainer.style.top = contentInnerRect.top + 'px';
-            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
-        }
-
-        // 处理图像大小调整的逻辑
-        document.querySelectorAll('img').forEach(function(img) {
-            const match = img.src.match(/=(\d+)%x$/);
-            if (match) {
-                const widthPercentage = match[1];
-                img.style.width = widthPercentage + '%';
-                img.style.height = 'auto';
-                img.src = img.src.replace(/=(\d+)%x$/, '');
-            }
-        });
+        // 監聽滑鼠移動事件
+        window.addEventListener('mousemove', createMouseSakura);
       });
     </script>
 

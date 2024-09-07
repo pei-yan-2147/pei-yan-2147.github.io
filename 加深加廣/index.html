@@ -121,7 +121,7 @@
     
         // 每次固定間隔時間生成一個新的櫻花
         function generateFixedRateSakura() {
-          if (particlesArray.length < 200) {  // 限制粒子數量
+          if (particlesArray.length < 300) {  // 限制粒子數量
             const x = Math.random() * particleCanvas.width;
             const y = -10;  // 櫻花從畫布上方生成
             particlesArray.push(new Sakura(x, y));
@@ -130,7 +130,7 @@
     
         // 滑鼠移動時生成新的櫻花
         function createMouseSakura(event) {
-          if (particlesArray.length < 200) {  // 限制粒子數量
+          if (particlesArray.length < 300) {  // 限制粒子數量
             const x = event.x;
             const y = event.y;
             particlesArray.push(new Sakura(x, y));

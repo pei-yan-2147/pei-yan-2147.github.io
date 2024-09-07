@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../logo/peilogo.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.33">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.34">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.3cba04c6.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.35f28582.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -56,18 +56,89 @@
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
     </script>
     
-    <div class="video-background">
-        <video id="background-video" autoplay loop muted playsinline>
-            <source src="../video/background.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
+    <!-- 背景圖片，替換原本的影片背景 -->
+    <div class="image-background"></div>
+
+    <!-- 粒子效果的Canvas背景，放置在圖片前面，但不干擾頁面其他元素 -->
+    <canvas id="particleCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
 
     <script>
       document.addEventListener("DOMContentLoaded", function() {
         var tocContainer = document.querySelector('.custom-toc-container');
         var contentInner = document.querySelector('.md-content__inner');
+        var canvas = document.getElementById('particleCanvas');
+        var ctx = canvas.getContext('2d');
 
+        // 設置 Canvas 尺寸和層級
+        function resizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // 粒子類別
+        class Particle {
+          constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 5 + 1;
+            this.speedX = Math.random() * 3 - 1.5;
+            this.speedY = Math.random() * 3 - 1.5;
+          }
+
+          update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.size > 0.2) this.size -= 0.1;
+          }
+
+          draw() {
+            ctx.fillStyle = 'rgba(242, 187, 255, 0.7)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+
+        let particlesArray = [];
+
+        // 生成粒子
+        function createParticle(event) {
+          const x = event.x;
+          const y = event.y;
+          for (let i = 0; i < 5; i++) {
+            particlesArray.push(new Particle(x, y));
+          }
+        }
+
+        // 更新和繪製粒子
+        function handleParticles() {
+          for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+            particlesArray[i].draw();
+            if (particlesArray[i].size <= 0.3) {
+              particlesArray.splice(i, 1);
+              i--;
+            }
+          }
+        }
+
+        // 動畫循環
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          handleParticles();
+          requestAnimationFrame(animate);
+        }
+
+        // 開始動畫
+        animate();
+
+        // 監聽滑鼠事件
+        window.addEventListener('mousemove', createParticle);
+
+        // TOC 相關邏輯
         if (contentInner && tocContainer) {
             // 初始定位 TOC
             updateTocPosition();
@@ -109,7 +180,7 @@
     
       <link rel="stylesheet" href="../assets/custom.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -156,7 +227,7 @@
     </a>
     <label class="md-header__button md-icon" for="__drawer">
       
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -182,7 +253,7 @@
     
       <label class="md-header__button md-icon" for="__search">
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
@@ -191,15 +262,15 @@
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
         
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
       
@@ -1155,6 +1226,27 @@
   
   <span class="md-ellipsis">
     矩陣運算
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%8D%A1%E5%A1%94%E8%98%AD%E6%95%B8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    卡塔蘭數(Catalan Numbers)
   </span>
   
 
@@ -2185,11 +2277,39 @@
                   
 
 
-<h1 id="_1">參考資料<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h1 id="_1">題型整理<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<ol>
+<li>計算每個點到每個點之間距離<br />
+<a href="#a129-P_8_3-購物中心選位置">a129: P_8_3 購物中心選位置</a>
+<a href="#a223-Q_8_6-樹狀圖的距離總和">a223: Q_8_6 樹狀圖的距離總和</a></li>
+<li>由下往上計算(bottom-up)<br />
+<a href="#a078-P_3_1-樹的高度與根-bottom-up-APCS201710">a078: P_3_1 樹的高度與根 (bottom-up) (APCS201710)</a></li>
+<li>根節點比大小<br />
+<a href="#a131-P_8_5-自動分裝-APCS202002">a131: P_8_5 自動分裝 (APCS202002)</a></li>
+<li>陣列傳遞，計算極值<br />
+<a href="#a132-P_8_7-寶石的顏色-108全國高中賽">a132: P_8_7 寶石的顏色 (108全國高中賽)</a></li>
+<li>不相鄰DP<br />
+<a href="#a133-P_8_8-樹的最大獨立集">a133: P_8_8 樹的最大獨立集</a>
+<a href="#a224-Q_8_9-服務中心選位置">a224: Q_8_9 服務中心選位置</a>
+<a href="#a225-Q_8_10-竊聽間諜網">a225: Q_8_10 竊聽間諜網</a></li>
+<li>背包問題DP   <br />
+<a href="#a134-P_8_11-公司派對-NCPC">a134: P_8_11 公司派對 (NCPC)</a>：組合、選一個→倒序(bottom-up) <br />
+<a href="#a144-Q_8_12-佔領連續的城鎮">a144: Q_8_12 佔領連續的城鎮</a>：bottom-up，連續元素的和</li>
+<li>有夠難(DP) <br />
+<a href="#a135-P_8_13-不同成本的購物中心-">a135: P_8_13 不同成本的購物中心 (@@)</a> <br />
+<a href="#a142-Q_8_16病毒演化-APCS202007">a142: Q_8_16.病毒演化 (APCS202007)</a></li>
+<li>直徑問題 【farthest of farthest 演算法】
+<a href="#a060-201603_q4-血緣關係">a060: 201603_q4 血緣關係</a> <br />
+<a href="https://hackmd.io/@peicpp/HJPzMV7NR#a143-Q_8_15-%E6%A8%B9%E4%B8%8A%E4%B8%80%E4%BD%8D%E4%B8%8D%E5%9B%9E%E5%AE%B6%E7%9A%84%E6%8E%A8%E9%8A%B7%E5%93%A1">a143: Q_8_15 樹上一位不回家的推銷員</a>   </li>
+</ol>
+<blockquote>
+<p>樹的DP若在一個點有不同則方式(例如節點1可以放置A、B、C、D)直接設置多維陣列，如：dp[i][j]=節點i選擇放置j型態，例題如<a href="#a142-Q_8_16病毒演化-APCS202007">a142: Q_8_16.病毒演化 (APCS202007)</a></p>
+</blockquote>
+<h1 id="_2">樹上演算法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
+<h2 id="_3">簡介<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p><a href="https://web.ntnu.edu.tw/~algo/Tree.html">https://web.ntnu.edu.tw/~algo/Tree.html</a></p>
-<h1 id="_2">簡介<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h1>
 <p><a href="https://tioj.ck.tp.edu.tw/uploads/attachment/5/13/3.pdf">https://tioj.ck.tp.edu.tw/uploads/attachment/5/13/3.pdf</a></p>
-<h2 id="_3">樹<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="_4">樹<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
 <p>樹沒有環，所以相較於有環的圖簡單很多。同時，也多出了很多性質可以利用。樹的
 幾個性質列舉如下：
 1. 連通且邊數等於點數減一。
@@ -2197,7 +2317,7 @@
 3. 連通，但去掉任意一條邊就不連通。
 4. 沒有環，但加上任意一條邊就有環。
 　　以上四個性質是等價的。這也是判斷一個圖是不是樹的方法。</p>
-<h2 id="_4">基本性質<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h2 id="_5">基本性質<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
 <p>在此先介紹幾個基本的、專屬於樹的術語（樹語？）：
 1. 根（root）：在一個樹上可以選定一個點做為「根」。有限定根的樹稱為「有根樹」。
 2. 葉（leaf）：無根樹中，度數為1的點稱為「葉」；有根樹中，度數為1且非根的點稱為
@@ -2219,48 +2339,16 @@
 樣可以用DFS解決。
 順帶一提，因為樹沒有環，所以在DFS時不需要記錄一個點有沒有被造訪過，只要
 知道父親是哪個點，不要往回走即可。</p>
-<h2 id="_5">重心<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p>將重心刪掉後，分割後變成兩棵樹，兩棵樹總節點不超過總節點樹1/2</p>
-<p>ex：n=15，分割後兩棵樹節點皆為7。(15/2=7.5，7&lt;=7.5)</p>
-<h2 id="_6">直徑、圓心<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<p>一棵樹的直徑定義為樹當中最遠的兩點間的簡單路徑；圓心是能使樹高度最小的根。
-要如何找出一棵樹的直徑呢？有一個很簡單的方法：先從任意一個點DFS到深度最
-深的點v，再從v點DFS到最遠的點u，則v、u的簡單路徑即為直徑。這個方法的正確
-性不難證，可以自己嘗試看看。
-　　
-樹的圓心是這條最長路徑上的中間節點。如果直徑是奇數長度，則圓心是唯一的；如果直徑是偶數長度，則圓心是兩個相鄰的節點。</p>
-<h1 id="_7">題型整理<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h1>
-<blockquote>
-<ol>
-<li>計算每個點到每個點之間距離
-<a href="#a129-P_8_3-購物中心選位置">a129: P_8_3 購物中心選位置</a>
-<a href="#a223-Q_8_6-樹狀圖的距離總和">a223: Q_8_6 樹狀圖的距離總和</a></li>
-<li>由下往上計算(bottom-up)
-<a href="#a078-P_3_1-樹的高度與根-bottom-up-APCS201710">a078: P_3_1 樹的高度與根 (bottom-up) (APCS201710)</a></li>
-<li>根節點比大小
-<a href="#a131-P_8_5-自動分裝-APCS202002">a131: P_8_5 自動分裝 (APCS202002)</a></li>
-<li>陣列傳遞，計算極值
-<a href="#a132-P_8_7-寶石的顏色-108全國高中賽">a132: P_8_7 寶石的顏色 (108全國高中賽)</a></li>
-<li>不相鄰DP
-<a href="#a133-P_8_8-樹的最大獨立集">a133: P_8_8 樹的最大獨立集</a>
-<a href="#a224-Q_8_9-服務中心選位置">a224: Q_8_9 服務中心選位置</a>
-<a href="#a225-Q_8_10-竊聽間諜網">a225: Q_8_10 竊聽間諜網</a></li>
-<li>背包問題DP
-<a href="#a134-P_8_11-公司派對-NCPC">a134: P_8_11 公司派對 (NCPC)</a>：組合、選一個→倒序(bottom-up)
-<a href="#a144-Q_8_12-佔領連續的城鎮">a144: Q_8_12 佔領連續的城鎮</a>：bottom-up，連續元素的和</li>
-<li>有夠難(DP)
-<a href="#a135-P_8_13-不同成本的購物中心-">a135: P_8_13 不同成本的購物中心 (@@)</a>
-<a href="#a142-Q_8_16病毒演化-APCS202007">a142: Q_8_16.病毒演化 (APCS202007)</a></li>
-<li>直徑問題 【farthest of farthest 演算法】
-<a href="#a060-201603_q4-血緣關係">a060: 201603_q4 血緣關係</a>
-<a href="https://hackmd.io/@peicpp/HJPzMV7NR#a143-Q_8_15-%E6%A8%B9%E4%B8%8A%E4%B8%80%E4%BD%8D%E4%B8%8D%E5%9B%9E%E5%AE%B6%E7%9A%84%E6%8E%A8%E9%8A%B7%E5%93%A1">a143: Q_8_15 樹上一位不回家的推銷員</a></li>
-</ol>
-<p>樹的DP若在一個點有不同則方式(例如節點1可以放置A、B、C、D)直接設置多維陣列，如：dp[i][j]=節點i選擇放置j型態，例題如<a href="#a142-Q_8_16病毒演化-APCS202007">a142: Q_8_16.病毒演化 (APCS202007)</a></p>
-</blockquote>
-<h1 id="_8">重點<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h1>
+<h2 id="_6">計算子樹大小<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <ol>
 <li><a href="https://hackmd.io/@peicpp/HJPzMV7NR#a129-P_8_3-%E8%B3%BC%E7%89%A9%E4%B8%AD%E5%BF%83%E9%81%B8%E4%BD%8D%E7%BD%AE">計算子樹</a></li>
+</ol>
+<h2 id="_7">判斷根結點、葉節點<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<ol>
 <li>判斷根節點、葉節點方法(之一)：看入度、出度</li>
+</ol>
+<h2 id="top-downbutton-up">top-down、button-up<a class="headerlink" href="#top-downbutton-up" title="Permanent link">&para;</a></h2>
+<ol>
 <li>top-down、button-up
     <div class="highlight"><pre><span></span><code><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">:</span><span class="n">v</span><span class="p">[</span><span class="n">f</span><span class="p">]){</span>
 <span class="w">    </span><span class="c1">//進入子節點</span>
@@ -2270,7 +2358,19 @@
 </code></pre></div></li>
 <li>直徑計算：隨便找一個點，找距離最遠的點x，再對x找距離最遠的點y，x~y為直徑</li>
 </ol>
-<h1 id="_9">題目<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h1>
+<h2 id="_8">重心<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<p>將重心刪掉後，分割後變成兩棵樹，兩棵樹總節點不超過總節點樹1/2
+ex：n=15，分割後兩棵樹節點皆為7。(15/2=7.5，7&lt;=7.5)</p>
+<h2 id="_9">直徑<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<p>一棵樹的直徑定義為樹當中最遠的兩點間的簡單路徑；圓心是能使樹高度最小的根。
+要如何找出一棵樹的直徑呢？有一個很簡單的方法：先從任意一個點DFS到深度最
+深的點v，再從v點DFS到最遠的點u，則v、u的簡單路徑即為直徑。這個方法的正確
+性不難證，可以自己嘗試看看。
+　　</p>
+<h2 id="_10">圓心<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h2>
+<p>樹的圓心是這條最長路徑上的中間節點。如果直徑是奇數長度，則圓心是唯一的；如果直徑是偶數長度，則圓心是兩個相鄰的節點。</p>
+<h2 id="lca">LCA<a class="headerlink" href="#lca" title="Permanent link">&para;</a></h2>
+<h1 id="_11">題目練習<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h1>
 <h2 id="p-8-1">P-8-1. 樹上的推銷員<a class="headerlink" href="#p-8-1" title="Permanent link">&para;</a></h2>
 <p><a href="https://judge.hwsh.tc.edu.tw/ShowProblem?problemid=a127">https://judge.hwsh.tc.edu.tw/ShowProblem?problemid=a127</a></p>
 <p>有一個推銷員要走訪n個城市並在結束後回到出發的城市。這些城市以n-1條道路連接，每條道路連接兩個不同的城市並且雙向可以通行，而且已知每一個城市都可以到達，不會有到達不了的狀況。</p>
@@ -2444,8 +2544,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。</p>
  條道路連接，每條道路都是雙向通行且連接兩個不同的村莊，已知從任一個村莊 i
  都可以經由這些道路到達市政府所在的 0
  號村莊，所以也可以到達任何其他村莊，而且由村莊 i
- 往市政府會經過的第一站村莊是 p(i)
-。</p>
+ 往市政府會經過的第一站村莊是 p(i)。</p>
 <p>現在某大集團希望選其中一個村莊來蓋一個購物中心，選址的判斷方式是購物中心到所有村莊的距離總和要越小越好，請你幫忙計算哪一個村莊是最好的位置，到各村莊的距離總和最小是多少。</p>
 <p>輸入說明
  第一行是正整數 n，n&gt;1，村莊以 0~ n−1編號。
@@ -3617,7 +3716,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。</p>
 </code></pre></div>
 </details>
 
-<h1 id="_10">直徑問題<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h1>
+<h1 id="_12">直徑問題<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h1>
 <h2 id="farthest-of-farthest">farthest of farthest 演算法<a class="headerlink" href="#farthest-of-farthest" title="Permanent link">&para;</a></h2>
 <blockquote>
 <p>GPT：
@@ -4083,32 +4182,62 @@ farthest of farthest 演算法
             <ul>
                 
                 <li>
-                    <a href="#_1">參考資料</a>
+                    <a href="#_1">題型整理</a>
                     
                 </li>
                 
                 <li>
-                    <a href="#_2">簡介</a>
+                    <a href="#_2">樹上演算法</a>
                     
                     <ul>
                         
                         <li>
-                            <a href="#_3">樹</a>
+                            <a href="#_3">簡介</a>
                             
                         </li>
                         
                         <li>
-                            <a href="#_4">基本性質</a>
+                            <a href="#_4">樹</a>
                             
                         </li>
                         
                         <li>
-                            <a href="#_5">重心</a>
+                            <a href="#_5">基本性質</a>
                             
                         </li>
                         
                         <li>
-                            <a href="#_6">直徑、圓心</a>
+                            <a href="#_6">計算子樹大小</a>
+                            
+                        </li>
+                        
+                        <li>
+                            <a href="#_7">判斷根結點、葉節點</a>
+                            
+                        </li>
+                        
+                        <li>
+                            <a href="#top-downbutton-up">top-down、button-up</a>
+                            
+                        </li>
+                        
+                        <li>
+                            <a href="#_8">重心</a>
+                            
+                        </li>
+                        
+                        <li>
+                            <a href="#_9">直徑</a>
+                            
+                        </li>
+                        
+                        <li>
+                            <a href="#_10">圓心</a>
+                            
+                        </li>
+                        
+                        <li>
+                            <a href="#lca">LCA</a>
                             
                         </li>
                         
@@ -4117,17 +4246,7 @@ farthest of farthest 演算法
                 </li>
                 
                 <li>
-                    <a href="#_7">題型整理</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="#_8">重點</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="#_9">題目</a>
+                    <a href="#_11">題目練習</a>
                     
                     <ul>
                         
@@ -4201,7 +4320,7 @@ farthest of farthest 演算法
                 </li>
                 
                 <li>
-                    <a href="#_10">直徑問題</a>
+                    <a href="#_12">直徑問題</a>
                     
                     <ul>
                         
@@ -4267,10 +4386,10 @@ farthest of farthest 演算法
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["sitemap"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["sitemap"], "search": "../assets/javascripts/workers/search.07f07601.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.af256bd8.min.js"></script>
+      <script src="../assets/javascripts/bundle.56dfad97.min.js"></script>
       
         <script src="../assets/custom.js"></script>
       

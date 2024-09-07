@@ -338,16 +338,28 @@ p {
 
 /* 背景影片的樣式 */
 .video-background video {
-  min-width: 100%; /* 確保影片的最小寬度覆蓋整個畫面 */
-  min-height: 100%; /* 確保影片的最小高度覆蓋整個畫面 */
-  width: auto;
-  height: auto;
   position: absolute;
   top: 50%; /* 垂直居中 */
   left: 50%; /* 水平居中 */
-  transform: translate(-50%, -50%); /* 確保影片居中 */
-  background-size: cover; /* 確保影片覆蓋整個背景 */
+  width: 100vw; /* 設置影片的寬度為視窗的寬度 */
+  height: 100vh; /* 設置影片的高度為視窗的高度 */
+  object-fit: cover; /* 確保影片覆蓋整個背景，不會變形 */
+  transform: translate(-50%, -50%); /* 將影片中心點對齊到容器中心 */
   z-index: -1; /* 確保影片在背景層 */
 }
 
 
+
+/* 背景圖片容器的樣式 */
+.image-background {
+  position: fixed; /* 固定定位，讓背景圖片填滿整個頁面 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('back.png'); /* 背景圖片路徑 */
+  background-size: cover; /* 確保圖片覆蓋整個背景，不變形 */
+  background-position: center; /* 圖片居中 */
+  z-index: -2; /* 確保圖片在背景層 */
+  pointer-events: none; /* 確保背景圖片不影響前景內容的操作 */
+}

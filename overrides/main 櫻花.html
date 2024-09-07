@@ -26,42 +26,41 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        // 設置粒子效果的 Canvas 尺寸
         var particleCanvas = document.getElementById('particleCanvas');
         var particleCtx = particleCanvas.getContext('2d');
-
+    
         function resizeParticleCanvas() {
           particleCanvas.width = window.innerWidth;
           particleCanvas.height = window.innerHeight;
         }
         resizeParticleCanvas();
         window.addEventListener('resize', resizeParticleCanvas);
-
-        // 櫻花類別，定義滑鼠生成的粒子 (櫻花)
+    
         class Sakura {
           constructor(x, y) {
             this.x = x;
             this.y = y;
-            this.size = Math.random() * 1.5 + 1;  // 櫻花較小
+            this.size = Math.random() * 1.5 + 1;
             this.speedY = Math.random() * 2 + 0.1;
             this.speedX = Math.random() * 2 - 1;
             this.alpha = Math.random() * 0.8 + 0.2;
             this.angle = Math.random() * Math.PI * 2;
             this.angleSpeed = Math.random() * 0.05;
           }
-
+    
           update() {
             this.y += this.speedY;
             this.x += this.speedX;
             this.angle += this.angleSpeed;
+            // 如果櫻花超出畫布底部，將其從粒子數組中移除
             if (this.y > particleCanvas.height) {
-              this.y = -this.size;
+              particlesArray.splice(particlesArray.indexOf(this), 1);
             }
             if (this.x > particleCanvas.width || this.x < 0) {
               this.speedX *= -1;
             }
           }
-
+    
           draw() {
             particleCtx.save();
             particleCtx.translate(this.x, this.y);
@@ -82,20 +81,29 @@
             particleCtx.restore();
           }
         }
-
-        // 初始化粒子數組
+    
         let particlesArray = [];
-
-        // 生成粒子並更新
-        function createMouseSakura(event) {
-          const x = event.x;
-          const y = event.y;
-          particlesArray.push(new Sakura(x, y));
+    
+        // 每次固定間隔時間生成一個新的櫻花
+        function generateFixedRateSakura() {
+          if (particlesArray.length < 300) {  // 限制粒子數量
+            const x = Math.random() * particleCanvas.width;
+            const y = -10;  // 櫻花從畫布上方生成
+            particlesArray.push(new Sakura(x, y));
+          }
         }
-
-        // 繪製粒子之間的連線
+    
+        // 滑鼠移動時生成新的櫻花
+        function createMouseSakura(event) {
+          if (particlesArray.length < 300) {  // 限制粒子數量
+            const x = event.x;
+            const y = event.y;
+            particlesArray.push(new Sakura(x, y));
+          }
+        }
+    
         function connectParticles() {
-          let maxDistance = 100;  // 設置連線的最大距離
+          let maxDistance = 100;
           for (let a = 0; a < particlesArray.length; a++) {
             for (let b = a + 1; b < particlesArray.length; b++) {
               let dx = particlesArray[a].x - particlesArray[b].x;
@@ -113,34 +121,30 @@
             }
           }
         }
-
-        // 更新並繪製粒子
+    
         function handleParticles() {
           for (let i = 0; i < particlesArray.length; i++) {
             particlesArray[i].update();
             particlesArray[i].draw();
-            if (particlesArray[i].alpha <= 0) {
-              particlesArray.splice(i, 1);  // 移除已消失的粒子
-              i--;
-            }
           }
         }
-
-        // 動畫循環
+    
         function animate() {
           particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
           handleParticles();
-          connectParticles();  // 繪製粒子間的連線
+          connectParticles();
           requestAnimationFrame(animate);
         }
-
-        // 開始動畫
+    
+        // 開始動畫循環
         animate();
-
-        // 滑鼠移動生成粒子
+    
+        // 以固定間隔（例如每100毫秒）生成櫻花
+        setInterval(generateFixedRateSakura, 100);  // 每100毫秒生成一個櫻花
+    
+        // 監聽滑鼠移動事件來生成櫻花
         window.addEventListener('mousemove', createMouseSakura);
-
-        // TOC 相關邏輯（保持原有邏輯）
+    
         var tocContainer = document.querySelector('.custom-toc-container');
         var contentInner = document.querySelector('.md-content__inner');
         if (contentInner && tocContainer) {
@@ -149,25 +153,25 @@
                 tocContainer.classList.toggle('expanded');
             });
         }
-
+    
         function updateTocPosition() {
             var contentInnerRect = contentInner.getBoundingClientRect();
             tocContainer.style.top = contentInnerRect.top + 'px';
             tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
         }
-
-        // 处理图像大小调整的逻辑
+    
         document.querySelectorAll('img').forEach(function(img) {
             const match = img.src.match(/=(\d+)%x$/);
             if (match) {
                 const widthPercentage = match[1];
                 img.style.width = widthPercentage + '%';
                 img.style.height = 'auto';
-                img.src = img.src.replace(/=(\d+)%x$/, ''); // 移除 URL 中的自定义语法
+                img.src = img.src.replace(/=(\d+)%x$/, '');
             }
         });
       });
     </script>
+    
 {% endblock %}
 
 {% block content %}

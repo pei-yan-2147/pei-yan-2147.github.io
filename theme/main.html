@@ -3,6 +3,27 @@
 {% block libs %}
 {{ super() }}
 {% include "partials/libs.html" ignore missing %}
+{% include "star.html" ignore missing %}
+
+
+
+
+
+
+<!-- 
+<script type="text/javascript">
+  window.MathJax = {
+      tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      },
+      options: {
+          processEscapes: true
+      }
+  };
+</script> -->
+
+
 {% endblock %}
 
 <!-- 贊助 -->

@@ -1,0 +1,468 @@
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link href=https://pei-yan-2147.github.io/src/markdown/extensions/emoji/ rel=canonical><link rel=icon href=../../../../logo/peilogo.png><meta name=generator content="mkdocs-1.6.1, mkdocs-material-9.5.32"><title>Emoji - PEI筆記</title><link rel=stylesheet href=../../../../assets/stylesheets/main.3cba04c6.min.css><link rel=stylesheet href=../../../../assets/stylesheets/palette.06af60db.min.css><script src=../../../../assets/pymdownx-extras/material-extra-theme-2ek1P7jT.js type=text/javascript></script><script src=../../../../assets/pymdownx-extras/material-extra-3rdparty-BUCF4rjN.js type=text/javascript></script><!-- <script type="text/javascript">
+  window.MathJax = {
+      tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      },
+      options: {
+          processEscapes: true
+      }
+  };
+</script> --><script type=text/javascript id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><!-- 背景图片 --><div class=image-background></div><!-- 星空和流星效果的Canvas背景 --><canvas id=starCanvas style="z-index: -2; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas><!-- 粒子效果的Canvas背景，放置在星空和流星前面 --><canvas id=particleCanvas style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas><script>
+document.addEventListener("DOMContentLoaded", function() {
+  var tocContainer = document.querySelector('.custom-toc-container');
+  var contentInner = document.querySelector('.md-content__inner');
+
+  // 设置星空流星的 Canvas 尺寸
+  var starCanvas = document.getElementById('starCanvas');
+  var starCtx = starCanvas.getContext('2d');
+  function resizeStarCanvas() {
+    starCanvas.width = window.innerWidth;
+    starCanvas.height = window.innerHeight;
+  }
+  resizeStarCanvas();
+  window.addEventListener('resize', resizeStarCanvas);
+
+  // 设置粒子效果的 Canvas 尺寸
+  var particleCanvas = document.getElementById('particleCanvas');
+  var particleCtx = particleCanvas.getContext('2d');
+  function resizeParticleCanvas() {
+    particleCanvas.width = window.innerWidth;
+    particleCanvas.height = window.innerHeight;
+  }
+  resizeParticleCanvas();
+  window.addEventListener('resize', resizeParticleCanvas);
+
+  // 星星类
+  class Star {
+    constructor() {
+      this.reset();  // 随机初始化星星的位置、大小和透明度
+    }
+
+    reset() {
+      this.x = Math.random() * starCanvas.width;
+      this.y = Math.random() * starCanvas.height;
+      this.originalSize = Math.random() * 2 + 1;
+      this.size = 0;
+      this.alpha = 0;
+      this.growthSpeed = 0.02;
+      this.shrinkSpeed = 0.01;
+      this.life = Math.random() * 200 + 100;
+    }
+
+    update() {
+      if (this.life > 100) {
+        this.size += this.growthSpeed;
+        this.alpha += this.growthSpeed;
+        if (this.size > this.originalSize) this.size = this.originalSize;
+        if (this.alpha > 1) this.alpha = 1;
+      } else {
+        this.size -= this.shrinkSpeed;
+        this.alpha -= this.shrinkSpeed;
+        if (this.size < 0) this.size = 0;
+        if (this.alpha < 0) this.alpha = 0;
+      }
+
+      this.life -= 1;
+      if (this.life <= 0) this.reset();
+    }
+
+    draw() {
+      starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
+      starCtx.beginPath();
+      starCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      starCtx.closePath();
+      starCtx.fill();
+    }
+  }
+
+  // 流星类
+  class Meteor {
+    constructor(x = null, y = null) {
+      this.isCustom = (x !== null && y !== null); // 判斷是否是滑鼠生成的流星
+      this.reset(x, y);
+    }
+
+    reset(x = null, y = null) {
+      if (this.isCustom) {
+        this.x = x;
+        this.y = y;
+        this.size = this.originalSize; // 立即设为最大值
+        this.alpha = 1; // 立即设为最大透明度
+      } else {
+        this.x = Math.random() * starCanvas.width / 2;
+        this.y = Math.random() * starCanvas.height;
+        this.size = 0;
+        this.alpha = 0;
+      }
+      this.originalSize = Math.random() * 1 + 1;
+      this.growthSpeed = 0.03;
+      this.speedX = Math.random() * 8 + 4;
+      this.speedY = Math.random() * 4 + 2;
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      if (!this.isCustom) { // 非滑鼠生成的流星才有增大過程
+        this.size += this.growthSpeed;
+        this.alpha += this.growthSpeed;
+        if (this.size > this.originalSize) this.size = this.originalSize;
+        if (this.alpha > 1) this.alpha = 1;
+        this.alpha -= 0.025;
+      } else {
+        // 滑鼠生成的流星更快消失
+        this.alpha -= 0.025; // 透明度更快減少
+      }
+
+      // 如果是滑鼠生成的流星且透明度為0，將其從數組中移除
+      if (this.isCustom && this.alpha <= 0) {
+        return true; // 返回true表示可以從數組中移除
+      }
+
+      if (!this.isCustom && this.isOutOfView()) {
+        this.reset(); // 非滑鼠生成的流星需要重新生成
+      }
+      return false; // 不移除流星
+    }
+
+    draw() {
+      starCtx.strokeStyle = `rgba(242, 187, 255, ${this.alpha})`;
+      starCtx.lineWidth = this.size;
+      starCtx.beginPath();
+      starCtx.moveTo(this.x, this.y);
+      starCtx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5);
+      starCtx.stroke();
+
+      starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
+      this.drawStarShape(this.x, this.y, this.size, 5);
+    }
+
+    drawStarShape(cx, cy, outerRadius, spikes) {
+      let rot = Math.PI / 2 * 3;
+      let step = Math.PI / spikes;
+
+      starCtx.beginPath();
+      starCtx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        let x = cx + Math.cos(rot) * outerRadius;
+        let y = cy + Math.sin(rot) * outerRadius;
+        starCtx.lineTo(x, y);
+        rot += step;
+      }
+      starCtx.lineTo(cx, cy - outerRadius);
+      starCtx.closePath();
+      starCtx.fill();
+    }
+
+    isOutOfView() {
+      return this.x > starCanvas.width || this.y > starCanvas.height || this.alpha <= 0;
+    }
+  }
+
+  // 粒子类
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 3 + 1;
+      this.speedX = Math.random() * 3 - 1.5;
+      this.speedY = Math.random() * 3 - 1.5;
+      this.alpha = 1;
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if (this.size > 0.2) this.size -= 0.1;
+      this.alpha -= 0.02;  // 粒子逐渐消失
+    }
+
+    draw() {
+      particleCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
+      particleCtx.beginPath();
+      particleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      particleCtx.closePath();
+      particleCtx.fill();
+    }
+  }
+
+  // 初始化粒子、星星、流星数组
+  let starsArray = [];
+  let meteorsArray = [];
+  let customMeteorsArray = [];
+  let particlesArray = [];
+  const maxMeteors = 10;
+
+  // 初始化星星
+  function initStars() {
+    starsArray = [];
+    for (let i = 0; i < 150; i++) {
+      starsArray.push(new Star());
+    }
+  }
+
+  // 生成更多流星
+  function createMeteor() {
+    if (meteorsArray.length < maxMeteors) {
+      meteorsArray.push(new Meteor());
+    }
+  }
+
+  // 生成粒子
+  function createParticle(event) {
+    const x = event.x;
+    const y = event.y;
+    for (let i = 0; i < 1; i++) {
+      particlesArray.push(new Particle(x, y));
+    }
+  }
+
+  // 生成滑鼠流星
+  function createCustomMeteor(event) {
+    const x = event.clientX;
+    const y = event.clientY;
+    const newMeteor = new Meteor(x, y);
+    newMeteor.speedX = Math.random() * 8 + 4;  // 設置滑鼠流星的速度
+    newMeteor.speedY = Math.random() * 4 + 2;
+    newMeteor.size = newMeteor.originalSize; // 立即設定最大大小
+    newMeteor.alpha = 1; // 立即設定最大透明度
+    customMeteorsArray.push(newMeteor);
+  }
+
+  // 更新并绘制星星、流星和粒子
+  function handleParticles() {
+    for (let i = 0; i < particlesArray.length; i++) {
+      particlesArray[i].update();
+      particlesArray[i].draw();
+      if (particlesArray[i].alpha <= 0) {
+        particlesArray.splice(i, 1);
+        i--;
+      }
+    }
+  }
+
+  function handleStarsAndMeteors() {
+    for (let i = 0; i < starsArray.length; i++) {
+      starsArray[i].update();
+      starsArray[i].draw();
+    }
+
+    for (let i = 0; i < meteorsArray.length; i++) {
+      meteorsArray[i].update();
+      meteorsArray[i].draw();
+      if (meteorsArray[i].isOutOfView()) {
+        meteorsArray.splice(i, 1);
+        i--;
+      }
+    }
+
+    for (let i = 0; i < customMeteorsArray.length; i++) {
+      if (customMeteorsArray[i].update()) {
+        customMeteorsArray.splice(i, 1); // 移除透明度為0的滑鼠生成流星
+        i--;
+      } else {
+        customMeteorsArray[i].draw();
+      }
+    }
+  }
+
+  // 动画循环
+  function animate() {
+    starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+    particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+    handleStarsAndMeteors();
+    handleParticles();
+    requestAnimationFrame(animate);
+  }
+
+  // 初始化并开始动画
+  initStars();
+  animate();
+
+  // 流星的生成频率增加
+  setInterval(createMeteor, 500);
+
+  // 监听鼠标事件生成粒子
+  window.addEventListener('mousemove', createParticle);
+
+  // // 监听鼠标点击生成额外流星
+  // window.addEventListener('click', createCustomMeteor);
+
+
+  // 处理图像大小调整的逻辑
+  document.querySelectorAll('img').forEach(function(img) {
+      const match = img.src.match(/=(\d+)%x$/);
+      if (match) {
+          const widthPercentage = match[1];
+          img.style.width = widthPercentage + '%';
+          img.style.height = 'auto';
+          img.src = img.src.replace(/=(\d+)%x$/, '');
+      }
+  });
+});
+</script><!-- 
+<script type="text/javascript">
+  window.MathJax = {
+      tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      },
+      options: {
+          processEscapes: true
+      }
+  };
+</script> --><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback"><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><link rel=stylesheet href=../../../../assets/pymdownx-extras/extra-8611f6c398.css><script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script></head> <body dir=ltr data-md-color-scheme=dracula data-md-color-primary=deep-purple data-md-color-accent=deep-purple> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#emoji class=md-skip> Skip to content </a> </div> <div data-md-component=announce> <aside class=md-banner> <div class="md-banner__inner md-grid md-typeset"> <!-- 
+<a href="../../../../about/contributing/#become-a-sponsor">Sponsorship</a> --> <a href=https://github.com/pei-yan-2147>Sponsorship</a> is now available! <span class="twemoji heart-throb"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg> </span> </div> </aside> </div> <header class=md-header data-md-component=header> <nav class="md-header__inner md-grid" aria-label=header.title> <a href=https://pei-yan-2147.github.io/ title=PEI筆記 class="md-header__button md-logo" aria-label=PEI筆記> <img src=../../../../logo/peilogo.png alt=logo> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> PEI筆記 </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Emoji </span> </div> </div> </div> <div class=md-header__options> <div class="md-header-nav__scheme md-header-nav__button md-source__icon md-icon"> <a href=javascript:toggleScheme(); title="Light mode" class=light-mode> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg> </a> <a href=javascript:toggleScheme(); title="Dark mode" class=dark-mode> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg> </a> <a href=javascript:toggleScheme(); title="System preference" class=system-mode> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M7.5 2c-1.79 1.15-3 3.18-3 5.5s1.21 4.35 3.03 5.5C4.46 13 2 10.54 2 7.5A5.5 5.5 0 0 1 7.5 2m11.57 1.5 1.43 1.43L4.93 20.5 3.5 19.07 19.07 3.5m-6.18 2.43L11.41 5 9.97 6l.42-1.7L9 3.24l1.75-.12.58-1.65L12 3.1l1.73.03-1.35 1.13.51 1.67m-3.3 3.61-1.16-.73-1.12.78.34-1.32-1.09-.83 1.36-.09.45-1.29.51 1.27 1.36.03-1.05.87.4 1.31M19 13.5a5.5 5.5 0 0 1-5.5 5.5c-1.22 0-2.35-.4-3.26-1.07l7.69-7.69c.67.91 1.07 2.04 1.07 3.26m-4.4 6.58 2.77-1.15-.24 3.35-2.53-2.2m4.33-2.7 1.15-2.77 2.2 2.54-3.35.23m1.15-4.96-1.14-2.78 3.34.24-2.2 2.54M9.63 18.93l2.77 1.15-2.53 2.19-.24-3.34Z"/></svg> </a> <a href=javascript:toggleScheme(); title="Unknown scheme" class=unknown-mode> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="m15.07 11.25-.9.92C13.45 12.89 13 13.5 13 15h-2v-.5c0-1.11.45-2.11 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8a4 4 0 0 1 4-4 4 4 0 0 1 4 4 3.2 3.2 0 0 1-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10c0-5.53-4.5-10-10-10Z"/></svg> </a> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg> </label> <nav class=md-search__options aria-label=Search> <a href=javascript:void(0) class="md-search__icon md-icon" title=Share aria-label=Share data-clipboard data-clipboard-text data-md-component=search-share tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg> </a> <button type=reset class="md-search__icon md-icon" title=Clear aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg> </button> </nav> <div class=md-search__suggest data-md-component=search-suggest></div> </form> <div class=md-search__output> <div class=md-search__scrollwrap tabindex=0 data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list role=presentation></ol> </div> </div> </div> </div> </div> </nav> </header> <div class=md-container data-md-component=container> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../../.. class=md-tabs__link> 演算法筆記 </a> </li> <li class=md-tabs__item> <a href=../../../../mkdocs%E7%AD%86%E8%A8%98/ class=md-tabs__link> mkdocs筆記 </a> </li> </ul> </div> </nav> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../../.. title=PEI筆記 class="md-nav__button md-logo" aria-label=PEI筆記 data-md-component=logo> <img src=../../../../logo/peilogo.png alt=logo> </a> PEI筆記 </label> <ul class=md-nav__list data-md-scrollfix> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_1> <div class="md-nav__link md-nav__container"> <a href=../../../.. class="md-nav__link "> <span class=md-ellipsis> 演算法筆記 </span> </a> <label class="md-nav__link " for=__nav_1 id=__nav_1_label tabindex=0> <span class="md-nav__icon md-icon"></span> </label> </div> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_1_label aria-expanded=false> <label class=md-nav__title for=__nav_1> <span class="md-nav__icon md-icon"></span> 演算法筆記 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../%E5%BE%85%E8%BE%A6%E4%BA%8B%E9%A0%85/ class=md-nav__link> <span class=md-ellipsis> 待辦事項 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/ class=md-nav__link> <span class=md-ellipsis> 學習資源 </span> </a> </li> <li class=md-nav__item> <a href=../../../../APCS/ class=md-nav__link> <span class=md-ellipsis> APCS </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/ class=md-nav__link> <span class=md-ellipsis> 考前必看 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%9C%89%E4%BA%8B%E6%B2%92%E4%BA%8B%E6%89%93%E4%B8%80%E6%AC%A1/ class=md-nav__link> <span class=md-ellipsis> 有事沒事打一次 </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_1_7> <label class=md-nav__link for=__nav_1_7 id=__nav_1_7_label tabindex=0> <span class=md-ellipsis> 概念、語法、技巧 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=2 aria-labelledby=__nav_1_7_label aria-expanded=false> <label class=md-nav__title for=__nav_1_7> <span class="md-nav__icon md-icon"></span> 概念、語法、技巧 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../%E7%B6%93%E5%85%B8%E5%A0%B1%E9%8C%AF/ class=md-nav__link> <span class=md-ellipsis> 經典報錯 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%81%B7%E6%87%B6%E6%96%B9%E6%B3%95/ class=md-nav__link> <span class=md-ellipsis> 偷懶方法 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%8C%87%E6%A8%99/ class=md-nav__link> <span class=md-ellipsis> 指標(*、&) </span> </a> </li> <li class=md-nav__item> <a href=../../../../getline%E6%90%AD%E9%85%8Dstringstream/ class=md-nav__link> <span class=md-ellipsis> getline搭配stringstream </span> </a> </li> <li class=md-nav__item> <a href=../../../../scanf%20%26%20printf/ class=md-nav__link> <span class=md-ellipsis> scanf & printf </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%AE%9A%E7%BE%A9%23define/ class=md-nav__link> <span class=md-ellipsis> 定義#define </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E4%BD%8D%E5%85%83%E9%81%8B%E7%AE%97/ class=md-nav__link> <span class=md-ellipsis> 位元運算 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E4%BD%BF%E7%94%A8%E4%BD%8D%E5%85%83%E7%AA%AE%E8%88%89/ class=md-nav__link> <span class=md-ellipsis> 使用位元窮舉 </span> </a> </li> <li class=md-nav__item> <a href=../../../../bitset%E4%BD%BF%E7%94%A8/ class=md-nav__link> <span class=md-ellipsis> bitset使用 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%87%B6%E4%BA%BA%E8%BC%B8%E5%85%A5%E6%B3%95%EF%BC%8C%E6%AF%94%E8%B3%BD%E6%99%82%E7%94%A8/ class=md-nav__link> <span class=md-ellipsis> 懶人輸入法，比賽時用 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E8%A4%87%E9%9B%9C%E5%BA%A6/ class=md-nav__link> <span class=md-ellipsis> 複雜度 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%8E%92%E5%BA%8Fsort/ class=md-nav__link> <span class=md-ellipsis> 排序sort </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%AE%9A%E7%BE%A9%E6%AF%94%E8%BC%83%E8%A6%8F%E5%89%87/ class=md-nav__link> <span class=md-ellipsis> 定義比較規則 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%8E%92%E5%88%97%E7%94%9F%E6%88%90permutation%E7%AA%AE%E8%88%89/ class=md-nav__link> <span class=md-ellipsis> 排列生成permutation窮舉 </span> </a> </li> <li class=md-nav__item> <a href=../../../../switch%E4%B9%8B%E4%BD%BF%E7%94%A8/ class=md-nav__link> <span class=md-ellipsis> switch之使用 </span> </a> </li> <li class=md-nav__item> <a href=../../../../do%20while%E4%BD%BF%E7%94%A8/ class=md-nav__link> <span class=md-ellipsis> do while使用 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%88%A4%E6%96%B7%E6%98%AF%E5%90%A6%E7%82%BA%E6%95%B8%E5%AD%97%E3%80%81%E5%AD%97%E6%AF%8D/ class=md-nav__link> <span class=md-ellipsis> 判斷是否為數字、字母 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%A4%A7%E5%B0%8F%E5%AF%AB%E8%BD%89%E6%8F%9B/ class=md-nav__link> <span class=md-ellipsis> 大小寫轉換 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%B0%8F%E6%95%B8%E9%BB%9E%E5%BE%8C%E5%B9%BE%E4%BD%8D/ class=md-nav__link> <span class=md-ellipsis> 小數點後幾位 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E8%BC%B8%E5%87%BA%E7%B5%90%E5%B0%BE%E7%A9%BA%E7%99%BD/ class=md-nav__link> <span class=md-ellipsis> 輸出結尾空白 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E3%80%81%E5%BE%8C%E5%BA%8F/ class=md-nav__link> <span class=md-ellipsis> 前序、中序、後序 </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_1_8> <label class=md-nav__link for=__nav_1_8 id=__nav_1_8_label tabindex=0> <span class=md-ellipsis> 數論 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=2 aria-labelledby=__nav_1_8_label aria-expanded=false> <label class=md-nav__title for=__nav_1_8> <span class="md-nav__icon md-icon"></span> 數論 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../log/ class=md-nav__link> <span class=md-ellipsis> log </span> </a> </li> <li class=md-nav__item> <a href=../../../../%CE%A3%20sigma%20%28%E8%A5%BF%E6%A0%BC%E7%91%AA%29/ class=md-nav__link> <span class=md-ellipsis> Σ sigma (西格瑪) </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%A8%A1%E9%81%8B%E7%AE%97/ class=md-nav__link> <span class=md-ellipsis> %模運算 </span> </a> </li> <li class=md-nav__item> <a href=../../../../元素/費馬小定理.md class=md-nav__link> <span class=md-ellipsis> 元素/費馬小定理 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%9C%88%E7%B5%90%E6%A7%8B%26%E7%B4%84%E7%91%9F%E5%A4%AB%E5%95%8F%E9%A1%8C/ class=md-nav__link> <span class=md-ellipsis> 圈結構&約瑟夫問題 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E4%B8%83%E6%A9%8B%E5%95%8F%E9%A1%8C%26%E4%B8%80%E7%AD%86%E7%95%AB%E5%95%8F%E9%A1%8C/ class=md-nav__link> <span class=md-ellipsis> 七橋問題&一筆畫問題 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E8%B3%AA%E6%95%B8%E3%80%81%E6%89%BE%E8%B3%AA%E5%9B%A0%E6%95%B8%28%E5%9F%83%E5%BC%8F%E7%AF%A9%29/ class=md-nav__link> <span class=md-ellipsis> 質數、找質因數(埃式篩) </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%9B%A0%E6%95%B8%E5%80%8D%E6%95%B8/ class=md-nav__link> <span class=md-ellipsis> 因數倍數 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%AD%90%E5%B9%BE%E9%87%8C%E5%BE%97%E5%BC%95%E7%90%86/ class=md-nav__link> <span class=md-ellipsis> 歐幾里得引理 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%AD%90%E5%B9%BE%E9%87%8C%E5%BE%97%E6%BC%94%E7%AE%97%E6%B3%95%EF%BC%9A%E8%BC%BE%E8%BD%89%E7%9B%B8%E9%99%A4%E6%B3%95%EF%BC%9A%E6%9C%80%E5%A4%A7%E5%85%AC%E5%9B%A0%E6%95%B8gcd/ class=md-nav__link> <span class=md-ellipsis> 歐幾里得演算法：輾轉相除法：最大公因數gcd </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%93%B4%E5%B1%95%E6%AD%90%E5%B9%BE%E9%87%8C%E5%BE%97%E6%BC%94%E7%AE%97%E6%B3%95/ class=md-nav__link> <span class=md-ellipsis> 擴展歐幾里得演算法 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%AD%90%E6%8B%89%E5%87%BD%E6%95%B8/ class=md-nav__link> <span class=md-ellipsis> 歐拉函數 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E7%9F%A9%E9%99%A3%E9%81%8B%E7%AE%97/ class=md-nav__link> <span class=md-ellipsis> 矩陣運算 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%8D%A1%E5%A1%94%E8%98%AD%E6%95%B8/ class=md-nav__link> <span class=md-ellipsis> 卡塔蘭數(Catalan Numbers) </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%A4%A7%E6%95%B8%E9%81%8B%E7%AE%97/ class=md-nav__link> <span class=md-ellipsis> 大數運算 </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_1_9> <label class=md-nav__link for=__nav_1_9 id=__nav_1_9_label tabindex=0> <span class=md-ellipsis> 資料結構 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=2 aria-labelledby=__nav_1_9_label aria-expanded=false> <label class=md-nav__title for=__nav_1_9> <span class="md-nav__icon md-icon"></span> 資料結構 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../STL/ class=md-nav__link> <span class=md-ellipsis> STL </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%96%87%E5%AD%97%E9%99%A3%E5%88%97/ class=md-nav__link> <span class=md-ellipsis> 文字陣列 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E9%8F%88%E7%B5%90%E7%B5%90%E6%A7%8B/ class=md-nav__link> <span class=md-ellipsis> 鏈結結構 </span> </a> </li> <li class=md-nav__item> <a href=../../../../map/ class=md-nav__link> <span class=md-ellipsis> map </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%84%AA%E5%85%88%E6%9F%B1%E5%88%97%28priority_queue%29/ class=md-nav__link> <span class=md-ellipsis> 優先柱列(priority_queue) </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E7%B7%9A%E6%AE%B5%E6%A8%B9/ class=md-nav__link> <span class=md-ellipsis> 線段樹 </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_1_10> <label class=md-nav__link for=__nav_1_10 id=__nav_1_10_label tabindex=0> <span class=md-ellipsis> 演算法 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=2 aria-labelledby=__nav_1_10_label aria-expanded=false> <label class=md-nav__title for=__nav_1_10> <span class="md-nav__icon md-icon"></span> 演算法 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../%E9%81%9E%E8%BF%B4/ class=md-nav__link> <span class=md-ellipsis> 遞迴 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E7%88%86%E6%90%9C/ class=md-nav__link> <span class=md-ellipsis> 爆搜 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%89%8D%E7%B6%B4%E5%92%8C%26%E5%B7%AE%E5%88%86/ class=md-nav__link> <span class=md-ellipsis> 前綴和&差分 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%90%9C%E5%B0%8B%E3%80%81%E4%BA%8C%E5%88%86%E6%90%9C%E5%B0%8B%E3%80%81%E8%B7%B3%E8%BA%8D%E4%BA%8C%E5%88%86%E6%90%9C/ class=md-nav__link> <span class=md-ellipsis> 搜尋、二分搜尋、跳躍二分搜 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%93%88%E5%B8%8C%E8%A1%A8/ class=md-nav__link> <span class=md-ellipsis> 哈希表 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E9%9B%A2%E6%95%A3%E5%8C%96/ class=md-nav__link> <span class=md-ellipsis> 離散化 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%BF%AB%E9%80%9F%E5%86%AA/ class=md-nav__link> <span class=md-ellipsis> 快速冪 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%BB%91%E5%8B%95%E8%A6%96%E7%AA%97%28Sliding%20window%29%28%E6%8A%80%E5%B7%A7%29/ class=md-nav__link> <span class=md-ellipsis> 滑動視窗(Sliding window)(技巧) </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%8E%83%E7%9E%84%E7%B7%9A%E6%BC%94%E7%AE%97%E6%B3%95/ class=md-nav__link> <span class=md-ellipsis> 掃瞄線演算法 </span> </a> </li> <li class=md-nav__item> <a href=/%E7%88%86%E6%90%9C/#_3 class=md-nav__link> <span class=md-ellipsis> 折半枚舉 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E8%B2%AA%E5%BF%83%E6%BC%94%E7%AE%97%E6%B3%95%28Greedy%29/ class=md-nav__link> <span class=md-ellipsis> 貪心演算法(Greedy) </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%8B%95%E6%85%8B%E8%A6%8F%E5%8A%83%28dp%29/ class=md-nav__link> <span class=md-ellipsis> 動態規劃(dp) </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%9C%96%E8%AB%96/ class=md-nav__link> <span class=md-ellipsis> 圖論 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%A8%B9%E8%AB%96/ class=md-nav__link> <span class=md-ellipsis> 樹論 </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_1_11> <label class=md-nav__link for=__nav_1_11 id=__nav_1_11_label tabindex=0> <span class=md-ellipsis> 刷題 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=2 aria-labelledby=__nav_1_11_label aria-expanded=false> <label class=md-nav__title for=__nav_1_11> <span class="md-nav__icon md-icon"></span> 刷題 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../CSEC/ class=md-nav__link> <span class=md-ellipsis> CSEC </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%8C%97%E5%B8%82%E5%AD%B8%E7%A7%91%E8%83%BD%E5%8A%9B%E7%AB%B6%E8%B3%BD/ class=md-nav__link> <span class=md-ellipsis> 北市學科能力競賽 </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_1_11_3> <label class=md-nav__link for=__nav_1_11_3 id=__nav_1_11_3_label tabindex=0> <span class=md-ellipsis> APCS歷屆 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=3 aria-labelledby=__nav_1_11_3_label aria-expanded=false> <label class=md-nav__title for=__nav_1_11_3> <span class="md-nav__icon md-icon"></span> APCS歷屆 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href="https://docs.google.com/spreadsheets/d/15ANYkk1BhHBNcZINYVzdzh2dG11dVd4kMIbcF5l6_h8/edit?usp=sharing" class=md-nav__link> <span class=md-ellipsis> 統整 </span> </a> </li> <li class=md-nav__item> <a href="https://docs.google.com/spreadsheets/d/1B1qI4OE_O4UAc3L77vzmrFFC27ZiMnlh96KpgyUQAgs/edit#gid=0" class=md-nav__link> <span class=md-ellipsis> 編年/題庫(by YUI HUANG) </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%AF%A6%E4%BD%9C%E4%B8%80/ class=md-nav__link> <span class=md-ellipsis> 實作一 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%AF%A6%E4%BD%9C%E4%BA%8C/ class=md-nav__link> <span class=md-ellipsis> 實作二 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%AF%A6%E4%BD%9C%E4%B8%89/ class=md-nav__link> <span class=md-ellipsis> 實作三 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%AF%A6%E4%BD%9C%E5%9B%9B/ class=md-nav__link> <span class=md-ellipsis> 實作四 </span> </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_1_12> <label class=md-nav__link for=__nav_1_12 id=__nav_1_12_label tabindex=0> <span class=md-ellipsis> 其他 </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=2 aria-labelledby=__nav_1_12_label aria-expanded=false> <label class=md-nav__title for=__nav_1_12> <span class="md-nav__icon md-icon"></span> 其他 </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../../%E5%B8%B8%E7%94%A8%E8%8B%B1%E6%96%87/ class=md-nav__link> <span class=md-ellipsis> 常用英文 </span> </a> </li> <li class=md-nav__item> <a href=../../../../hackmd%E7%89%B9%E6%AE%8A%E4%BD%BF%E7%94%A8/ class=md-nav__link> <span class=md-ellipsis> hackmd特殊使用 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%84%AA%E8%B3%AA%E7%B6%B2%E7%AB%99/ class=md-nav__link> <span class=md-ellipsis> 優質網站 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E7%87%9F%E9%9A%8A/ class=md-nav__link> <span class=md-ellipsis> 營隊 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E4%BD%BF%E7%94%A8vscode%E6%92%B0%E5%AF%ABc%2B%2B/ class=md-nav__link> <span class=md-ellipsis> 使用vscode撰寫c++ </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E6%89%93%E5%AD%97%E9%9F%B3%E6%95%88/ class=md-nav__link> <span class=md-ellipsis> 打字音效 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E8%B3%87%E6%96%99%E4%BE%86%E6%BA%90/ class=md-nav__link> <span class=md-ellipsis> 資料來源 </span> </a> </li> <li class=md-nav__item> <a href=../../../../%E5%8A%A0%E6%B7%B1%E5%8A%A0%E5%BB%A3/ class=md-nav__link> <span class=md-ellipsis> 加深加廣 </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../../../../%E6%B8%AC%E8%A9%A6/ class=md-nav__link> <span class=md-ellipsis> 測試 </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../../../../mkdocs%E7%AD%86%E8%A8%98/ class=md-nav__link> <span class=md-ellipsis> mkdocs筆記 </span> </a> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#overview class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=#supported-emoji-providers class=md-nav__link> <span class=md-ellipsis> Supported Emoji Providers </span> </a> </li> <li class=md-nav__item> <a href=#emoji-output-formats class=md-nav__link> <span class=md-ellipsis> Emoji Output Formats </span> </a> </li> <li class=md-nav__item> <a href=#default-emoji-indexes class=md-nav__link> <span class=md-ellipsis> Default Emoji Indexes </span> </a> </li> <li class=md-nav__item> <a href=#default-emoji-generators class=md-nav__link> <span class=md-ellipsis> Default Emoji Generators </span> </a> </li> <li class=md-nav__item> <a href=#custom-emoji-indexes class=md-nav__link> <span class=md-ellipsis> Custom Emoji Indexes </span> </a> </li> <li class=md-nav__item> <a href=#custom-emoji-generators class=md-nav__link> <span class=md-ellipsis> Custom Emoji Generators </span> </a> </li> <li class=md-nav__item> <a href=#using-with-mkdocs class=md-nav__link> <span class=md-ellipsis> Using with MkDocs </span> </a> </li> <li class=md-nav__item> <a href=#emoji-index-updates class=md-nav__link> <span class=md-ellipsis> Emoji Index Updates </span> </a> </li> <li class=md-nav__item> <a href=#options class=md-nav__link> <span class=md-ellipsis> Options </span> </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <p>[<span class=twemoji><svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 3a2 2 0 0 1 2-2h9.982a2 2 0 0 1 1.414.586l4.018 4.018A2 2 0 0 1 21 7.018V21a2 2 0 0 1-2 2H4.75a.75.75 0 0 1 0-1.5H19a.5.5 0 0 0 .5-.5V8.5h-4a2 2 0 0 1-2-2v-4H5a.5.5 0 0 0-.5.5v6.25a.75.75 0 0 1-1.5 0Zm12-.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 0-.146-.336l-4.018-4.018A.5.5 0 0 0 15 2.5Z"/><path d="M4.53 12.24a.75.75 0 0 1-.039 1.06l-2.639 2.45 2.64 2.45a.75.75 0 1 1-1.022 1.1l-3.23-3a.75.75 0 0 1 0-1.1l3.23-3a.75.75 0 0 1 1.06.04Zm3.979 1.06a.75.75 0 1 1 1.02-1.1l3.231 3a.75.75 0 0 1 0 1.1l-3.23 3a.75.75 0 1 1-1.021-1.1l2.639-2.45-2.64-2.45Z"/></svg></span>][_emoji]{: .source-link }</p> <h1 id=emoji>Emoji<a class=headerlink href=#emoji title="Permanent link"></a></h1> <h2 id=overview>Overview<a class=headerlink href=#overview title="Permanent link"></a></h2> <p>The Emoji extension adds support for inserting emoji via simple short names enclosed within colons: <code>:short_name:</code>. This is accomplished by using a short name index to map easy to remember names to associated Unicode data. The Unicode data is then converted into actual Unicode emoji characters and/or special HTML elements (usually images) that represent the emoji.</p> <div class=highlight><pre><span></span><code>:smile: :heart: :thumbsup:
+</code></pre></div> <div class=result> <p><img alt=😄 class=twemoji src=https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f604.svg title=:smile:> <img alt=❤ class=twemoji src=https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/2764.svg title=:heart:> <img alt=👍 class=twemoji src=https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f44d.svg title=:thumbsup:></p> </div> <p>The Emoji extension can be included in Python Markdown by using the following:</p> <div class=highlight><pre><span></span><code><span class=kn>import</span> <span class=nn>markdown</span>
+<span class=n>md</span> <span class=o>=</span> <span class=n>markdown</span><span class=o>.</span><span class=n>Markdown</span><span class=p>(</span><span class=n>extensions</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;pymdownx.emoji&#39;</span><span class=p>])</span>
+</code></pre></div> <h2 id=supported-emoji-providers>Supported Emoji Providers<a class=headerlink href=#supported-emoji-providers title="Permanent link"></a></h2> <p>There are a number of emoji short name conventions that people may be aware of. These conventions are always tied to a specific emoji set. These conventions differ because there is no official Unicode short name convention. At the present, Emoji chooses to focus on three specific emoji sets:</p> <p>/// tab | EmojiOne [EmojiOne][emojione] (<img align=absmiddle alt=:smile: class=emojione src=https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f604.png title=:smile:> <img align=absmiddle alt=:heart: class=emojione src=https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/2764.png title=:heart:> <img align=absmiddle alt=:thumbsup: class=emojione src=https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/1f44d.png title=:thumbsup:>): EmojiOne is a high quality emoji set with support for gender and skin tone modifiers. Their free emoji set includes PNGs in sizes of 32x32, 64x64, and 128x128 which are all available via a CDN.</p> <p>The older EmojiOne (version 2.2.7), is what is used by default. It is the last truly free version. EmojiOne has rebranded with the name JoyPixels and now has an even more restrictive license for their graphical assets. Their latest short name list is still used for Twemoji as that portion is available under the MIT license via their toolkit repo <a class="magiclink magiclink-github magiclink-repository" href=https://github.com/JoyPixels/emoji-toolkit title="GitHub Repository: JoyPixels/emoji-toolkit">JoyPixels/emoji-toolkit</a>. ///</p> <p>/// tab | Twemoji [Twemoji][twemoji] (<img align=absmiddle alt=:smile: class=twemoji src=https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/1f604.png title=:smile:> <img align=absmiddle alt=:heart: class=twemoji src=https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/2764.png title=:heart:> <img align=absmiddle alt=:thumbsup: class=twemoji src=https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/72x72/1f44d.png title=:thumbsup:>): Twemoji is Twitter's open source emoji set which also covers a great many emoji with skin tones and gender modifiers. The hosted CDN provides 72x72 PNG emoji or SVG emoji.</p> <p>While Gemoji and EmojiOne have a short name convention, Twemoji does not, and there are very few 3<sup>rd</sup> party projects that provide short names anywhere close to all the provided emoji that Twemoji supports. Since JoyPixels has an MIT licensed index of short names closest to what Twemoji supports, we use their short name list for Twemoji. There will be a reasonable attempt to patch in emoji not found in JoyPixels' index, but if JoyPixels is ever significantly behind, we may wait for JoyPixels to catch up. ///</p> <p>/// tab | Gemoji [Gemoji][gemoji] (<img align=absmiddle alt=:smile: class=gemoji src=https://github.githubassets.com/images/icons/emoji/unicode/1f604.png title=:smile:> <img align=absmiddle alt=:heart: class=gemoji src=https://github.githubassets.com/images/icons/emoji/unicode/2764.png title=:heart:> <img align=absmiddle alt=:+1: class=gemoji src=https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png title=:+1:>): Gemoji is GitHub's open source emoji solution. It contains a lot of common emoji and a couple special, non Unicode emoji (like Gemoji's <code>:octocat:</code> <img align=absmiddle alt=:octocat: class=gemoji src=https://github.githubassets.com/images/icons/emoji/octocat.png title=:octocat:>). If you are a GitHub user, you are probably familiar with some of the short names associated with it. Their associated CDN contains the emoji in 75x75 PNG format. ///</p> <div class="admonition warning"> <p class=admonition-title>Emoji Image Licensing</p> <p>PyMdown Extensions has no affiliation with EmojiOne, Gemoji, or Twemoji. The indexes generated from their sources are covered under their respective licensing. When using their images or CSS, please see their licensing terms to ensure proper usage and attributions.</p> <p>//// tab | EmojiOne - <a class="magiclink magiclink-github magiclink-repository" href=https://github.com/joypixels/emoji-toolkit#joypixels-version-2 title="GitHub Repository: joypixels/emoji-toolkit#joypixels-version-2">joypixels/emoji-toolkit#joypixels-version-2</a> - <a href=http://creativecommons.org/licenses/by/4.0/ >http://creativecommons.org/licenses/by/4.0/</a> ////</p> <p>//// tab | Twemoji - <a href=https://github.com/jdecked/twemoji/blob/main/LICENSE-GRAPHICS>https://github.com/jdecked/twemoji/blob/main/LICENSE-GRAPHICS</a> ////</p> <p>//// tab | Gemoji - <a href=https://github.com/github/gemoji/blob/master/LICENSE>https://github.com/github/gemoji/blob/master/LICENSE</a> ////</p> </div> <p>All short name indexes that Emoji uses are generated from EmojiOne's or Gemoji's latest official source tag &ndash; Twemoji uses JoyPixels' index as the Twemoji repository does not ship with a short name index. The indexes contain the emoji names, short names, values, etc.; everything needed to insert Unicode emoji characters or specially crafted HTML elements.</p> <h2 id=emoji-output-formats>Emoji Output Formats<a class=headerlink href=#emoji-output-formats title="Permanent link"></a></h2> <p>Depending on your needs, you may have different requirements for how emoji get displayed in your documents. You may want to use PNG images, or maybe you really like SVG images. Maybe you just want to convert short names to the actual Unicode code points. There are a variety of ways you may want to output emoji, and the Emoji extension has you covered.</p> <p>Emoji provides various output formats that take the Unicode data associated with a short name (or the short name itself in the case of a custom emoji) and generates an HTML output. Not all of the provided output formats will work for each emoji index, but there are a few that should work for all three. Check out <a href=#default-emoji-generators>Default Emoji Generators</a> or <a href=#custom-emoji-generators>Custom Emoji Generators</a> to learn more.</p> <h2 id=default-emoji-indexes>Default Emoji Indexes<a class=headerlink href=#default-emoji-indexes title="Permanent link"></a></h2> <p>By default, Emoji provides three indexes: <code>emojione</code>, <code>gemoji</code>, and <code>twemoji</code>. All indexes are generated from the most recent official release tag source (in the case of Twemoji, short names are acquired from the generated index in <a class="magiclink magiclink-github magiclink-repository" href=https://github.com/JoyPixels/emoji-toolkit title="GitHub Repository: JoyPixels/emoji-toolkit">JoyPixels/emoji-toolkit</a>). They can be used by passing in one of the three functions below via the <code>emoji_index</code> parameter. Pass the actual function reference, not a string. If you need to create your own, just check out <a href=#custom-emoji-generators>Custom Emoji Indexes</a>.</p> <div class="admonition tip"> <p class=admonition-title>Tip</p> <p>If you are attempting to configure these options in a YAML based configuration (like in [MkDocs][mkdocs]), please see the <a href=../../faq/#function-references-in-yaml>FAQ</a> to see how to specify function references in YAML.</p> </div> <p>/// tab | EmojiOne <div class=highlight><pre><span></span><code>pymdownx.emoji.emojione
+</code></pre></div></p> <p>This is the default function that is used. EmojiOne was rebranded as JoyPixels and is no longer permissible enough to be used. The release used here is for 2.2.7 which is the last usable, truly free version of EmojiOne. Users are still required to comply with acknowledgments. JoyPixels 3.0+ graphical assets will not be supported moving forward as the license is too restrictive, tough the latest index of their friendly names is supported under the MIT license and is used to generate friendly, short names for Twemoji.</p> <p>You can always find out what tag it was built with by doing the following:</p> <div class=highlight><pre><span></span><code><span class=gp>&gt;&gt;&gt; </span><span class=kn>import</span> <span class=nn>pymdownx.emoji1_db</span> <span class=k>as</span> <span class=nn>e1db</span>
+<span class=gp>&gt;&gt;&gt; </span><span class=n>e1db</span><span class=o>.</span><span class=n>version</span>
+<span class=go>&#39;v2.2.7&#39;</span>
+</code></pre></div> <p>To see the full list of short names for this index, see the index [source][emojione-index]. ///</p> <p>/// tab | Twemoji <div class=highlight><pre><span></span><code>pymdownx.emoji.twemoji
+</code></pre></div></p> <p>This function provides an index of the latest Twemoji supported emoji (at the time of release). The associated short names are currently borrowed from JoyPixels' index found in their <a class="magiclink magiclink-github magiclink-repository" href=https://github.com/JoyPixels/emoji-toolkit title="GitHub Repository: JoyPixels/emoji-toolkit">JoyPixels/emoji-toolkit</a> repo. JoyPixels short name index is available under the MIT license and is used as Twemoji does not provide its own list of short names.</p> <p>There are a few emoji that are currently Twemoji specific, two of which are likely to always be as they are not part of the official emoji spec. The short names are listed below.</p> <details class=info> <summary>Twemoji Specific Emoji</summary> <p>Twemoji provides some non-standard emoji. We've made them available following the naming patterns that EmojiOne follows as we are using their short name index.</p> <p>The emoji are either some that only Twemoji supports, rarely supported by others, or emoji that have tone and/or gender modifiers that aren't supported in the Unicode specifications. We've also provided appropriate aliases for consistency with other like emoji.</p> <div class=highlight><pre><span></span><code>:pirate_flag:
+:shibuya:
+
+:skier_tone1:
+:skier_tone2:
+:skier_tone3:
+:skier_tone4:
+:skier_tone5:
+
+:woman_levitate:
+:woman_levitate_tone1:
+:woman_levitate_tone2:
+:woman_levitate_tone3:
+:woman_levitate_tone4:
+:woman_levitate_tone5:
+
+:woman_in_business_suit_levitating_tone1:
+:woman_in_business_suit_levitating_tone2:
+:woman_in_business_suit_levitating_tone3:
+:woman_in_business_suit_levitating_tone4:
+:woman_in_business_suit_levitating_tone5:
+
+:woman_in_tuxedo:
+:woman_in_tuxedo_tone1:
+:woman_in_tuxedo_tone2:
+:woman_in_tuxedo_tone3:
+:woman_in_tuxedo_tone4:
+:woman_in_tuxedo_tone5:
+
+:transgender_sign:
+:transgender_flag:
+</code></pre></div> </details> <p>You can always find out what tag it was built with by doing the following:</p> <div class=highlight><pre><span></span><code><span class=gp>&gt;&gt;&gt; </span><span class=kn>import</span> <span class=nn>pymdownx.twemoji_db</span> <span class=k>as</span> <span class=nn>twdb</span>
+<span class=gp>&gt;&gt;&gt; </span><span class=n>twdb</span><span class=o>.</span><span class=n>version</span>
+<span class=go>&#39;v12.1.3&#39;</span>
+<span class=gp>&gt;&gt;&gt; </span><span class=n>twdb</span><span class=o>.</span><span class=n>index_version</span>
+<span class=go>&#39;5.0.5&#39;</span>
+</code></pre></div> <p>To see the full list of short names for this index, see the index [source][twemoji-index]. ///</p> <p>/// tab | Gemoji <div class=highlight><pre><span></span><code>pymdownx.emoji.gemoji
+</code></pre></div></p> <p>This function provides an index of the latest Gemoji supported emoji (at the time of release).</p> <p>You can always find out what tag it was built with by doing the following:</p> <div class=highlight><pre><span></span><code><span class=gp>&gt;&gt;&gt; </span><span class=kn>import</span> <span class=nn>pymdownx.gemoji_db</span> <span class=k>as</span> <span class=nn>gmdb</span>
+<span class=gp>&gt;&gt;&gt; </span><span class=n>gmdb</span><span class=o>.</span><span class=n>version</span>
+<span class=go>&#39;v3.0.1&#39;</span>
+</code></pre></div> <p>To see the full list of short names for this index, see the index [source][gemoji-index]. ///</p> <h2 id=default-emoji-generators>Default Emoji Generators<a class=headerlink href=#default-emoji-generators title="Permanent link"></a></h2> <p>Emoji provides six default emoji generators. PNG output and Unicode code point output are supported for all three indexes. SVG output is only supported for Twemoji and the older 2.2.7 EmojiOne set. PNG sprites and the "Font Awesome" like format are only supported by EmojiOne. SVG sprites is only supported by the 2.2.7 EmojiOne.</p> <p>You can select a generator to use by passing in one of the functions below via the <code>emoji_generator</code> parameter. Pass the actual function reference, not a string. If you need to create your own, just check out <a href=#custom-emoji-generators>Custom Emoji Generators</a>.</p> <div class="admonition tip"> <p class=admonition-title>Tip</p> <p>If you are attempting to configure these options in a YAML based configuration (like in [MkDocs][mkdocs]), please see the <a href=../../faq/#function-references-in-yaml>FAQ</a> to see how to specify function references in YAML.</p> </div> <p>/// tab | PNG <div class=highlight><pre><span></span><code>pymdownx.emoji.to_png
+</code></pre></div></p> <p>This is a general purpose generator which provides EmojiOne, GitHub, and Twemoji CDN path(s) out of the box. Depending on the index you've chosen, the appropriate CDN will be provided. If this ever gets out of date, a new CDN can be passed in via <code>image_path</code> and/or <code>non_standard_image_path</code>. EmojiOne actually has multiple PNGs sizes of 32, 64, and 128, but the default CDN path is the one for size 64: <code>https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/64/</code>. You can change it for a larger or smaller PNG size by updating the size in the URL and passing the new URL in through <code>image_path</code>. The PNG output form is as follows:</p> <div class=highlight><pre><span></span><code><span class=p>&lt;</span><span class=nt>img</span> <span class=na>alt</span><span class=o>=</span><span class=s>&quot;😄&quot;</span> <span class=na>class</span><span class=o>=</span><span class=s>&quot;emojione&quot;</span> <span class=na>src</span><span class=o>=</span><span class=s>&quot;https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/png/64/1f604.png&quot;</span> <span class=na>title</span><span class=o>=</span><span class=s>&quot;:smile:&quot;</span> <span class=p>/&gt;</span>
+</code></pre></div> <p><strong>Generator Specific Options</strong></p> <table> <thead> <tr> <th>Option</th> <th>Type</th> <th>Default</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>classes</code></td> <td>string</td> <td>Name of the index used</td> <td>Specifies the class(es) to be used in the image element.</td> </tr> <tr> <td><code>image_path</code></td> <td>string</td> <td>CDN for the default index used</td> <td>This can be either a local path or a CDN containing the assets. By default, an appropriate CDN is provided for EmojiOne, Gemoji, and Twemoji depending on which index is being used.</td> </tr> <tr> <td><code>non_standard_image_path</code></td> <td>string</td> <td>CDN for the default index used</td> <td>This can be either a local path, or a CDN containing the assets. This is often used for non-standard emoji that do not have an actual Unicode number, and cannot be found in this way. Gemoji used to use this for non-standard emoji like <code>:octocat:</code>, but none of those are available by default anymore.</td> </tr> <tr> <td><code>attributes</code></td> <td>dictionary</td> <td><code class=highlight><span class=p>{}</span></code></td> <td>A dictionary containing tag attributes as key value string pairs. The dictionary keys are the attribute names and dictionary values are the attribute values.</td> </tr> <tr> <td>///</td> <td></td> <td></td> <td></td> </tr> </tbody> </table> <p>/// tab | SVG <div class=highlight><pre><span></span><code>pymdownx.emoji.to_svg
+</code></pre></div></p> <p>This generator was written to output SVG images and supports EmojiOne and Twemoji. EmojiOne's SVG support is only for the free 2.2.7 release, so the default CDN still references the 2.2.7 release. EmojiOne short names added after 2.2.7 will not find images. You can of course reference local SVG images as well by pointing <code>image_path</code> to them as well. The SVG image outputs as:</p> <div class=highlight><pre><span></span><code><span class=p>&lt;</span><span class=nt>img</span> <span class=na>alt</span><span class=o>=</span><span class=s>&quot;😄&quot;</span> <span class=na>class</span><span class=o>=</span><span class=s>&quot;emojione&quot;</span> <span class=na>src</span><span class=o>=</span><span class=s>&quot;https://cdn.jsdelivr.net/emojione/assets/svg/1f604.svg&quot;</span> <span class=na>title</span><span class=o>=</span><span class=s>&quot;:smile:&quot;</span> <span class=p>/&gt;</span>
+</code></pre></div> <p><strong>Generator Specific Options</strong></p> <table> <thead> <tr> <th>Option</th> <th>Type</th> <th>Default</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>classes</code></td> <td>string</td> <td>Name of the index used</td> <td>Specifies the class(es) to be used in the image element. The default will match the name of the index used.</td> </tr> <tr> <td><code>image_path</code></td> <td>string</td> <td>A CDN for EmojiOne images</td> <td>This can be either a local path or a CDN containing the assets. By default, an appropriate CDN is provided for EmojiOne.</td> </tr> <tr> <td><code>attributes</code></td> <td>dictionary</td> <td><code class=highlight><span class=p>{}</span></code></td> <td>A dictionary containing tag attributes as key value string pairs. The dictionary keys are the attribute names and dictionary values are the attribute values.</td> </tr> <tr> <td>///</td> <td></td> <td></td> <td></td> </tr> </tbody> </table> <p>/// tab | PNG Sprite <div class=highlight><pre><span></span><code>pymdownx.emoji.to_png_sprite
+</code></pre></div></p> <p>This generator was written to support PNG sprite output for EmojiOne. It is expected that this will be used in conjunction with the the official EmojiOne CSS. You can include the CSS from the CDN in your document. The CSS comes in three sizes: 32, 64, 128. Make sure to set the correct size in the options to generate the appropriate classes.</p> <p>Example CDN for the 2.2.7 version with 64px PNGs: <code>https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.7/assets/sprites/emojione.sprites.css</code>.</p> <p><code>to_png_sprite</code> outputs the emoji as a span in the form below. The CSS will apply the appropriate mapping in the sprite PNG to the background image of the span.</p> <div class=highlight><pre><span></span><code><span class=p>&lt;</span><span class=nt>span</span> <span class=na>class</span><span class=o>=</span><span class=s>&quot;emojione-64-people _1f604&quot;</span> <span class=na>title</span><span class=o>=</span><span class=s>&quot;:smile:&quot;</span><span class=p>&gt;</span>😄<span class=p>&lt;/</span><span class=nt>span</span><span class=p>&gt;</span>
+</code></pre></div> <p><strong>Generator Specific Options</strong></p> <table> <thead> <tr> <th>Option</th> <th>Type</th> <th>Default</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>classes</code></td> <td>string</td> <td>Name of the index used</td> <td>Class(es) used for the span where the classes are inserted as "class" in the following template: <code class=highlight><span class=s1>&#39;</span><span class=si>%(class)s</span><span class=s1>-</span><span class=si>%(size)s</span><span class=s1>-</span><span class=si>%(category)s</span><span class=s1> _</span><span class=si>%(unicode)s</span><span class=s1>&#39;</span></code>.</td> </tr> <tr> <td><code>size</code></td> <td>int</td> <td><code class=highlight><span class=mi>64</span></code></td> <td>Integer specifying the size for the class above.</td> </tr> <tr> <td><code>attributes</code></td> <td>dictionary</td> <td><code class=highlight><span class=p>{}</span></code></td> <td>A dictionary containing tag attributes as key value string pairs. The dictionary keys are the attribute names and dictionary values are the attribute values.</td> </tr> <tr> <td>///</td> <td></td> <td></td> <td></td> </tr> </tbody> </table> <p>/// tab | SVG Sprite <div class=highlight><pre><span></span><code>pymdownx.emoji.to_svg_sprite
+</code></pre></div></p> <p>This was written to support EmojiOne SVG sprite output. The output form was taken directly from an example in the EmojiOne source. It is expected that the the user will provide a local version of the official SVG sprite and the path to it. Unfortunately there is no free 3.0 SVG sprite, so you will need to [download][emojione-sprites-svg] the old 2.27 one. The output is:</p> <div class=highlight><pre><span></span><code><span class=p>&lt;</span><span class=nt>svg</span> <span class=na>class</span><span class=o>=</span><span class=s>&quot;emojione&quot;</span><span class=p>&gt;&lt;</span><span class=nt>description</span><span class=p>&gt;</span>😄<span class=p>&lt;/</span><span class=nt>description</span><span class=p>&gt;&lt;</span><span class=nt>use</span> <span class=na>xlink:href</span><span class=o>=</span><span class=s>&quot;./../assets/sprites/emojione.sprites.svg#emoji-1f604&quot;</span><span class=p>&gt;&lt;/</span><span class=nt>use</span><span class=p>&gt;&lt;/</span><span class=nt>svg</span><span class=p>&gt;</span>
+</code></pre></div> <p><strong>Generator Specific Options</strong></p> <table> <thead> <tr> <th>Option</th> <th>Type</th> <th>Default</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>classes</code></td> <td>string</td> <td>Name of the index used</td> <td>Class(es) to apply to the <code>svg</code> element where the classes are inserted as "class" in the following template: <code class=highlight><span class=s1>&#39;</span><span class=si>%(class)s</span><span class=s1>-</span><span class=si>%(unicode)s</span><span class=s1>&#39;</span></code>.</td> </tr> <tr> <td><code>image_path</code></td> <td>string</td> <td><code class=highlight><span class=s1>&#39;&#39;</span></code></td> <td>Path to the SVG sprites.</td> </tr> <tr> <td>///</td> <td></td> <td></td> <td></td> </tr> </tbody> </table> <p>/// tab | Alt <div class=highlight><pre><span></span><code>pymdownx.emoji.to_alt
+</code></pre></div></p> <p>This generator supports all emoji indexes. The generator outputs the alt value directly to the document. The output can be Unicode characters, HTML entities, or even just the short name depending on what the global setting of <code>alt</code> is set to.</p> <div class=highlight><pre><span></span><code>😃
+</code></pre></div> <p>There are no generator specific options. ///</p> <h2 id=custom-emoji-indexes>Custom Emoji Indexes<a class=headerlink href=#custom-emoji-indexes title="Permanent link"></a></h2> <div class=highlight><pre><span></span><code><span class=k>def</span> <span class=nf>emoji_index</span><span class=p>(</span><span class=n>options</span><span class=p>,</span> <span class=n>md</span><span class=p>)</span>
+</code></pre></div> <p>In order to provide a custom index, the Emoji extension must be given a function that returns a suitable emoji index. The function should simply return the custom index. It accepts both an options dictionary and the markdown object. The options dictionary is the same object that is specified in in the extensions <a href=#options>settings</a>.</p> <p>The index should be returned in the following format:</p> <p>/// collapse-code <div class=highlight><pre><span></span><code><span class=n>emoji_index</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=c1># Name is the name of the index.  This is passed into the emoji</span>
+    <span class=c1># generator functions and can be used to differentiate logic</span>
+    <span class=c1># for different indexes if required.</span>
+    <span class=s2>&quot;name&quot;</span><span class=p>:</span> <span class=s2>&quot;myindex&quot;</span><span class=p>,</span>
+
+    <span class=c1># The actual index.  A dictionary of all the emoji.</span>
+    <span class=c1># Different emoji short names with the same Unicode data</span>
+    <span class=c1># can be mentioned under aliases.</span>
+    <span class=s2>&quot;emoji&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=c1># Key is the short name.</span>
+        <span class=s2>&quot;:zero:&quot;</span><span class=p>:</span> <span class=p>{</span>
+
+            <span class=c1># Name is the long name.</span>
+            <span class=s2>&quot;name&quot;</span><span class=p>:</span> <span class=s2>&quot;keycap digit zero&quot;</span><span class=p>,</span>
+
+            <span class=c1># Category of emoji.</span>
+            <span class=c1># Not needed if this is a non-Unicode, custom</span>
+            <span class=c1># emoji with no category</span>
+            <span class=s2>&quot;category&quot;</span><span class=p>:</span> <span class=s2>&quot;symbol&quot;</span><span class=p>,</span>
+
+            <span class=c1># Unicode is the representation of the Unicode</span>
+            <span class=c1># code points, but it is not necessarily valid Unicode</span>
+            <span class=c1># code points. Essentially it is what represents the Unicode</span>
+            <span class=c1># and is used as the image name for pngs and svgs. Depending</span>
+            <span class=c1># on the index, it may not be code points alt all. It is also</span>
+            <span class=c1># sometimes used as part of special class names in the HTML</span>
+            <span class=c1># output (depending on the generator).</span>
+            <span class=c1>#</span>
+            <span class=c1># In the case of Gemoji and EmojiOne this is the Unicode code</span>
+            <span class=c1># points with variations and joiners striped out. In the case of</span>
+            <span class=c1># Twemoji, it is usually full valid code points though leading</span>
+            <span class=c1># zeros are stripped from the beginning.</span>
+            <span class=c1>#</span>
+            <span class=c1># Do not include this if the emoji is a custom, non-Unicode emoji.</span>
+            <span class=s2>&quot;unicode&quot;</span><span class=p>:</span> <span class=s2>&quot;0030-20e3&quot;</span><span class=p>,</span>
+
+            <span class=c1># This is the full Unicode code points and is</span>
+            <span class=c1># used for the &quot;alt&quot; attributes in the HTML output of images.</span>
+            <span class=c1># It is redundant to include this if it is the</span>
+            <span class=c1># same as &#39;unicode&#39;, but it won&#39;t hurt anything if it is.</span>
+            <span class=c1>#</span>
+            <span class=c1># Do not include this if the emoji is a custom,</span>
+            <span class=c1># non-Unicode emoji. This shows a fully qualified emoji code,</span>
+            <span class=c1># but it could just as easily be &quot;0030-2033&quot; which is also valid.</span>
+            <span class=c1># Some indexes will provide fully qualified, some may not.</span>
+            <span class=s2>&quot;unicode_alt&quot;</span><span class=p>:</span> <span class=s2>&quot;0030-fe0f-20e3&quot;</span>
+        <span class=p>},</span>
+        <span class=c1># No need to specify &#39;unicode_alt&#39; as it is the same</span>
+        <span class=c1># as &#39;unicode&#39;.</span>
+        <span class=s2>&quot;:thumbsup:&quot;</span><span class=p>:</span> <span class=p>{</span>
+            <span class=s2>&quot;name&quot;</span><span class=p>:</span> <span class=s2>&quot;thumbs up sign&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;unicode&quot;</span><span class=p>:</span> <span class=s2>&quot;1f44d&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;category&quot;</span><span class=p>:</span> <span class=s2>&quot;people&quot;</span>
+        <span class=p>},</span>
+        <span class=c1># Should not specify any unicode fields</span>
+        <span class=c1># as this is not a real unicode emoji.</span>
+        <span class=s2>&quot;:octocat:&quot;</span><span class=p>:</span> <span class=p>{</span>
+            <span class=s2>&quot;name&quot;</span><span class=p>:</span> <span class=s2>&quot;octocat&quot;</span>
+        <span class=p>},</span>
+    <span class=p>},</span>
+    <span class=c1># Short names that share previously defined Unicode data</span>
+    <span class=c1># like &#39;+1&#39; and &#39;thumbsup&#39; etc.</span>
+    <span class=s2>&quot;aliases&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=c1># Key is the alias.</span>
+        <span class=c1># Value is the short name it maps to in the</span>
+        <span class=c1># previously defined &#39;emoji&#39; key.</span>
+        <span class=s2>&quot;:+1:&quot;</span><span class=p>:</span> <span class=s2>&quot;:thumbsup:&quot;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></div> ///</p> <div class="admonition new"> <p class=admonition-title>New 7.1</p> <p>Emoji indexes now accept <code>options</code> and <code>md</code>. The old sans argument format will still be accepted, but in the future the arguments will be expected.</p> </div> <h2 id=custom-emoji-generators>Custom Emoji Generators<a class=headerlink href=#custom-emoji-generators title="Permanent link"></a></h2> <div class=highlight><pre><span></span><code><span class=k>def</span> <span class=nf>emoji_generator</span><span class=p>(</span><span class=n>index</span><span class=p>,</span> <span class=n>shortname</span><span class=p>,</span> <span class=n>alias</span><span class=p>,</span> <span class=n>uc</span><span class=p>,</span> <span class=n>alt</span><span class=p>,</span> <span class=n>title</span><span class=p>,</span> <span class=n>category</span><span class=p>,</span> <span class=n>options</span><span class=p>,</span> <span class=n>md</span><span class=p>)</span>
+</code></pre></div> <p>Each different kind of output is controlled by a different emoji generator function, but all generator functions have the same input format. The options object is the same object that is specified in in the extensions <a href=#options>settings</a> and is shared with the index as well.</p> <table> <thead> <tr> <th>Parameter</th> <th>Type</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>index</code></td> <td>string</td> <td>The name of the selected emoji index.</td> </tr> <tr> <td><code>shortname</code></td> <td>string</td> <td>The current short name. This may differ from the actual name used in a document as aliases get translated to the main short name.</td> </tr> <tr> <td><code>alias</code></td> <td>string</td> <td>If the specified short name is an alias, that alias will be set here, and the main short name will be found under <code>shortname</code>. This will be <code>None</code> if the name used was not an alias.</td> </tr> <tr> <td><code>uc</code></td> <td>string</td> <td>This is a string representation of the Unicode, it could technically be anything as this is normally used to reference image files. So while some indexes will have this be code points, it may not contain code points at all or it may strip out code points for simpler image names. So the value here will not always be practical for calculating the actual Unicode points of an emoji. This will be <code>None</code> for non-standard emoji that are not Unicode.</td> </tr> <tr> <td><code>alt</code></td> <td>string</td> <td>This is the alternative emoji value (or fallback value). Its format will differ depending on the extension setting <code>alt</code> and also the index being used. This will be returned as either the full valid Unicode characters or HTML entities, or it will be the short name used. See the <code>alt</code> setting for more info.</td> </tr> <tr> <td><code>title</code></td> <td>string</td> <td>This is the title that can be used in image elements. Depending on the global extension setting <code>title</code>, this will either return the full long description, the short name, or <code>None</code>. See the <code>title</code> setting for more info.</td> </tr> <tr> <td><code>category</code></td> <td>string</td> <td>Category of the emoji, or <code>None</code> if there is no category for the emoji.</td> </tr> <tr> <td><code>options</code></td> <td>dictionary</td> <td>This is a dictionary to specify generator and index function specific options. This can be anything, and it is up to the generator function and the index function to parse relevant options and provide defaults.</td> </tr> <tr> <td><code>md</code></td> <td>class</td> <td>This is the Markdown class object. This is mainly used to access specific things needed from the Markdown class when formatting your output. If you needed to stash your output, you would do something like: <code class=highlight><span class=n>md</span><span class=o>.</span><span class=n>htmlStash</span><span class=o>.</span><span class=n>store</span><span class=p>(</span><span class=n>alt</span><span class=p>,</span> <span class=n>safe</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span></code>.</td> </tr> </tbody> </table> <div class="admonition warning"> <p class=admonition-title>Non-Unicode emoji</p> <p>Keep in mind that Gemoji ships with some non-standard emoji like <code>:octocat:</code> that do not have Unicode code points. <code>uc</code> and <code>alt</code> are affected by this and will return <code>None</code> and the short name respectively instead of strings describing the Unicode points. For example <code>:octocat:</code> will just return <code>None</code> for <code>uc</code> and <code>:octocat:</code> for <code>alt</code>. If you are parsing an index with custom emoji, like Gemoji has, then you need to be aware of this.</p> </div> <h2 id=using-with-mkdocs>Using with MkDocs<a class=headerlink href=#using-with-mkdocs title="Permanent link"></a></h2> <p>This project uses these extensions with [MkDocs][mkdocs] to generate the documentation. It might not be obvious how to set the index or generator functions in MkDocs' YAML settings file, but it is actually pretty easy. The functions are referenced like you would import them in Python except you also append them with a special prefix to let the YAML module know that the setting value is a Python object. For instance, to specify the <code>to_svg</code> generator, you would simply reference it like this: <code class=highlight><span class=kt>!!python/name:pymdownx.emoji.to_svg</span></code> (or you could use your own custom module <img alt=😉 class=twemoji src=https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f609.svg title=:wink:>).</p> <div class=highlight><pre><span></span><code><span class=nt>markdown_extensions</span><span class=p>:</span>
+<span class=w>  </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>pymdownx.emoji</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>emoji_generator</span><span class=p>:</span><span class=w> </span><span class=kt>!!python/name:pymdownx.emoji.to_svg</span>
+</code></pre></div> <h2 id=emoji-index-updates>Emoji Index Updates<a class=headerlink href=#emoji-index-updates title="Permanent link"></a></h2> <p>The Emoji extension might at times be behind on having indexes built from the latest repositories. We try to keep the indexes updated with new releases, but if they fall out of date, you can open an issue on the this project's issue page to alert the maintainer(s) and they will update them when someone gets a chance. Pull requests are also welcome. The process for updating the indexes is automated, so it is fairly easy to do a pull request. See <a href=../../about/development/#generating-emoji-indexes>Generating Emoji Indexes</a> for more info.</p> <h2 id=options>Options<a class=headerlink href=#options title="Permanent link"></a></h2> <table> <thead> <tr> <th>Option</th> <th>Type</th> <th>Default</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td><code>emoji_index</code></td> <td>function</td> <td><code>emojione</code> index</td> <td>A function that returns the index to use when parsing <code>:short_name:</code> syntax. See <a href=#default-emoji-indexes>Default Emoji Indexes</a> to see the provided indexes.</td> </tr> <tr> <td><code>emoji_generator</code></td> <td>function</td> <td><code>to_png</code> generator</td> <td>A function that takes the emoji info and constructs the desired emoji output. See <a href=#default-emoji-generators>Default Emoji Generators</a> to see the provided generators.</td> </tr> <tr> <td><code>title</code></td> <td>string</td> <td><code class=highlight>&#39;short&#39;</code></td> <td>Specifies the title format that is fed into the emoji generator function. Can either be <code>long</code> which is the long description of the emoji, <code>short</code> which is the short name (<code>:short:</code>), or <code>none</code> which will simply pass <code>None</code>.</td> </tr> <tr> <td><code>alt</code></td> <td>string</td> <td><code class=highlight>&#39;unicode&#39;</code></td> <td>Specifies the format for the alt value that is passed to the emoji generator function. If <code>alt</code> is set to <code>short</code>, the short name will be passed to the generator. If <code>alt</code> is set to <code>unicode</code> the Unicode characters are passed to the generator. Lastly, if <code>alt</code> is set to <code>html_entity</code>, the Unicode characters are passed encoded as HTML entities.</td> </tr> <tr> <td><code>remove_variation_selector</code></td> <td>bool</td> <td><code class=highlight>False</code></td> <td>Specifies whether variation selectors should be removed from Unicode alt. Currently, only <code>fe0f</code> is removed as it is the only one presently found in the current emoji sets.</td> </tr> <tr> <td><code>options</code></td> <td>dictionary</td> <td><code class=highlight>{}</code></td> <td>Options that are specific to emoji generator functions. Supported parameters can vary from function to function.</td> </tr> </tbody> </table> <div class="admonition new"> <p class=admonition-title>New 7.1</p> <p><code>options</code> is now shared between index and generator functions opposed to being passed to the generator function only. The generator and/or index function should decide which of the arguments are relevant for its usage and parse accordingly.</p> </div> <div class="admonition tip"> <p class=admonition-title>Legacy GitHubEmoji Emulation</p> <p>The Emoji extension was actually created to replace the now retired GitHubEmoji extension. Emoji was written to be much more flexible. If you have a desire to configure the output to be like the legacy GitHubEmoji extension, you can use the settings below. This shows the full setup. To learn more about the settings used, continue reading the documentation.</p> <div class=highlight><pre><span></span><code><span class=kn>import</span> <span class=nn>pymdownx.emoji</span>
+
+<span class=n>extension_configs</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=s2>&quot;pymdownx.emoji&quot;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=s2>&quot;emoji_index&quot;</span><span class=p>:</span> <span class=n>pymdownx</span><span class=o>.</span><span class=n>emoji</span><span class=o>.</span><span class=n>gemoji</span><span class=p>,</span>
+        <span class=s2>&quot;emoji_generator&quot;</span><span class=p>:</span> <span class=n>pymdownx</span><span class=o>.</span><span class=n>emoji</span><span class=o>.</span><span class=n>to_png</span><span class=p>,</span>
+        <span class=s2>&quot;alt&quot;</span><span class=p>:</span> <span class=s2>&quot;short&quot;</span><span class=p>,</span>
+        <span class=s2>&quot;options&quot;</span><span class=p>:</span> <span class=p>{</span>
+            <span class=s2>&quot;attributes&quot;</span><span class=p>:</span> <span class=p>{</span>
+                <span class=s2>&quot;align&quot;</span><span class=p>:</span> <span class=s2>&quot;absmiddle&quot;</span><span class=p>,</span>
+                <span class=s2>&quot;height&quot;</span><span class=p>:</span> <span class=s2>&quot;20px&quot;</span><span class=p>,</span>
+                <span class=s2>&quot;width&quot;</span><span class=p>:</span> <span class=s2>&quot;20px&quot;</span>
+            <span class=p>},</span>
+            <span class=s2>&quot;image_path&quot;</span><span class=p>:</span> <span class=s2>&quot;https://assets-cdn.github.com/images/icons/emoji/unicode/&quot;</span><span class=p>,</span>
+            <span class=s2>&quot;non_standard_image_path&quot;</span><span class=p>:</span> <span class=s2>&quot;https://assets-cdn.github.com/images/icons/emoji/&quot;</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></div> </div> <footer class=sponsorship> <hr> <a href=https://github.com/pei-yan-2147 title="Become a sponsor"> <span class="twemoji heart-throb-hover"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg> </span> </a> <hr> </footer> </article> </div> <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> <button type=button class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg> Back to top </button> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> with emoji by <a href=https://github.com/twitter/twemoji target=_blank rel=noopener> Twemoji </a> </div> <div class=md-social> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../../..", "features": ["sitemap", "navigation.tabs", "navigation.top", "navigation.instant", "navigation.indexes", "toc.follow", "content.tabs.link", "search.share", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotations"], "search": "../../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script> <script src=../../../../assets/javascripts/bundle.471ce7a9.min.js></script> <script src=https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js></script> <script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script> <script src=../../../../assets/pymdownx-extras/extra-loader-iLQ-keay.js></script> </body> </html>

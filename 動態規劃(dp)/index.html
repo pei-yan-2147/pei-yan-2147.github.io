@@ -36,343 +36,11 @@
 
     
     
-    
+
       
     
-
-    <script type="text/javascript">
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            },
-            options: {
-                processEscapes: true
-            }
-        };
-    </script>
-
-    <script type="text/javascript" id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <!-- 背景图片 -->
-    <div class="image-background"></div>
-
-    <!-- 星空和流星效果的Canvas背景 -->
-    <canvas id="starCanvas" style="z-index: -2; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-
-    <!-- 粒子效果的Canvas背景，放置在星空和流星前面 -->
-    <canvas id="particleCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        var tocContainer = document.querySelector('.custom-toc-container');
-        var contentInner = document.querySelector('.md-content__inner');
-
-        // 设置星空流星的 Canvas 尺寸
-        var starCanvas = document.getElementById('starCanvas');
-        var starCtx = starCanvas.getContext('2d');
-        function resizeStarCanvas() {
-          starCanvas.width = window.innerWidth;
-          starCanvas.height = window.innerHeight;
-        }
-        resizeStarCanvas();
-        window.addEventListener('resize', resizeStarCanvas);
-
-        // 设置粒子效果的 Canvas 尺寸
-        var particleCanvas = document.getElementById('particleCanvas');
-        var particleCtx = particleCanvas.getContext('2d');
-        function resizeParticleCanvas() {
-          particleCanvas.width = window.innerWidth;
-          particleCanvas.height = window.innerHeight;
-        }
-        resizeParticleCanvas();
-        window.addEventListener('resize', resizeParticleCanvas);
-
-        // 星星类
-        class Star {
-          constructor() {
-            this.reset();  // 随机初始化星星的位置、大小和透明度
-          }
-
-          reset() {
-            this.x = Math.random() * starCanvas.width;
-            this.y = Math.random() * starCanvas.height;
-            this.originalSize = Math.random() * 2 + 1;
-            this.size = 0;
-            this.alpha = 0;
-            this.growthSpeed = 0.02;
-            this.shrinkSpeed = 0.01;
-            this.life = Math.random() * 200 + 100;
-          }
-
-          update() {
-            if (this.life > 100) {
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-            } else {
-              this.size -= this.shrinkSpeed;
-              this.alpha -= this.shrinkSpeed;
-              if (this.size < 0) this.size = 0;
-              if (this.alpha < 0) this.alpha = 0;
-            }
-
-            this.life -= 1;
-            if (this.life <= 0) this.reset();
-          }
-
-          draw() {
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.beginPath();
-            starCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-        }
-
-        // 流星类
-        class Meteor {
-          constructor(x = null, y = null) {
-            this.isCustom = (x !== null && y !== null); // 判斷是否是滑鼠生成的流星
-            this.reset(x, y);
-          }
-
-          reset(x = null, y = null) {
-            if (this.isCustom) {
-              this.x = x;
-              this.y = y;
-              this.size = this.originalSize; // 立即设为最大值
-              this.alpha = 1; // 立即设为最大透明度
-            } else {
-              this.x = Math.random() * starCanvas.width / 2;
-              this.y = Math.random() * starCanvas.height;
-              this.size = 0;
-              this.alpha = 0;
-            }
-            this.originalSize = Math.random() * 1 + 1;
-            this.growthSpeed = 0.03;
-            this.speedX = Math.random() * 8 + 4;
-            this.speedY = Math.random() * 4 + 2;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-
-            if (!this.isCustom) { // 非滑鼠生成的流星才有增大過程
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-              this.alpha -= 0.025;
-            } else {
-              // 滑鼠生成的流星更快消失
-              this.alpha -= 0.025; // 透明度更快減少
-            }
-
-            // 如果是滑鼠生成的流星且透明度為0，將其從數組中移除
-            if (this.isCustom && this.alpha <= 0) {
-              return true; // 返回true表示可以從數組中移除
-            }
-
-            if (!this.isCustom && this.isOutOfView()) {
-              this.reset(); // 非滑鼠生成的流星需要重新生成
-            }
-            return false; // 不移除流星
-          }
-
-          draw() {
-            starCtx.strokeStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.lineWidth = this.size;
-            starCtx.beginPath();
-            starCtx.moveTo(this.x, this.y);
-            starCtx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5);
-            starCtx.stroke();
-
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            this.drawStarShape(this.x, this.y, this.size, 5);
-          }
-
-          drawStarShape(cx, cy, outerRadius, spikes) {
-            let rot = Math.PI / 2 * 3;
-            let step = Math.PI / spikes;
-
-            starCtx.beginPath();
-            starCtx.moveTo(cx, cy - outerRadius);
-            for (let i = 0; i < spikes; i++) {
-              let x = cx + Math.cos(rot) * outerRadius;
-              let y = cy + Math.sin(rot) * outerRadius;
-              starCtx.lineTo(x, y);
-              rot += step;
-            }
-            starCtx.lineTo(cx, cy - outerRadius);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-
-          isOutOfView() {
-            return this.x > starCanvas.width || this.y > starCanvas.height || this.alpha <= 0;
-          }
-        }
-
-        // 粒子类
-        class Particle {
-          constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 3 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-            this.alpha = 1;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
-            this.alpha -= 0.02;  // 粒子逐渐消失
-          }
-
-          draw() {
-            particleCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            particleCtx.beginPath();
-            particleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            particleCtx.closePath();
-            particleCtx.fill();
-          }
-        }
-
-        // 初始化粒子、星星、流星数组
-        let starsArray = [];
-        let meteorsArray = [];
-        let customMeteorsArray = [];
-        let particlesArray = [];
-        const maxMeteors = 10;
-
-        // 初始化星星
-        function initStars() {
-          starsArray = [];
-          for (let i = 0; i < 150; i++) {
-            starsArray.push(new Star());
-          }
-        }
-
-        // 生成更多流星
-        function createMeteor() {
-          if (meteorsArray.length < maxMeteors) {
-            meteorsArray.push(new Meteor());
-          }
-        }
-
-        // 生成粒子
-        function createParticle(event) {
-          const x = event.x;
-          const y = event.y;
-          for (let i = 0; i < 1; i++) {
-            particlesArray.push(new Particle(x, y));
-          }
-        }
-
-        // 生成滑鼠流星
-        function createCustomMeteor(event) {
-          const x = event.clientX;
-          const y = event.clientY;
-          const newMeteor = new Meteor(x, y);
-          newMeteor.speedX = Math.random() * 8 + 4;  // 設置滑鼠流星的速度
-          newMeteor.speedY = Math.random() * 4 + 2;
-          newMeteor.size = newMeteor.originalSize; // 立即設定最大大小
-          newMeteor.alpha = 1; // 立即設定最大透明度
-          customMeteorsArray.push(newMeteor);
-        }
-
-        // 更新并绘制星星、流星和粒子
-        function handleParticles() {
-          for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-            particlesArray[i].draw();
-            if (particlesArray[i].alpha <= 0) {
-              particlesArray.splice(i, 1);
-              i--;
-            }
-          }
-        }
-
-        function handleStarsAndMeteors() {
-          for (let i = 0; i < starsArray.length; i++) {
-            starsArray[i].update();
-            starsArray[i].draw();
-          }
-
-          for (let i = 0; i < meteorsArray.length; i++) {
-            meteorsArray[i].update();
-            meteorsArray[i].draw();
-            if (meteorsArray[i].isOutOfView()) {
-              meteorsArray.splice(i, 1);
-              i--;
-            }
-          }
-
-          for (let i = 0; i < customMeteorsArray.length; i++) {
-            if (customMeteorsArray[i].update()) {
-              customMeteorsArray.splice(i, 1); // 移除透明度為0的滑鼠生成流星
-              i--;
-            } else {
-              customMeteorsArray[i].draw();
-            }
-          }
-        }
-
-        // 动画循环
-        function animate() {
-          starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-          particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-          handleStarsAndMeteors();
-          handleParticles();
-          requestAnimationFrame(animate);
-        }
-
-        // 初始化并开始动画
-        initStars();
-        animate();
-
-        // 流星的生成频率增加
-        setInterval(createMeteor, 500);
-
-        // 监听鼠标事件生成粒子
-        window.addEventListener('mousemove', createParticle);
-
-        // // 监听鼠标点击生成额外流星
-        // window.addEventListener('click', createCustomMeteor);
-
-        // TOC 相关逻辑
-        if (contentInner && tocContainer) {
-            updateTocPosition();
-
-            tocContainer.addEventListener('click', function() {
-                tocContainer.classList.toggle('expanded');
-            });
-        }
-
-        function updateTocPosition() {
-            var contentInnerRect = contentInner.getBoundingClientRect();
-            tocContainer.style.top = contentInnerRect.top + 'px';
-            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
-        }
-
-        // 处理图像大小调整的逻辑
-        document.querySelectorAll('img').forEach(function(img) {
-            const match = img.src.match(/=(\d+)%x$/);
-            if (match) {
-                const widthPercentage = match[1];
-                img.style.width = widthPercentage + '%';
-                img.style.height = 'auto';
-                img.src = img.src.replace(/=(\d+)%x$/, '');
-            }
-        });
-      });
-    </script>
+<script src="../assets/pymdownx-extras/material-extra-theme-2ek1P7jT.js" type="text/javascript"></script>
+<script src="../assets/pymdownx-extras/material-extra-3rdparty-BUCF4rjN.js" type="text/javascript"></script>
 
     
       
@@ -384,7 +52,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/custom.css">
+      <link rel="stylesheet" href="../assets/pymdownx-extras/extra-8611f6c398.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -401,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="black" data-md-color-accent="deep-orange">
+    <body dir="ltr" data-md-color-scheme="dracula" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -410,29 +78,54 @@
     <div data-md-component="skip">
       
         
-        <a href="#dp" class="md-skip">
+        <a href="#動態規劃dp" class="md-skip">
           Skip to content
         </a>
       
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+
+<!-- 
+<a href="../about/contributing/#become-a-sponsor">Sponsorship</a> -->
+
+<a href="https://github.com/pei-yan-2147">Sponsorship</a>
+
+is now available!
+<span class="twemoji heart-throb">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg>
+</span>
+          </div>
+          
+        </aside>
+      
     </div>
     
     
       
 
-  
 
-<header class="md-header md-header--shadow" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="PEI 演算法筆記" class="md-header__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
+<header class="md-header" data-md-component="header">
+  <nav
+    class="md-header__inner md-grid"
+    aria-label="header.title"
+  >
+    <a
+      href="https://pei-yan-2147.github.io/"
+      title="PEI 演算法筆記"
+      class="md-header__button md-logo"
+      aria-label="PEI 演算法筆記"
+    >
       
   <img src="../logo/peilogo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
@@ -451,14 +144,44 @@
         </div>
       </div>
     </div>
-    
-      
-    
-    
-    
+    <div class="md-header__options">
+      <div class="md-header-nav__scheme md-header-nav__button md-source__icon md-icon">
+          <a
+            href="javascript:toggleScheme();"
+            title="Light mode"
+            class="light-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+          </a>
+          <a
+            href="javascript:toggleScheme();"
+            title="Dark mode"
+            class="dark-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+          </a>
+          <a
+            href="javascript:toggleScheme();"
+            title="System preference"
+            class="system-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.5 2c-1.79 1.15-3 3.18-3 5.5s1.21 4.35 3.03 5.5C4.46 13 2 10.54 2 7.5A5.5 5.5 0 0 1 7.5 2m11.57 1.5 1.43 1.43L4.93 20.5 3.5 19.07 19.07 3.5m-6.18 2.43L11.41 5 9.97 6l.42-1.7L9 3.24l1.75-.12.58-1.65L12 3.1l1.73.03-1.35 1.13.51 1.67m-3.3 3.61-1.16-.73-1.12.78.34-1.32-1.09-.83 1.36-.09.45-1.29.51 1.27 1.36.03-1.05.87.4 1.31M19 13.5a5.5 5.5 0 0 1-5.5 5.5c-1.22 0-2.35-.4-3.26-1.07l7.69-7.69c.67.91 1.07 2.04 1.07 3.26m-4.4 6.58 2.77-1.15-.24 3.35-2.53-2.2m4.33-2.7 1.15-2.77 2.2 2.54-3.35.23m1.15-4.96-1.14-2.78 3.34.24-2.2 2.54M9.63 18.93l2.77 1.15-2.53 2.19-.24-3.34Z"/></svg>
+          </a>
+           <a
+            href="javascript:toggleScheme();"
+            title="Unknown scheme"
+            class="unknown-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m15.07 11.25-.9.92C13.45 12.89 13 13.5 13 15h-2v-.5c0-1.11.45-2.11 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8a4 4 0 0 1 4-4 4 4 0 0 1 4 4 3.2 3.2 0 0 1-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10c0-5.53-4.5-10-10-10Z"/></svg>
+          </a>
+      </div>
+    </div>
     
       <label class="md-header__button md-icon" for="__search">
-        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
@@ -474,11 +197,18 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -496,13 +226,262 @@
     
     
   </nav>
-  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
         
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  首頁
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E5%BE%85%E8%BE%A6%E4%BA%8B%E9%A0%85/" class="md-tabs__link">
+        
+  
+    
+  
+  待辦事項
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/" class="md-tabs__link">
+        
+  
+    
+  
+  學習資源
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../APCS/" class="md-tabs__link">
+        
+  
+    
+  
+  APCS
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/" class="md-tabs__link">
+        
+  
+    
+  
+  考前必看
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E6%9C%89%E4%BA%8B%E6%B2%92%E4%BA%8B%E6%89%93%E4%B8%80%E6%AC%A1/" class="md-tabs__link">
+        
+  
+    
+  
+  有事沒事打一次
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E7%B6%93%E5%85%B8%E5%A0%B1%E9%8C%AF/" class="md-tabs__link">
+          
+  
+    
+  
+  概念、語法、技巧
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../log/" class="md-tabs__link">
+          
+  
+    
+  
+  數論
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../STL/" class="md-tabs__link">
+          
+  
+    
+  
+  資料結構
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../%E9%81%9E%E8%BF%B4/" class="md-tabs__link">
+          
+  
+    
+  
+  演算法
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../CSEC/" class="md-tabs__link">
+          
+  
+    
+  
+  刷題
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E5%B8%B8%E7%94%A8%E8%8B%B1%E6%96%87/" class="md-tabs__link">
+          
+  
+    
+  
+  其他
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E6%B8%AC%E8%A9%A6/" class="md-tabs__link">
+        
+  
+    
+  
+  測試
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
           
         
       
@@ -517,8 +496,10 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="PEI 演算法筆記" class="md-nav__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
       
@@ -658,6 +639,53 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1141,6 +1169,41 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1498,6 +1561,23 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1668,16 +1748,52 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1979,7 +2095,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#統整" class="md-nav__link">
     <span class="md-ellipsis">
       統整
     </span>
@@ -2053,6 +2169,17 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2130,6 +2257,23 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2306,6 +2450,27 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2555,7 +2720,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#統整" class="md-nav__link">
     <span class="md-ellipsis">
       統整
     </span>
@@ -2575,13 +2740,12 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-<div class="md-content__inner">
-    
+  
                   
 
 
-<h1 id="dp">動態規劃（dp）<a class="headerlink" href="#dp" title="Permanent link">&para;</a></h1>
-<h2 id="_1"><strong>統整</strong><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h1 id="動態規劃dp">動態規劃（dp）<a class="headerlink" href="#動態規劃dp" title="Permanent link"></a></h1>
+<h2 id="統整"><strong>統整</strong><a class="headerlink" href="#統整" title="Permanent link"></a></h2>
 <blockquote>
 <ol>
 <li><strong>背包問題</strong>
@@ -2593,20 +2757,20 @@
 <li><strong>LCS 最長共同子序列(DNA)</strong>
 <a href="#P-6-7-LCS">P-6-7-LCS</a>
 <a href="https://hackmd.io/Ou4gv0UYSYa_EeIeeiaUeA?view#d23197%E5%8C%97%E7%B8%A3%E8%B3%BD-2-%E5%9F%BA%E5%9B%A0%E5%BA%8F%E5%88%97%E5%AF%86%E7%A2%BC%E5%95%8F%E9%A1%8CLCS%E9%A1%9E%E4%BC%BC%E9%A1%8C">d231.97北縣賽-2-基因序列密碼問題(LCS類似題)</a>
-<a href="#d242-00481---What-Goes-Up">d242-00481---What-Goes-Up</a></li>
+<a href="#d242-00481---What-Goes-Up">d242-00481&mdash;What-Goes-Up</a></li>
 <li><strong>連續元素的和</strong>
 <a href="#d784-一、連續元素的和">d784-一、連續元素的和</a></li>
 <li><strong>特殊：</strong>
-<a href="#d052-11456---Trainsorting">d052-11456---Trainsorting</a></li>
+<a href="#d052-11456---Trainsorting">d052-11456&mdash;Trainsorting</a></li>
 <li>topdown-dp：
 <a href="https://hackmd.io/@peicpp/BkU9804bR#I-%E4%BB%81%E8%80%85%E7%84%A1%E6%95%B5-13">I. 仁者無敵 1.3</a></li>
 <li>紀錄切換點：需要紀錄中間如何走、記錄拿取的東西。
 <a href="https://hackmd.io/@peicpp/BkU9804bR#I-%E4%BB%81%E8%80%85%E7%84%A1%E6%95%B5-13">I. 仁者無敵 1.3</a></li>
 </ol>
 </blockquote>
-<h1 id="from-gpt">背包問題指南(from GPT)<a class="headerlink" href="#from-gpt" title="Permanent link">&para;</a></h1>
+<h1 id="背包問題指南from-gpt">背包問題指南(from GPT)<a class="headerlink" href="#背包問題指南from-gpt" title="Permanent link"></a></h1>
 <p>當面對不同類型的背包問題時，您可以根據以下指南來設計和實現您的動態規劃解法。這些指南將幫助您清晰地理解每種問題的策略和適當的實現方法。</p>
-<h2 id="_2">基本背包問題類型<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h2 id="基本背包問題類型">基本背包問題類型<a class="headerlink" href="#基本背包問題類型" title="Permanent link"></a></h2>
 <ol>
 <li><strong>0/1 背包問題</strong>：<ul>
 <li>每個物品只能選擇一次。</li>
@@ -2636,7 +2800,7 @@
 </ul>
 </li>
 </ol>
-<h2 id="_3">實現策略<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h2 id="實現策略">實現策略<a class="headerlink" href="#實現策略" title="Permanent link"></a></h2>
 <ul>
 <li><strong>動態規劃表 <code>dp</code> 的使用</strong>：<ul>
 <li>定義 <code>dp[j]</code> 為當背包容量為 <code>j</code> 時能達到的最大價值。</li>
@@ -2659,7 +2823,7 @@
 </li>
 </ul>
 <p>透過這些指南，您應該能夠有效地應對多種背包問題，無論是在面試中還是實際應用中。每個問題的關鍵是理解物品的使用次數和更新策略，以達到最佳的解決方案。</p>
-<h1 id="_4">背包問題：<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h1>
+<h1 id="背包問題">背包問題：<a class="headerlink" href="#背包問題" title="Permanent link"></a></h1>
 <p>一、組成要素：</p>
 <ol>
 <li>總重量(dp[i])</li>
@@ -2681,7 +2845,7 @@
 每個物品只能選擇一次時，倒序</li>
 </ol>
 </blockquote>
-<h2 id="_5">口訣<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="口訣">口訣<a class="headerlink" href="#口訣" title="Permanent link"></a></h2>
 <blockquote>
 <p>一到組內多順排外</p>
 </blockquote>
@@ -2703,7 +2867,7 @@
 所以：物品在內，順序</p>
 </blockquote>
 <hr />
-<h2 id="_6">用途：<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<h2 id="用途">用途：<a class="headerlink" href="#用途" title="Permanent link"></a></h2>
 <blockquote>
 <p>1.計數
 有多少種方式走到右下角
@@ -2715,7 +2879,7 @@
 取石子遊戲，先手是否必勝
 能不能選出k個數使得和是Sum</p>
 </blockquote>
-<h2 id="_7">四大步驟：<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<h2 id="四大步驟">四大步驟：<a class="headerlink" href="#四大步驟" title="Permanent link"></a></h2>
 <blockquote>
 <p>1.確定狀態
 狀態：定義<code>f[i]</code>的「意義」，像是<code>f[i]</code>為第<code>i</code>個位置的最小值</p>
@@ -2745,12 +2909,12 @@
  我們可以先陣列<code>v[10]={0}</code>全部都是0，然後遞迴的時候判斷<code>v[i]</code>是否大於0
  如果大於0(已經被賦予數值)就取用<code>v[i]</code>的數值</p>
 </blockquote>
-<h1 id="_8">分類<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h1>
+<h1 id="分類">分類<a class="headerlink" href="#分類" title="Permanent link"></a></h1>
 <blockquote>
 <p>題目的分類往往有很多種，主要看目的何在而分類，這裡我們以便於理解與學習來分類。 一個 DP 如果狀態有 O(nx)而轉移式涉及 O(n y)個狀態，一般可稱為 xDyD 的 DP，例如 小朋友上樓梯是 1D0D 的，因為有 n 個要算，每次算 f(i)只涉及 2 個 f(i-1)與 f(i-2)。方格路徑的問題則是 2D0D，因為有 n 2(假設 m=n)個要算，每次只需要 2 個(左方 與上方)。當然也有一些 DP 不在這個分類中。</p>
 </blockquote>
-<h2 id="1d0d">1D0D<a class="headerlink" href="#1d0d" title="Permanent link">&para;</a></h2>
-<h3 id="p-6-1">P-6-1. 小朋友上樓梯最小成本<a class="headerlink" href="#p-6-1" title="Permanent link">&para;</a></h3>
+<h2 id="1d0d">1D0D<a class="headerlink" href="#1d0d" title="Permanent link"></a></h2>
+<h3 id="p-6-1-小朋友上樓梯最小成本">P-6-1. 小朋友上樓梯最小成本<a class="headerlink" href="#p-6-1-小朋友上樓梯最小成本" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d066">https://judge.tcirc.tw/ShowProblem?problemid=d066</a></p>
 <p>小朋友玩上樓梯遊戲，每一步可以往上走一階或兩階，開始位置在第  0   階，從第一階開始每階都有一個數字，踩在第  i   階，分數就要扣第  i   階的數字，</p>
 <p>請問走到第  n   階的最少的扣分是多少。
@@ -2816,7 +2980,7 @@
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">v</span><span class="p">[</span><span class="n">n</span><span class="mi">-1</span><span class="p">];</span>
 <span class="p">}</span>
 </code></pre></div></p>
-<h3 id="p-6-2">P-6-2. 不連續的表演酬勞<a class="headerlink" href="#p-6-2" title="Permanent link">&para;</a></h3>
+<h3 id="p-6-2-不連續的表演酬勞">P-6-2. 不連續的表演酬勞<a class="headerlink" href="#p-6-2-不連續的表演酬勞" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d067">https://judge.tcirc.tw/ShowProblem?problemid=d067</a></p>
 <p>P-6-2. 不連續的表演酬勞
 楊鐵心帶著義女穆念慈當街頭的武術表演者，他接到許多的邀約，每天均有一場。每
@@ -2863,7 +3027,7 @@ Time limit: 1 秒
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">dp</span><span class="p">[</span><span class="n">n</span><span class="mi">-1</span><span class="p">];</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="p-6-3">P-6-3. 最小監控鄰居的成本<a class="headerlink" href="#p-6-3" title="Permanent link">&para;</a></h3>
+<h3 id="p-6-3-最小監控鄰居的成本">P-6-3. 最小監控鄰居的成本<a class="headerlink" href="#p-6-3-最小監控鄰居的成本" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d068">https://judge.tcirc.tw/ShowProblem?problemid=d068</a></p>
 <p>有一條長長的大街被劃分成 n 個區段，編號依序為 1~n。在第 i 個區段設置監控設 備的話，需要成本 c[i]，而可以監控第 i-1 到第 i+1 的區段(超出範圍可忽略)。 </p>
 <p>現在要選一些區段裝設監控設備，以便每一個區段都可以被監控到，請計算最少的總 成本。 </p>
@@ -2904,7 +3068,7 @@ Time limit: 1 秒
 <span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
 <span class="w">    </span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">min</span><span class="p">(</span><span class="n">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">],</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="mi">-2</span><span class="p">]),</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="mi">-3</span><span class="p">])</span><span class="o">+</span><span class="n">dp</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
 <span class="w">  </span><span class="p">}</span>
-
+<span class="w">  </span>
 <span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">&lt;=</span><span class="mi">1</span><span class="p">){</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">dp</span><span class="p">[</span><span class="n">n</span><span class="mi">-1</span><span class="p">];</span>
 <span class="w">  </span><span class="p">}</span>
@@ -2950,7 +3114,7 @@ Time limit: 1 秒
 
 </details>
 
-<h3 id="q-6-4">Q-6-4. 闖關二選一<a class="headerlink" href="#q-6-4" title="Permanent link">&para;</a></h3>
+<h3 id="q-6-4-闖關二選一">Q-6-4. 闖關二選一<a class="headerlink" href="#q-6-4-闖關二選一" title="Permanent link"></a></h3>
 <p>某個遊戲要依序闖過 n 個關卡，初始的時候有一個幸運數字，每個關卡有兩個關卡數 字，你必須把自己的幸運數字調整為兩個關卡數字之一，才能通過此關卡，調整的成 本是你的幸運數字與關卡數字的差值(絕對值)。請計算出最低闖關總成本。 舉例來說，一開始的幸運數字為 1，n=2，第一關的過關數字為(5, -5)，第二關的 過關數字為(-3, -2)。要依序通過兩關，假設第一關把幸運數字調整成 5，第二關 調整為-2，則需要成本為|1–5|+|5–(-2)|=11。如果，第一關把幸運數字-5，第 二關調整為-3，則需要成本為|1–(-5)|+|(-5)–(-3)|=8。你可以看得出來，總共 有四種方式過關，其中最小成本是 8。 
 Time limit: 1 秒</p>
 <p>輸入格式：第一行有兩個正整數 n 與 t，代表關卡數以及初始幸運號碼。接下來有 n 行，每行兩個整數，依序代表每一關的過關數字。n &lt;= 1e5，過關數字的絕對值皆不 超過 1e4。 </p>
@@ -2970,7 +3134,7 @@ dp[i-1][1]+abs(v[i-1][1]-v[i][j]));
 <span class="w">  </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="o">&gt;&gt;</span><span class="n">m</span><span class="p">;</span>
 <span class="w">  </span><span class="c1">//dp[i][0]為第i個得最小成本</span>
 
-
+<span class="w">  </span>
 <span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">100000</span><span class="p">][</span><span class="mi">2</span><span class="p">];</span>
 <span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
 <span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
@@ -2990,9 +3154,9 @@ dp[i-1][1]+abs(v[i-1][1]-v[i][j]));
 <span class="w">  </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">min</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">n</span><span class="mi">-1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">dp</span><span class="p">[</span><span class="n">n</span><span class="mi">-1</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="q-6-5">Q-6-5. 二維最大子矩陣<a class="headerlink" href="#q-6-5" title="Permanent link">&para;</a></h3>
-<h2 id="2d0d">2D0D<a class="headerlink" href="#2d0d" title="Permanent link">&para;</a></h2>
-<h3 id="p-6-6">P-6-6. 方格棋盤路線<a class="headerlink" href="#p-6-6" title="Permanent link">&para;</a></h3>
+<h3 id="q-6-5-二維最大子矩陣">Q-6-5. 二維最大子矩陣<a class="headerlink" href="#q-6-5-二維最大子矩陣" title="Permanent link"></a></h3>
+<h2 id="2d0d">2D0D<a class="headerlink" href="#2d0d" title="Permanent link"></a></h2>
+<h3 id="p-6-6-方格棋盤路線">P-6-6. 方格棋盤路線<a class="headerlink" href="#p-6-6-方格棋盤路線" title="Permanent link"></a></h3>
 <p><a href="https://judge.tcirc.tw/ShowProblem?problemid=d069">https://judge.tcirc.tw/ShowProblem?problemid=d069</a></p>
 <p>在一個  m∗n   方格棋盤上，每個格子都有一個分數(可正可負)，現在要從左上角的格子走到右下角，每次只能從當時位置移動到右方或下方的格子，</p>
 <p>請計算出經過路線上的數字的最大可能總和。以下圖為例，最大的總和路線是經過  (2,−2,5,7,−5,4)   ，總合為  11   。</p>
@@ -3103,7 +3267,7 @@ dp[i-1][1]+abs(v[i-1][1]-v[i][j]));
 </div></p>
 <p>所以對於這題來說平移其實是多餘的</p>
 </blockquote>
-<h3 id="p-6-7-lcs">P-6-7. LCS<a class="headerlink" href="#p-6-7-lcs" title="Permanent link">&para;</a></h3>
+<h3 id="p-6-7-lcs">P-6-7. LCS<a class="headerlink" href="#p-6-7-lcs" title="Permanent link"></a></h3>
 <p>輸入兩字串，計算其 LCS 的長度。
 Time limit: 1 秒
 輸入格式：第一行與第二行個有一個字串，字串均只含小寫字母，長度不超過 500。
@@ -3148,7 +3312,7 @@ Longest Common Subsequence(LCS)是序列分析的重要問題，一個序列的�
 </code></pre></div>
 </details>
 
-<h3 id="d23197-2-lcs">d231.97北縣賽-2-基因序列密碼問題(LCS類似題)<a class="headerlink" href="#d23197-2-lcs" title="Permanent link">&para;</a></h3>
+<h3 id="d23197北縣賽-2-基因序列密碼問題lcs類似題">d231.97北縣賽-2-基因序列密碼問題(LCS類似題)<a class="headerlink" href="#d23197北縣賽-2-基因序列密碼問題lcs類似題" title="Permanent link"></a></h3>
 <p>基因序列是由四個鹼基A、C、G、T組合而成，例如 AGTTACGGGTTCGTAA有可能是某個基因序列。在生物學裡常見的問題是要找出兩的基因序列的最長共同子序列</p>
 <p>(Longest Common Subsequence)，例如 AGTTACGGGTTCGTAA 和 GTCGGAAG 的最長共同子序列是GTCGGAA。請注意 subsequence和 substring 不同，subsequence的字母不需要在原來字串裡鄰近出現，只需要保持字母的順序。你的任務就是要寫一個程式找出兩個基因列序的最長共同子序列。假設每一對基因列序最多只有一個最長共同子序列。</p>
 <p>輸入說明
@@ -3241,22 +3405,22 @@ AG</p>
 <details><summary>記憶體節省版</summary>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
-
+<span class="w"> </span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">string</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">;</span>
 <span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">){</span>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">arr</span><span class="p">[</span><span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">b</span><span class="p">.</span><span class="n">length</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
 <span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-
+<span class="w">         </span>
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
 <span class="w">            </span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
-
+<span class="w">         </span>
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">length</span><span class="p">();</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
 <span class="w">            </span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
-
+<span class="w">         </span>
 <span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
 <span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">length</span><span class="p">();</span><span class="w"> </span><span class="n">j</span><span class="o">++</span><span class="p">){</span>
 <span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">[</span><span class="n">j</span><span class="mi">-1</span><span class="p">]){</span>
@@ -3272,7 +3436,7 @@ AG</p>
 <span class="w">                </span><span class="p">}</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
-
+<span class="w">         </span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">flag</span><span class="p">)</span><span class="w"> </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;E&quot;</span><span class="p">;</span>
 <span class="w">        </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
@@ -3280,7 +3444,7 @@ AG</p>
 </code></pre></div>
 </details>
 
-<h3 id="d378">d378: 最小路徑<a class="headerlink" href="#d378" title="Permanent link">&para;</a></h3>
+<h3 id="d378-最小路徑">d378: 最小路徑<a class="headerlink" href="#d378-最小路徑" title="Permanent link"></a></h3>
 <p><a href="https://zerojudge.tw/ShowProblem?problemid=d378">https://zerojudge.tw/ShowProblem?problemid=d378</a></p>
 <p>現在有一張地圖，凡是走過某一個格子，都會消耗體力，所以請你找出最少消耗體力值。
 現在老鼠在地圖的左上角，在走的時候時，所以只能往右或下走，之後要走到右下角，
@@ -3402,7 +3566,7 @@ Case #2 :
 </code></pre></div>
 </details>
 
-<h3 id="p-6-9">P-6-9. 大賣場免費大搬家<a class="headerlink" href="#p-6-9" title="Permanent link">&para;</a></h3>
+<h3 id="p-6-9-大賣場免費大搬家">P-6-9. 大賣場免費大搬家<a class="headerlink" href="#p-6-9-大賣場免費大搬家" title="Permanent link"></a></h3>
 <details><summary>程式碼</summary>
 > 組合：外圈
 > 一次：倒序
@@ -3450,13 +3614,13 @@ Case #2 :
 </code></pre></div>
 </details>
 
-<h2 id="_9">其他例題<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
-<h3 id="b589">b589. 超級馬拉松賽<a class="headerlink" href="#b589" title="Permanent link">&para;</a></h3>
+<h2 id="其他例題">其他例題<a class="headerlink" href="#其他例題" title="Permanent link"></a></h2>
+<h3 id="b589-超級馬拉松賽">b589. 超級馬拉松賽<a class="headerlink" href="#b589-超級馬拉松賽" title="Permanent link"></a></h3>
 <p>內容
 一個超級馬拉松比賽將開始。在遊戲中，選手每天需要跑不同的路徑。假設遊戲全部有 n 條路徑; 每個路徑得分可以是不同的。如果一名選手不能在規定時間內完成一條路徑，他該路徑得到零分;如果玩家完成了一條路徑在一個規定的時間，他得到該路徑設定的得分;如果玩家完成了一條路徑，用較短的時間，他可以得兩倍分數。</p>
 <p>小愛想參加這個比賽，她如果在一條路徑上按正常速度來跑，就只能拿到原始分數，如果他加速跑，就能拿到兩倍分數，不過她就會需要在加速跑完後的下一條路徑上休息而速度變慢得到0分，請寫一個程式幫助小愛計算哪些路徑應該加速得到兩倍分數而能獲得最高的總得分。</p>
 <p>輸入說明
-輸入資料包含多組測試資料，每一組測試資料有兩行，第一行有一個數字 n 代表有 n 條路徑要跑 1 &lt;= n &lt;= 40，第二行有 n 個整數代表每個路徑的原始得分 10 &lt;= P1, P2, ... Pn &lt;= 100 </p>
+輸入資料包含多組測試資料，每一組測試資料有兩行，第一行有一個數字 n 代表有 n 條路徑要跑 1 &lt;= n &lt;= 40，第二行有 n 個整數代表每個路徑的原始得分 10 &lt;= P1, P2, &hellip; Pn &lt;= 100 </p>
 <p>當 n 為 0 時代表輸入結束</p>
 <p>輸出說明
 對每一組測試資料輸出最好的總得分，每一筆資料輸出一行</p>
@@ -3528,7 +3692,7 @@ Case #2 :
 </code></pre></div>
 </details>
 
-<h3 id="d887-1chain">d887. 1.山脈種類(chain)<a class="headerlink" href="#d887-1chain" title="Permanent link">&para;</a></h3>
+<h3 id="d887-1山脈種類chain">d887. 1.山脈種類(chain)<a class="headerlink" href="#d887-1山脈種類chain" title="Permanent link"></a></h3>
 <p><img alt="ShowImage" src="https://hackmd.io/_uploads/ByubBG5QR.jpg" /></p>
 <p>輸入說明
 每行有1個數字N(2&lt;=N&lt;=25)</p>
@@ -3594,7 +3758,7 @@ Case #2 :
 </code></pre></div>
 </details>
 
-<h3 id="d133-00357-let-me-count-the-ways">d133. 00357 - Let Me Count The Ways<a class="headerlink" href="#d133-00357-let-me-count-the-ways" title="Permanent link">&para;</a></h3>
+<h3 id="d133-00357---let-me-count-the-ways">d133. 00357 - Let Me Count The Ways<a class="headerlink" href="#d133-00357---let-me-count-the-ways" title="Permanent link"></a></h3>
 <p><a href="https://zerojudge.tw/ShowProblem?problemid=d133">https://zerojudge.tw/ShowProblem?problemid=d133</a></p>
 <p><img alt="435982137_1598488334030453_1978270733992792255_n" src="https://hackmd.io/_uploads/SkDPP12X0.jpg =50%x" /></p>
 <p>這題要求「組合數」
@@ -3632,7 +3796,7 @@ Case #2 :
 </code></pre></div>
 </details>
 
-<h3 id="d784"><a href="https://zerojudge.tw/ShowProblem?problemid=d784">d784. 一、連續元素的和</a><a class="headerlink" href="#d784" title="Permanent link">&para;</a></h3>
+<h3 id="d784-一連續元素的和"><a href="https://zerojudge.tw/ShowProblem?problemid=d784">d784. 一、連續元素的和</a><a class="headerlink" href="#d784-一連續元素的和" title="Permanent link"></a></h3>
 <p><img alt="440993309_2317123635144204_4008471631794742740_n" src="https://hackmd.io/_uploads/HJu3nFK4C.png" /></p>
 <details><summary>程式碼 考慮要不要前面</summary>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
@@ -3695,7 +3859,7 @@ Case #2 :
 </code></pre></div>
 </details>
 
-<h3 id="d212"><a href="https://zerojudge.tw/ShowProblem?problemid=d212">d212. 東東爬階梯</a><a class="headerlink" href="#d212" title="Permanent link">&para;</a></h3>
+<h3 id="d212-東東爬階梯"><a href="https://zerojudge.tw/ShowProblem?problemid=d212">d212. 東東爬階梯</a><a class="headerlink" href="#d212-東東爬階梯" title="Permanent link"></a></h3>
 <details><summary>程式碼</summary>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
@@ -3721,7 +3885,7 @@ Case #2 :
 </code></pre></div>
 </details>
 
-<h3 id="p-6-15"><a href="https://zerojudge.cchs.chc.edu.tw/">P-6-15. 一覽衆山小</a><a class="headerlink" href="#p-6-15" title="Permanent link">&para;</a></h3>
+<h3 id="p-6-15-一覽衆山小"><a href="https://zerojudge.cchs.chc.edu.tw/">P-6-15. 一覽衆山小</a><a class="headerlink" href="#p-6-15-一覽衆山小" title="Permanent link"></a></h3>
 <p>所謂「會當凌絕頂，一覽衆山小。」很多人都想爬到高處，為的是將群山看小，但是登高必自卑，行遠必自邇，最好是一步一步逐步往上，妄想一步登天的人往往摔的慘 重。小說與遊戲中出現的人物往往都是越晚出現越厲害，現在已知所有人物的戰力與出場順序，想要找出依照出場順序而且戰力逐步上升的人物序列，請你計算滿足這樣 要求的序列的最大可能長度。</p>
 <p>Time limit: 1 秒 </p>
 <p>輸入格式：第一行有一個正整數 n 代表出場的人物數。第二行有 n 個非負整數，是依 出場順序的每一位人物的戰力，數字間以空白隔開。n  2e5，戰力值不超過 1e8。 </p>
@@ -3756,7 +3920,7 @@ Case #2 :
 </code></pre></div>
 </details>
 
-<h3 id="d242-00481-what-goes-up">d242. 00481 - What Goes Up<a class="headerlink" href="#d242-00481-what-goes-up" title="Permanent link">&para;</a></h3>
+<h3 id="d242-00481---what-goes-up">d242. 00481 - What Goes Up<a class="headerlink" href="#d242-00481---what-goes-up" title="Permanent link"></a></h3>
 <p>寫一個程式從一連串的整數序列中選出最長的嚴格遞增子序列（strictly increasing subsequence）。例如：在 1, 3, 2, 2, 4, 0 中最長的嚴格遞增子序列為 1,3, 4 或者 1, 2, 4。</p>
 <p>輸入說明
 只有一組測試資料。
@@ -3845,7 +4009,7 @@ y：1 1 2 2 3 4 3</p>
 </code></pre></div>
 </details>
 
-<h3 id="b840-1044"><a href="https://zerojudge.tw/ShowProblem?problemid=b840">b840: 104北二4.農作物採收問題</a><a class="headerlink" href="#b840-1044" title="Permanent link">&para;</a></h3>
+<h3 id="b840-104北二4農作物採收問題"><a href="https://zerojudge.tw/ShowProblem?problemid=b840">b840: 104北二4.農作物採收問題</a><a class="headerlink" href="#b840-104北二4農作物採收問題" title="Permanent link"></a></h3>
 <blockquote>
 <p><a href="https://hackmd.io/@peicpp/Sk3SU6VZ0/https%3A%2F%2Fhackmd.io%2F%40peicpp%2FSJdFVRV-R#%E4%BA%8C%E7%B6%AD%E5%89%8D%E7%B6%B4%E5%92%8C">二維前綴和的用法</a></p>
 <p>參考：
@@ -3853,7 +4017,7 @@ y：1 1 2 2 3 4 3</p>
 <a href="https://hanting1225.blogspot.com/2015/11/uva-108-maximum-sum.html">O(n3)</a>
 <a href="https://blog.csdn.net/u010167269/article/details/51734723">O(n3)</a></p>
 </blockquote>
-<h3 id="d052-11456-trainsorting"><a href="https://zerojudge.tw/ShowProblem?problemid=d052">d052. 11456 - Trainsorting</a><a class="headerlink" href="#d052-11456-trainsorting" title="Permanent link">&para;</a></h3>
+<h3 id="d052-11456---trainsorting"><a href="https://zerojudge.tw/ShowProblem?problemid=d052">d052. 11456 - Trainsorting</a><a class="headerlink" href="#d052-11456---trainsorting" title="Permanent link"></a></h3>
 <p><a href="https://yuihuang.com/zj-d052/">參考題解</a></p>
 <blockquote>
 <p>最長遞減子序列就不能用內建lower_bound
@@ -3910,38 +4074,38 @@ y：1 1 2 2 3 4 3</p>
 </code></pre></div>
 </details>
 
-<h3 id="i-13"><a href="https://codeforces.com/group/f0XUnFzgmg/contest/539362/problem/I">I. 仁者無敵 1.3</a><a class="headerlink" href="#i-13" title="Permanent link">&para;</a></h3>
+<h3 id="i-仁者無敵-13"><a href="https://codeforces.com/group/f0XUnFzgmg/contest/539362/problem/I">I. 仁者無敵 1.3</a><a class="headerlink" href="#i-仁者無敵-13" title="Permanent link"></a></h3>
 <details><summary>貪心+DP</summary>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
 <span class="cp">#define int long long</span>
-
+<span class="w"> </span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">st</span><span class="p">{</span>
 <span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
 <span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
 <span class="p">};</span>
-
-
+<span class="w"> </span>
+<span class="w"> </span>
 <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">v</span><span class="p">(</span><span class="mi">4000</span><span class="p">);</span>
 <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">su</span><span class="p">(</span><span class="mi">4000</span><span class="p">);</span>
-
+<span class="w"> </span>
 <span class="n">st</span><span class="w"> </span><span class="n">dp</span><span class="p">[</span><span class="mi">4000</span><span class="p">][</span><span class="mi">4000</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
-
-
+<span class="w"> </span>
+<span class="w"> </span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">){</span>
 <span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="o">==</span><span class="mi">0</span><span class="p">){</span>
 <span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">su</span><span class="p">[</span><span class="n">b</span><span class="p">];</span>
 <span class="w">   </span><span class="p">}</span>
 <span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">su</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">-</span><span class="n">su</span><span class="p">[</span><span class="n">a</span><span class="mi">-1</span><span class="p">];</span>
 <span class="p">}</span>
-
+<span class="w"> </span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">action</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">l</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">r</span><span class="p">){</span>
-
+<span class="w"> </span>
 <span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">r</span><span class="o">-</span><span class="n">l</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-
+<span class="w"> </span>
 <span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">r</span><span class="p">].</span><span class="n">x</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="k">return</span><span class="w"> </span><span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">r</span><span class="p">].</span><span class="n">x</span><span class="p">;</span>
-
+<span class="w"> </span>
 <span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">action</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">)</span><span class="o">+</span><span class="n">sub</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">action</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="mi">-1</span><span class="p">)</span><span class="o">+</span><span class="n">sub</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="mi">-1</span><span class="p">)){</span>
 <span class="w">      </span><span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">r</span><span class="p">].</span><span class="n">x</span><span class="o">=</span><span class="n">action</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">)</span><span class="o">+</span><span class="n">sub</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
 <span class="w">      </span><span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">r</span><span class="p">].</span><span class="n">t</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
@@ -3950,12 +4114,12 @@ y：1 1 2 2 3 4 3</p>
 <span class="w">      </span><span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">r</span><span class="p">].</span><span class="n">x</span><span class="o">=</span><span class="n">action</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="mi">-1</span><span class="p">)</span><span class="o">+</span><span class="n">sub</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="mi">-1</span><span class="p">);</span>
 <span class="w">      </span><span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">r</span><span class="p">].</span><span class="n">t</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
 <span class="w">   </span><span class="p">}</span>
-
-
+<span class="w"> </span>
+<span class="w">   </span>
 <span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">r</span><span class="p">].</span><span class="n">x</span><span class="p">;</span>
 <span class="p">}</span>
-
-
+<span class="w"> </span>
+<span class="w"> </span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">turn</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">l</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">r</span><span class="p">){</span>
 <span class="w">   </span><span class="k">if</span><span class="p">(</span><span class="n">l</span><span class="o">==</span><span class="n">r</span><span class="p">){</span>
 <span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -3970,10 +4134,10 @@ y：1 1 2 2 3 4 3</p>
 <span class="w">      </span><span class="n">turn</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="mi">-1</span><span class="p">);</span>
 <span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="w">   </span><span class="p">}</span>
-
+<span class="w">   </span>
 <span class="p">}</span>
-
-
+<span class="w"> </span>
+<span class="w"> </span>
 <span class="kt">signed</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
 <span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
 <span class="w">   </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="p">;</span>
@@ -3984,19 +4148,19 @@ y：1 1 2 2 3 4 3</p>
 <span class="w">   </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
 <span class="w">      </span><span class="n">su</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">su</span><span class="p">[</span><span class="n">i</span><span class="mi">-1</span><span class="p">]</span><span class="o">+</span><span class="n">su</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
 <span class="w">   </span><span class="p">}</span>
-
-
+<span class="w"> </span>
+<span class="w"> </span>
 <span class="w">   </span><span class="kt">int</span><span class="w"> </span><span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">r</span><span class="o">=</span><span class="n">n</span><span class="mi">-1</span><span class="p">;</span>
-
+<span class="w"> </span>
 <span class="w">   </span><span class="n">action</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
-
-
+<span class="w"> </span>
+<span class="w"> </span>
 <span class="w">   </span><span class="n">turn</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="n">r</span><span class="p">);</span>
-
-
-
-
-
+<span class="w"> </span>
+<span class="w">   </span>
+<span class="w"> </span>
+<span class="w"> </span>
+<span class="w"> </span>
 <span class="p">}</span>
 </code></pre></div>
 </details>
@@ -4013,213 +4177,100 @@ y：1 1 2 2 3 4 3</p>
 
 
                 
-    <!-- 新增的 TOC 區塊，引用 toc 擴展生成的永久鏈接 -->
-    <div class="custom-toc-container">
-        <div class="custom-toc-title">目錄</div>
-        <nav class="custom-toc">
-            <ul>
-                
-                <li>
-                    <a href="#dp">動態規劃（dp）</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="#_1">統整</a>
-                            
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="#from-gpt">背包問題指南(from GPT)</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="#_2">基本背包問題類型</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#_3">實現策略</a>
-                            
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="#_4">背包問題：</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="#_5">口訣</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#_6">用途：</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#_7">四大步驟：</a>
-                            
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="#_8">分類</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="#1d0d">1D0D</a>
-                            
-                            <ul>
-                                
-                                <li>
-                                    <a href="#p-6-1">P-6-1. 小朋友上樓梯最小成本</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#p-6-2">P-6-2. 不連續的表演酬勞</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#p-6-3">P-6-3. 最小監控鄰居的成本</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#q-6-4">Q-6-4. 闖關二選一</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#q-6-5">Q-6-5. 二維最大子矩陣</a>
-                                </li>
-                                
-                            </ul>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#2d0d">2D0D</a>
-                            
-                            <ul>
-                                
-                                <li>
-                                    <a href="#p-6-6">P-6-6. 方格棋盤路線</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#p-6-7-lcs">P-6-7. LCS</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#d23197-2-lcs">d231.97北縣賽-2-基因序列密碼問題(LCS類似題)</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#d378">d378: 最小路徑</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#p-6-9">P-6-9. 大賣場免費大搬家</a>
-                                </li>
-                                
-                            </ul>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#_9">其他例題</a>
-                            
-                            <ul>
-                                
-                                <li>
-                                    <a href="#b589">b589. 超級馬拉松賽</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#d887-1chain">d887. 1.山脈種類(chain)</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#d133-00357-let-me-count-the-ways">d133. 00357 - Let Me Count The Ways</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#d784">d784. 一、連續元素的和</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#d212">d212. 東東爬階梯</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#p-6-15">P-6-15. 一覽衆山小</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#d242-00481-what-goes-up">d242. 00481 - What Goes Up</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#b840-1044">b840: 104北二4.農作物採收問題</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#d052-11456-trainsorting">d052. 11456 - Trainsorting</a>
-                                </li>
-                                
-                                <li>
-                                    <a href="#i-13">I. 仁者無敵 1.3</a>
-                                </li>
-                                
-                            </ul>
-                            
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
+  
+  <footer class="sponsorship">
+    <hr>
+    <a href="https://github.com/pei-yan-2147" title="Become a sponsor">
+      <span class="twemoji heart-throb-hover">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg>
+      </span>
+    </a>
+    <hr>
+  </footer>
+  
 
               </article>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
       </main>
       
-        <footer class="md-footer">
+        
+
+<footer class="md-footer">
+  
+    <nav
+      class="md-footer__inner md-grid"
+      aria-label="footer.title"
+    >
+      
+        <a
+          href="../%E8%B2%AA%E5%BF%83%E6%BC%94%E7%AE%97%E6%B3%95%28Greedy%29/"
+          class="md-footer__link md-footer__link--prev"
+          rel="prev"
+        >
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              貪心演算法(Greedy)
+            </div>
+          </div>
+        </a>
+      
+      
+        <a
+          href="../%E5%9C%96%E8%AB%96/"
+          class="md-footer__link md-footer__link--next"
+          rel="next"
+        >
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              圖論
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
-      <div class="md-copyright">
-  
-  
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        with emoji by
+        <a href="https://github.com/twitter/twemoji" target="_blank" rel="noopener">
+          Twemoji
+        </a>
+      </div>
+      <div class="md-social">
   
 </div>
-      
     </div>
   </div>
 </footer>
@@ -4230,12 +4281,16 @@ y：1 1 2 2 3 4 3</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["sitemap"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.instant", "navigation.indexes", "toc.follow", "content.tabs.link", "search.share", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotations"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../assets/javascripts/bundle.471ce7a9.min.js"></script>
       
-        <script src="../assets/custom.js"></script>
+        <script src="https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../assets/pymdownx-extras/extra-loader-iLQ-keay.js"></script>
       
     
   </body>

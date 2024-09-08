@@ -36,343 +36,11 @@
 
     
     
-    
+
       
     
-
-    <script type="text/javascript">
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            },
-            options: {
-                processEscapes: true
-            }
-        };
-    </script>
-
-    <script type="text/javascript" id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <!-- 背景图片 -->
-    <div class="image-background"></div>
-
-    <!-- 星空和流星效果的Canvas背景 -->
-    <canvas id="starCanvas" style="z-index: -2; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-
-    <!-- 粒子效果的Canvas背景，放置在星空和流星前面 -->
-    <canvas id="particleCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        var tocContainer = document.querySelector('.custom-toc-container');
-        var contentInner = document.querySelector('.md-content__inner');
-
-        // 设置星空流星的 Canvas 尺寸
-        var starCanvas = document.getElementById('starCanvas');
-        var starCtx = starCanvas.getContext('2d');
-        function resizeStarCanvas() {
-          starCanvas.width = window.innerWidth;
-          starCanvas.height = window.innerHeight;
-        }
-        resizeStarCanvas();
-        window.addEventListener('resize', resizeStarCanvas);
-
-        // 设置粒子效果的 Canvas 尺寸
-        var particleCanvas = document.getElementById('particleCanvas');
-        var particleCtx = particleCanvas.getContext('2d');
-        function resizeParticleCanvas() {
-          particleCanvas.width = window.innerWidth;
-          particleCanvas.height = window.innerHeight;
-        }
-        resizeParticleCanvas();
-        window.addEventListener('resize', resizeParticleCanvas);
-
-        // 星星类
-        class Star {
-          constructor() {
-            this.reset();  // 随机初始化星星的位置、大小和透明度
-          }
-
-          reset() {
-            this.x = Math.random() * starCanvas.width;
-            this.y = Math.random() * starCanvas.height;
-            this.originalSize = Math.random() * 2 + 1;
-            this.size = 0;
-            this.alpha = 0;
-            this.growthSpeed = 0.02;
-            this.shrinkSpeed = 0.01;
-            this.life = Math.random() * 200 + 100;
-          }
-
-          update() {
-            if (this.life > 100) {
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-            } else {
-              this.size -= this.shrinkSpeed;
-              this.alpha -= this.shrinkSpeed;
-              if (this.size < 0) this.size = 0;
-              if (this.alpha < 0) this.alpha = 0;
-            }
-
-            this.life -= 1;
-            if (this.life <= 0) this.reset();
-          }
-
-          draw() {
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.beginPath();
-            starCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-        }
-
-        // 流星类
-        class Meteor {
-          constructor(x = null, y = null) {
-            this.isCustom = (x !== null && y !== null); // 判斷是否是滑鼠生成的流星
-            this.reset(x, y);
-          }
-
-          reset(x = null, y = null) {
-            if (this.isCustom) {
-              this.x = x;
-              this.y = y;
-              this.size = this.originalSize; // 立即设为最大值
-              this.alpha = 1; // 立即设为最大透明度
-            } else {
-              this.x = Math.random() * starCanvas.width / 2;
-              this.y = Math.random() * starCanvas.height;
-              this.size = 0;
-              this.alpha = 0;
-            }
-            this.originalSize = Math.random() * 1 + 1;
-            this.growthSpeed = 0.03;
-            this.speedX = Math.random() * 8 + 4;
-            this.speedY = Math.random() * 4 + 2;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-
-            if (!this.isCustom) { // 非滑鼠生成的流星才有增大過程
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-              this.alpha -= 0.025;
-            } else {
-              // 滑鼠生成的流星更快消失
-              this.alpha -= 0.025; // 透明度更快減少
-            }
-
-            // 如果是滑鼠生成的流星且透明度為0，將其從數組中移除
-            if (this.isCustom && this.alpha <= 0) {
-              return true; // 返回true表示可以從數組中移除
-            }
-
-            if (!this.isCustom && this.isOutOfView()) {
-              this.reset(); // 非滑鼠生成的流星需要重新生成
-            }
-            return false; // 不移除流星
-          }
-
-          draw() {
-            starCtx.strokeStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.lineWidth = this.size;
-            starCtx.beginPath();
-            starCtx.moveTo(this.x, this.y);
-            starCtx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5);
-            starCtx.stroke();
-
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            this.drawStarShape(this.x, this.y, this.size, 5);
-          }
-
-          drawStarShape(cx, cy, outerRadius, spikes) {
-            let rot = Math.PI / 2 * 3;
-            let step = Math.PI / spikes;
-
-            starCtx.beginPath();
-            starCtx.moveTo(cx, cy - outerRadius);
-            for (let i = 0; i < spikes; i++) {
-              let x = cx + Math.cos(rot) * outerRadius;
-              let y = cy + Math.sin(rot) * outerRadius;
-              starCtx.lineTo(x, y);
-              rot += step;
-            }
-            starCtx.lineTo(cx, cy - outerRadius);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-
-          isOutOfView() {
-            return this.x > starCanvas.width || this.y > starCanvas.height || this.alpha <= 0;
-          }
-        }
-
-        // 粒子类
-        class Particle {
-          constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 3 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-            this.alpha = 1;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
-            this.alpha -= 0.02;  // 粒子逐渐消失
-          }
-
-          draw() {
-            particleCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            particleCtx.beginPath();
-            particleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            particleCtx.closePath();
-            particleCtx.fill();
-          }
-        }
-
-        // 初始化粒子、星星、流星数组
-        let starsArray = [];
-        let meteorsArray = [];
-        let customMeteorsArray = [];
-        let particlesArray = [];
-        const maxMeteors = 10;
-
-        // 初始化星星
-        function initStars() {
-          starsArray = [];
-          for (let i = 0; i < 150; i++) {
-            starsArray.push(new Star());
-          }
-        }
-
-        // 生成更多流星
-        function createMeteor() {
-          if (meteorsArray.length < maxMeteors) {
-            meteorsArray.push(new Meteor());
-          }
-        }
-
-        // 生成粒子
-        function createParticle(event) {
-          const x = event.x;
-          const y = event.y;
-          for (let i = 0; i < 1; i++) {
-            particlesArray.push(new Particle(x, y));
-          }
-        }
-
-        // 生成滑鼠流星
-        function createCustomMeteor(event) {
-          const x = event.clientX;
-          const y = event.clientY;
-          const newMeteor = new Meteor(x, y);
-          newMeteor.speedX = Math.random() * 8 + 4;  // 設置滑鼠流星的速度
-          newMeteor.speedY = Math.random() * 4 + 2;
-          newMeteor.size = newMeteor.originalSize; // 立即設定最大大小
-          newMeteor.alpha = 1; // 立即設定最大透明度
-          customMeteorsArray.push(newMeteor);
-        }
-
-        // 更新并绘制星星、流星和粒子
-        function handleParticles() {
-          for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-            particlesArray[i].draw();
-            if (particlesArray[i].alpha <= 0) {
-              particlesArray.splice(i, 1);
-              i--;
-            }
-          }
-        }
-
-        function handleStarsAndMeteors() {
-          for (let i = 0; i < starsArray.length; i++) {
-            starsArray[i].update();
-            starsArray[i].draw();
-          }
-
-          for (let i = 0; i < meteorsArray.length; i++) {
-            meteorsArray[i].update();
-            meteorsArray[i].draw();
-            if (meteorsArray[i].isOutOfView()) {
-              meteorsArray.splice(i, 1);
-              i--;
-            }
-          }
-
-          for (let i = 0; i < customMeteorsArray.length; i++) {
-            if (customMeteorsArray[i].update()) {
-              customMeteorsArray.splice(i, 1); // 移除透明度為0的滑鼠生成流星
-              i--;
-            } else {
-              customMeteorsArray[i].draw();
-            }
-          }
-        }
-
-        // 动画循环
-        function animate() {
-          starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-          particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-          handleStarsAndMeteors();
-          handleParticles();
-          requestAnimationFrame(animate);
-        }
-
-        // 初始化并开始动画
-        initStars();
-        animate();
-
-        // 流星的生成频率增加
-        setInterval(createMeteor, 500);
-
-        // 监听鼠标事件生成粒子
-        window.addEventListener('mousemove', createParticle);
-
-        // // 监听鼠标点击生成额外流星
-        // window.addEventListener('click', createCustomMeteor);
-
-        // TOC 相关逻辑
-        if (contentInner && tocContainer) {
-            updateTocPosition();
-
-            tocContainer.addEventListener('click', function() {
-                tocContainer.classList.toggle('expanded');
-            });
-        }
-
-        function updateTocPosition() {
-            var contentInnerRect = contentInner.getBoundingClientRect();
-            tocContainer.style.top = contentInnerRect.top + 'px';
-            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
-        }
-
-        // 处理图像大小调整的逻辑
-        document.querySelectorAll('img').forEach(function(img) {
-            const match = img.src.match(/=(\d+)%x$/);
-            if (match) {
-                const widthPercentage = match[1];
-                img.style.width = widthPercentage + '%';
-                img.style.height = 'auto';
-                img.src = img.src.replace(/=(\d+)%x$/, '');
-            }
-        });
-      });
-    </script>
+<script src="../assets/pymdownx-extras/material-extra-theme-2ek1P7jT.js" type="text/javascript"></script>
+<script src="../assets/pymdownx-extras/material-extra-3rdparty-BUCF4rjN.js" type="text/javascript"></script>
 
     
       
@@ -384,7 +52,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/custom.css">
+      <link rel="stylesheet" href="../assets/pymdownx-extras/extra-8611f6c398.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -401,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="black" data-md-color-accent="deep-orange">
+    <body dir="ltr" data-md-color-scheme="dracula" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -410,29 +78,54 @@
     <div data-md-component="skip">
       
         
-        <a href="#priority_queue" class="md-skip">
+        <a href="#優先柱列priority_queue" class="md-skip">
           Skip to content
         </a>
       
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+
+<!-- 
+<a href="../about/contributing/#become-a-sponsor">Sponsorship</a> -->
+
+<a href="https://github.com/pei-yan-2147">Sponsorship</a>
+
+is now available!
+<span class="twemoji heart-throb">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg>
+</span>
+          </div>
+          
+        </aside>
+      
     </div>
     
     
       
 
-  
 
-<header class="md-header md-header--shadow" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="PEI 演算法筆記" class="md-header__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
+<header class="md-header" data-md-component="header">
+  <nav
+    class="md-header__inner md-grid"
+    aria-label="header.title"
+  >
+    <a
+      href="https://pei-yan-2147.github.io/"
+      title="PEI 演算法筆記"
+      class="md-header__button md-logo"
+      aria-label="PEI 演算法筆記"
+    >
       
   <img src="../logo/peilogo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
@@ -451,14 +144,44 @@
         </div>
       </div>
     </div>
-    
-      
-    
-    
-    
+    <div class="md-header__options">
+      <div class="md-header-nav__scheme md-header-nav__button md-source__icon md-icon">
+          <a
+            href="javascript:toggleScheme();"
+            title="Light mode"
+            class="light-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+          </a>
+          <a
+            href="javascript:toggleScheme();"
+            title="Dark mode"
+            class="dark-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+          </a>
+          <a
+            href="javascript:toggleScheme();"
+            title="System preference"
+            class="system-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.5 2c-1.79 1.15-3 3.18-3 5.5s1.21 4.35 3.03 5.5C4.46 13 2 10.54 2 7.5A5.5 5.5 0 0 1 7.5 2m11.57 1.5 1.43 1.43L4.93 20.5 3.5 19.07 19.07 3.5m-6.18 2.43L11.41 5 9.97 6l.42-1.7L9 3.24l1.75-.12.58-1.65L12 3.1l1.73.03-1.35 1.13.51 1.67m-3.3 3.61-1.16-.73-1.12.78.34-1.32-1.09-.83 1.36-.09.45-1.29.51 1.27 1.36.03-1.05.87.4 1.31M19 13.5a5.5 5.5 0 0 1-5.5 5.5c-1.22 0-2.35-.4-3.26-1.07l7.69-7.69c.67.91 1.07 2.04 1.07 3.26m-4.4 6.58 2.77-1.15-.24 3.35-2.53-2.2m4.33-2.7 1.15-2.77 2.2 2.54-3.35.23m1.15-4.96-1.14-2.78 3.34.24-2.2 2.54M9.63 18.93l2.77 1.15-2.53 2.19-.24-3.34Z"/></svg>
+          </a>
+           <a
+            href="javascript:toggleScheme();"
+            title="Unknown scheme"
+            class="unknown-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m15.07 11.25-.9.92C13.45 12.89 13 13.5 13 15h-2v-.5c0-1.11.45-2.11 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8a4 4 0 0 1 4-4 4 4 0 0 1 4 4 3.2 3.2 0 0 1-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10c0-5.53-4.5-10-10-10Z"/></svg>
+          </a>
+      </div>
+    </div>
     
       <label class="md-header__button md-icon" for="__search">
-        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
@@ -474,11 +197,18 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -496,13 +226,262 @@
     
     
   </nav>
-  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
         
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  首頁
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E5%BE%85%E8%BE%A6%E4%BA%8B%E9%A0%85/" class="md-tabs__link">
+        
+  
+    
+  
+  待辦事項
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/" class="md-tabs__link">
+        
+  
+    
+  
+  學習資源
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../APCS/" class="md-tabs__link">
+        
+  
+    
+  
+  APCS
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/" class="md-tabs__link">
+        
+  
+    
+  
+  考前必看
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E6%9C%89%E4%BA%8B%E6%B2%92%E4%BA%8B%E6%89%93%E4%B8%80%E6%AC%A1/" class="md-tabs__link">
+        
+  
+    
+  
+  有事沒事打一次
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E7%B6%93%E5%85%B8%E5%A0%B1%E9%8C%AF/" class="md-tabs__link">
+          
+  
+    
+  
+  概念、語法、技巧
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../log/" class="md-tabs__link">
+          
+  
+    
+  
+  數論
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../STL/" class="md-tabs__link">
+          
+  
+    
+  
+  資料結構
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E9%81%9E%E8%BF%B4/" class="md-tabs__link">
+          
+  
+    
+  
+  演算法
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../CSEC/" class="md-tabs__link">
+          
+  
+    
+  
+  刷題
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E5%B8%B8%E7%94%A8%E8%8B%B1%E6%96%87/" class="md-tabs__link">
+          
+  
+    
+  
+  其他
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E6%B8%AC%E8%A9%A6/" class="md-tabs__link">
+        
+  
+    
+  
+  測試
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
           
         
       
@@ -517,8 +496,10 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="PEI 演算法筆記" class="md-nav__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
       
@@ -658,6 +639,53 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1141,6 +1169,41 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1500,16 +1563,36 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
         
           
-          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1660,7 +1743,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#priority_queue" class="md-nav__link">
+  <a href="#優先柱列priority_queue" class="md-nav__link">
     <span class="md-ellipsis">
       優先柱列(priority_queue)
     </span>
@@ -1713,6 +1796,39 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2049,6 +2165,17 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2126,6 +2253,23 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2302,6 +2446,27 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2549,7 +2714,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#priority_queue" class="md-nav__link">
+  <a href="#優先柱列priority_queue" class="md-nav__link">
     <span class="md-ellipsis">
       優先柱列(priority_queue)
     </span>
@@ -2569,14 +2734,13 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-<div class="md-content__inner">
-    
+  
                   
 
 
   <h1>優先柱列(priority_queue)</h1>
 
-<h2 id="priority_queue">優先柱列(priority_queue)<a class="headerlink" href="#priority_queue" title="Permanent link">&para;</a></h2>
+<h2 id="優先柱列priority_queue">優先柱列(priority_queue)<a class="headerlink" href="#優先柱列priority_queue" title="Permanent link"></a></h2>
 <blockquote>
 <p>需要一直排序，取用最大值，就使用pq最快</p>
 <p>可以想成會自動排序的stack(堆疊)</p>
@@ -2592,7 +2756,7 @@
 <span class="n">priority_queue</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">pq_2</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
 <span class="w">    </span><span class="n">istringstream</span><span class="w"> </span><span class="n">cin</span><span class="p">(</span><span class="s">&quot;8 7 9&quot;</span><span class="p">);</span>
-
+<span class="w">    </span>
 <span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
 <span class="w">        </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">x</span><span class="p">;</span>
@@ -2620,7 +2784,7 @@
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
 <span class="w">    </span><span class="n">istringstream</span><span class="w"> </span><span class="n">cin</span><span class="p">(</span><span class="s">&quot;8 7 9&quot;</span><span class="p">);</span>
-
+<span class="w">    </span>
 <span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
 <span class="w">        </span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
@@ -2661,45 +2825,100 @@
 
 
                 
-    <!-- 新增的 TOC 區塊，引用 toc 擴展生成的永久鏈接 -->
-    <div class="custom-toc-container">
-        <div class="custom-toc-title">目錄</div>
-        <nav class="custom-toc">
-            <ul>
-                
-                <li>
-                    <a href="#priority_queue">優先柱列(priority_queue)</a>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
+  
+  <footer class="sponsorship">
+    <hr>
+    <a href="https://github.com/pei-yan-2147" title="Become a sponsor">
+      <span class="twemoji heart-throb-hover">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg>
+      </span>
+    </a>
+    <hr>
+  </footer>
+  
 
               </article>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
       </main>
       
-        <footer class="md-footer">
+        
+
+<footer class="md-footer">
+  
+    <nav
+      class="md-footer__inner md-grid"
+      aria-label="footer.title"
+    >
+      
+        <a
+          href="../map/"
+          class="md-footer__link md-footer__link--prev"
+          rel="prev"
+        >
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              map
+            </div>
+          </div>
+        </a>
+      
+      
+        <a
+          href="../%E7%B7%9A%E6%AE%B5%E6%A8%B9/"
+          class="md-footer__link md-footer__link--next"
+          rel="next"
+        >
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              線段樹
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
-      <div class="md-copyright">
-  
-  
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        with emoji by
+        <a href="https://github.com/twitter/twemoji" target="_blank" rel="noopener">
+          Twemoji
+        </a>
+      </div>
+      <div class="md-social">
   
 </div>
-      
     </div>
   </div>
 </footer>
@@ -2710,12 +2929,16 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["sitemap"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.instant", "navigation.indexes", "toc.follow", "content.tabs.link", "search.share", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotations"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../assets/javascripts/bundle.471ce7a9.min.js"></script>
       
-        <script src="../assets/custom.js"></script>
+        <script src="https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../assets/pymdownx-extras/extra-loader-iLQ-keay.js"></script>
       
     
   </body>

@@ -1,22 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 
-/* === 滚动条 ============================================== */
-
-/* 设置所有滚动条的样式 */
-::-webkit-scrollbar {
-  width: 6px; /* 滚动条宽度 */
-  height: 6px; /* 水平滚动条高度（如果需要） */
-  background-color: #ffffff !important;
-}
-
-/* 设置滚动条的滑块（thumb）的样式 */
-::-webkit-scrollbar-thumb {
-  background-color: #b7b7b7 !important;
-  border-radius: 10px !important; /* 为滑块添加圆角 */
-}
-
-
 
 /* === 圖片 ============================================== */
 
@@ -93,54 +77,10 @@ details{
   border-color: #000000 !important; /* 更改展开后的边框颜色 */
 }
 
-/* === 標題連結 ============================================== */
-
-/* 更改 headerlink 图标的颜色 */
-a.headerlink {
-  color: #cfcfcf !important; /* 设置为你想要的颜色 */
-}
-
-/* 当鼠标悬停时更改颜色 */
-a.headerlink:hover {
-  color: #000000 !important; /* 设置为你想要的悬停颜色 */
-}
-
-
-/* === 程式複製框的設定 ============================================== */
-
-/* 設定「複製程式碼」按鈕的樣式 */
-/* 针对 c++ 代码块的自定义背景样式，添加复制按钮 */
-/* 针对代码块的自定义背景样式，添加复制按钮 */
-/* .code-container: 用于包裹代码块的容器样式 */
-.code-container {
-  position: relative;  /* 设置容器的相对定位，以便在内部放置绝对定位的元素 */
-  background-color: #f0f0f0; /* 设置代码块的背景颜色为浅灰色 */
-  border-radius: 5px; /* 为代码块增加圆角，使其边角更加柔和 */
-}
-
-/* .copy-button: 复制按钮的样式 */
-.copy-button {
-  position: absolute;  /* 设置按钮为绝对定位，以便在容器内自由定位 */
-  top: 0px;  /* 设置按钮距离容器顶部的距离为10px */
-  right: 0px;  /* 设置按钮距离容器右侧的距离为10px */
-  border: none;  /* 移除按钮的默认边框 */
-  background: #000000;  /* 设置按钮的背景颜色为蓝色 */
-  color: #ffffff;  /* 设置按钮文字的颜色为白色 */
-  padding: 5px 10px;  /* 设置按钮的内边距，上下为5px，左右为10px */
-  cursor: pointer;  /* 将鼠标悬停在按钮上时的光标设置为指针样式 */
-  font-size: 12px;  /* 设置按钮文字的字体大小为12px */
-  border-radius: 3px;  /* 为按钮增加圆角，使其边角更加柔和 */
-}
-
-/* .copy-button:hover: 当鼠标悬停在复制按钮上时的样式 */
-.copy-button:hover {
-  background: #0056b3;  /* 当鼠标悬停时，改变按钮的背景颜色为更深的蓝色 */
-}
 
 
 /* === 左側索引欄的設定 ============================================== */
 
-/* 主導航背景樣式 */
 .md-nav {
   background-color: #ffffff; /* 主導航背景顏色 */
   color: #000000; /* 主導航文字顏色 */
@@ -151,10 +91,9 @@ a.headerlink:hover {
   overflow: hidden; /* 防止子元素溢出顯示 */
 }
 
-/* 自定義主導航欄標題的樣式 */
 .md-nav__title {
   color: #ffffff; /* 設定文字顏色為白色 */
-  font-size: 30px !important; /* 設定字體大小 */
+  font-size: 25px !important; /* 設定字體大小 */
   font-weight: bold; /* 設定字體粗細 */
   padding: 10px; /* 設定上下內邊距 */
   text-align: center; /* 文字居中 */
@@ -164,41 +103,6 @@ a.headerlink:hover {
   margin: 0 -10px; /* 將背景左右擴展10px */
   box-sizing: border-box; /* 確保 padding 不影響寬度 */
 }
-
-@media screen and (min-width: 76.234375em) {/* 電腦螢幕時 */
-  /* 自定義主導航欄標題的樣式 */
-  .md-nav__title {
-    background-color: #000000 !important; 
-    color: #ffffff; /* 設定文字顏色為白色 */
-    font-size: 30px; /* 設定字體大小 */
-    font-weight: bold; /* 設定字體粗細 */
-    padding: 10px; /* 設定上下內邊距 */
-    text-align: center; /* 文字居中 */
-    text-decoration: none; /* 移除下劃線 */
-    border-radius: 10px 10px 0 0; /* 左上、右上角圓角，去掉下方圓角 */
-    width: calc(100% + 20px); /* 讓背景寬度比父容器多 20px */
-    margin: 0 -10px; /* 將背景左右擴展10px */
-    box-sizing: border-box; /* 確保 padding 不影響寬度 */
-  }
-}
-
-
-/* 去除導航欄整體的額外內邊距 */
-.md-nav {
-  padding-top: 0; /* 設置導航欄頂部的內邊距為0 */
-  margin-top: 0; /* 設置導航欄頂部的外邊距為0 */
-}
-
-/* 设置导航栏的链接在悬停时的背景颜色和文字颜色 */
-.md-nav__link:hover {
-  color: #e570ff !important; /* 悬停时的文字颜色 */
-}
-
-
-.md-nav__item--active > .md-nav__link .md-nav__title {
-  color: #47ffd7; /* 這裡可以設置你想要的顏色 */
-}
-
 .md-nav--primary .md-nav__title .md-nav__icon:after {
   content: "87" !important; /* 在這裡替換成你想要顯示的文字 */
   color: #000000; /* 設置文字顏色 */
@@ -210,79 +114,62 @@ a.headerlink:hover {
   transform: translate(450%, 100%) !important; /* 右下角偏移 20%，根據需要調整 */
 }
 
-/* === 右側索引欄的設定 ============================================== */
+@media screen and (min-width: 76.234375em) {/* 電腦螢幕時 */
+  
+  /* 右側目錄 ===========================================================*/
+  .md-nav__title {   
+    background-color: transparent !important; /* 背景透明 */
+    font-size: 30px; /* 設定字體大小 */
+    color: #ffffff !important; /* 主導航文字顏色 */
+    box-shadow: none !important; /* 移除陰影 */
+  }
 
-/* 隱藏原本的右側導航欄 */
-.md-nav--secondary {
-  display: none;
+  /* 看過的目錄 */
+  .md-nav__link.md-nav__link--passed:not(.md-nav__link--active) {
+    background-color: transparent !important; /* 背景透明 */
+    color: #ffffff !important; /* 主導航文字顏色 */
+    box-shadow: none !important; /* 移除陰影 */
+  }
+  /* 看過的目錄懸停 */
+  .md-nav__link.md-nav__link--passed:not(.md-nav__link--active):hover {
+    color: #e570ff !important; /* 悬停时的文字颜色 */
+  }
+  /* 主導航背景樣式 */
+  .md-nav {
+    background-color: transparent !important; /* 背景透明 */
+    box-shadow: none !important; /* 移除陰影 */
+    color: #ffffff; /* 主導航文字顏色 */
+    font-size: 20px; /* 設定字體大小 */
+    padding: 0; /* 移除內邊距 */
+    font-weight: bold; /* 設置字體粗細 */
+    border-radius: 5px; /* 為內容區域添加圓角 */
+    overflow: hidden; /* 防止子元素溢出顯示 */
+  }
+
+  /* 左側目錄標題 =================================*/
+  label.md-nav__link{
+    font-size: 30px; /* 設定字體大小 */
+    background-color: transparent !important; /* 背景透明 */
+    color: #ffffff !important; /* 主導航文字顏色 */
+    box-shadow: none !important; /* 移除陰影 */
+  }
+
+
+
+
+  /* 设置导航栏的链接在悬停时的背景颜色和文字颜色 */
+  .md-nav__link:hover {
+    color: #e570ff !important; /* 悬停时的文字颜色 */
+  }
+
+  .md-nav--primary .md-nav__title .md-nav__icon:after {
+    font-size: 300px; /* 設置文字大小，根據需要調整 */
+    transform: translate(450%, 100%) !important; /* 右下角偏移 20%，根據需要調整 */
+  }
+
 }
 
-/* 初始的 TOC 樣式，顯示為縮小的方塊，固定定位在中間區塊的右上角 */
-.custom-toc-container {
-  position: fixed; /* 固定定位，确保 TOC 固定在页面上 */
-  right: 0px;
-  width: 100px;
-  height: 50px;
-  background-color: #f9f9f9 !important;
-  overflow-y: hidden;
-  border-radius: 10px;
-  z-index: 1;
-  font-weight: bold;
-  cursor: pointer;
-  /* transition: all 0.3s ease; */
-  box-sizing: border-box;
-}
 
-/* 展開後的 TOC 樣式 */
-.custom-toc-container.expanded {
-  left: auto !important; /* 取消 left 屬性，使其無效 */
-  right: 0 !important; /* 讓右側貼齊畫面右側 */
-  width: 50% !important; /* 設置寬度 */
-  max-width: 500px;
-  height: 80vh; /* 設置最大高度 */
-  overflow-y: auto; /* 啟用垂直滾動條 */
-  overflow-x: hidden; /* 禁用水平滾動條，確保文字被隱藏時不會水平滾動 */
-}
-
-
-
-/* TOC 中的列表和連結樣式 */
-.custom-toc-container nav ul {
-  list-style-type: none; /* 去除列表項的黑點 */
-}
-
-.custom-toc-container.expanded nav {
-  display: block;
-}
-
-.custom-toc-container nav {
-  display: none;
-}
-
-.custom-toc a {
-  color: #000000;
-  text-decoration: none;
-  display: block;
-  padding: 1px 0;
-}
-
-.custom-toc a:hover {
-  background-color: #e9ecef;
-  color: #0056b3;
-}
-
-/* TOC 標題的樣式 */
-.custom-toc-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #ffffff;
-  background-color: #000000;
-  padding: 10px;
-  text-align: center;
-  border-radius: 10px 10px 0 0;
-  margin: 0 -10px 10px -10px;
-  box-sizing: border-box;
-}
 
 /* === 內文樣式的設定 ============================================== */
 
@@ -316,36 +203,7 @@ p {
 /* 設置內文區域的樣式 */
 .md-content {
   background-color: #ffffff; /* 設置背景顏色為白色 */
-  border-radius: 10px; /* 可選：為內容區域添加圓角 */
-  margin: 0 auto; /* 將內容區域居中 */
-  box-sizing: border-box; /* 確保 padding 不影響寬度 */
-  min-width: 80% !important;
-}
-
-/* === 設置全站背景影片的容器 ============================================== */
-
-/* 背景影片容器的樣式 */
-.video-background {
-  position: fixed; /* 固定定位，讓背景影片填滿整個頁面 */
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden; /* 隱藏超出的部分 */
-  z-index: -1; /* 確保影片在背景層 */
-  pointer-events: none; /* 確保背景影片不影響前景內容的操作 */
-}
-
-/* 背景影片的樣式 */
-.video-background video {
-  position: absolute;
-  top: 50%; /* 垂直居中 */
-  left: 50%; /* 水平居中 */
-  width: 100vw; /* 設置影片的寬度為視窗的寬度 */
-  height: 100vh; /* 設置影片的高度為視窗的高度 */
-  object-fit: cover; /* 確保影片覆蓋整個背景，不會變形 */
-  transform: translate(-50%, -50%); /* 將影片中心點對齊到容器中心 */
-  z-index: -1; /* 確保影片在背景層 */
+  border-radius: 5px; /* 可選：為內容區域添加圓角 */
 }
 
 
@@ -363,3 +221,12 @@ p {
   z-index: -2; /* 確保圖片在背景層 */
   pointer-events: none; /* 確保背景圖片不影響前景內容的操作 */
 }
+
+
+/* 滾動條 */
+
+
+[data-md-color-accent=deep-orange] {
+  --md-accent-fg-color: #e570ff;
+}
+

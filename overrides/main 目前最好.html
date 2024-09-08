@@ -2,6 +2,7 @@
 
 {% block libs %}
     {{ super() }}
+    
 
     <script type="text/javascript">
         window.MathJax = {
@@ -338,39 +339,4 @@
     </script>
 {% endblock %}
 
-{% block content %}
-<div class="md-content__inner">
-    {{ super() }}
-    <!-- 新增的 TOC 區塊，引用 toc 擴展生成的永久鏈接 -->
-    <div class="custom-toc-container">
-        <div class="custom-toc-title">目錄</div>
-        <nav class="custom-toc">
-            <ul>
-                {% for section in page.toc %}
-                <li>
-                    <a href="#{{ section.id }}">{{ section.title }}</a>
-                    {% if section.children %}
-                    <ul>
-                        {% for child in section.children %}
-                        <li>
-                            <a href="#{{ child.id }}">{{ child.title }}</a>
-                            {% if child.children %}
-                            <ul>
-                                {% for grandchild in child.children %}
-                                <li>
-                                    <a href="#{{ grandchild.id }}">{{ grandchild.title }}</a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-        </nav>
-    </div>
-</div>
-{% endblock %}
+

@@ -34,343 +34,11 @@
 
     
     
-    
+
       
     
-
-    <script type="text/javascript">
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            },
-            options: {
-                processEscapes: true
-            }
-        };
-    </script>
-
-    <script type="text/javascript" id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <!-- 背景图片 -->
-    <div class="image-background"></div>
-
-    <!-- 星空和流星效果的Canvas背景 -->
-    <canvas id="starCanvas" style="z-index: -2; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-
-    <!-- 粒子效果的Canvas背景，放置在星空和流星前面 -->
-    <canvas id="particleCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        var tocContainer = document.querySelector('.custom-toc-container');
-        var contentInner = document.querySelector('.md-content__inner');
-
-        // 设置星空流星的 Canvas 尺寸
-        var starCanvas = document.getElementById('starCanvas');
-        var starCtx = starCanvas.getContext('2d');
-        function resizeStarCanvas() {
-          starCanvas.width = window.innerWidth;
-          starCanvas.height = window.innerHeight;
-        }
-        resizeStarCanvas();
-        window.addEventListener('resize', resizeStarCanvas);
-
-        // 设置粒子效果的 Canvas 尺寸
-        var particleCanvas = document.getElementById('particleCanvas');
-        var particleCtx = particleCanvas.getContext('2d');
-        function resizeParticleCanvas() {
-          particleCanvas.width = window.innerWidth;
-          particleCanvas.height = window.innerHeight;
-        }
-        resizeParticleCanvas();
-        window.addEventListener('resize', resizeParticleCanvas);
-
-        // 星星类
-        class Star {
-          constructor() {
-            this.reset();  // 随机初始化星星的位置、大小和透明度
-          }
-
-          reset() {
-            this.x = Math.random() * starCanvas.width;
-            this.y = Math.random() * starCanvas.height;
-            this.originalSize = Math.random() * 2 + 1;
-            this.size = 0;
-            this.alpha = 0;
-            this.growthSpeed = 0.02;
-            this.shrinkSpeed = 0.01;
-            this.life = Math.random() * 200 + 100;
-          }
-
-          update() {
-            if (this.life > 100) {
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-            } else {
-              this.size -= this.shrinkSpeed;
-              this.alpha -= this.shrinkSpeed;
-              if (this.size < 0) this.size = 0;
-              if (this.alpha < 0) this.alpha = 0;
-            }
-
-            this.life -= 1;
-            if (this.life <= 0) this.reset();
-          }
-
-          draw() {
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.beginPath();
-            starCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-        }
-
-        // 流星类
-        class Meteor {
-          constructor(x = null, y = null) {
-            this.isCustom = (x !== null && y !== null); // 判斷是否是滑鼠生成的流星
-            this.reset(x, y);
-          }
-
-          reset(x = null, y = null) {
-            if (this.isCustom) {
-              this.x = x;
-              this.y = y;
-              this.size = this.originalSize; // 立即设为最大值
-              this.alpha = 1; // 立即设为最大透明度
-            } else {
-              this.x = Math.random() * starCanvas.width / 2;
-              this.y = Math.random() * starCanvas.height;
-              this.size = 0;
-              this.alpha = 0;
-            }
-            this.originalSize = Math.random() * 1 + 1;
-            this.growthSpeed = 0.03;
-            this.speedX = Math.random() * 8 + 4;
-            this.speedY = Math.random() * 4 + 2;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-
-            if (!this.isCustom) { // 非滑鼠生成的流星才有增大過程
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-              this.alpha -= 0.025;
-            } else {
-              // 滑鼠生成的流星更快消失
-              this.alpha -= 0.025; // 透明度更快減少
-            }
-
-            // 如果是滑鼠生成的流星且透明度為0，將其從數組中移除
-            if (this.isCustom && this.alpha <= 0) {
-              return true; // 返回true表示可以從數組中移除
-            }
-
-            if (!this.isCustom && this.isOutOfView()) {
-              this.reset(); // 非滑鼠生成的流星需要重新生成
-            }
-            return false; // 不移除流星
-          }
-
-          draw() {
-            starCtx.strokeStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.lineWidth = this.size;
-            starCtx.beginPath();
-            starCtx.moveTo(this.x, this.y);
-            starCtx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5);
-            starCtx.stroke();
-
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            this.drawStarShape(this.x, this.y, this.size, 5);
-          }
-
-          drawStarShape(cx, cy, outerRadius, spikes) {
-            let rot = Math.PI / 2 * 3;
-            let step = Math.PI / spikes;
-
-            starCtx.beginPath();
-            starCtx.moveTo(cx, cy - outerRadius);
-            for (let i = 0; i < spikes; i++) {
-              let x = cx + Math.cos(rot) * outerRadius;
-              let y = cy + Math.sin(rot) * outerRadius;
-              starCtx.lineTo(x, y);
-              rot += step;
-            }
-            starCtx.lineTo(cx, cy - outerRadius);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-
-          isOutOfView() {
-            return this.x > starCanvas.width || this.y > starCanvas.height || this.alpha <= 0;
-          }
-        }
-
-        // 粒子类
-        class Particle {
-          constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 3 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-            this.alpha = 1;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
-            this.alpha -= 0.02;  // 粒子逐渐消失
-          }
-
-          draw() {
-            particleCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            particleCtx.beginPath();
-            particleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            particleCtx.closePath();
-            particleCtx.fill();
-          }
-        }
-
-        // 初始化粒子、星星、流星数组
-        let starsArray = [];
-        let meteorsArray = [];
-        let customMeteorsArray = [];
-        let particlesArray = [];
-        const maxMeteors = 10;
-
-        // 初始化星星
-        function initStars() {
-          starsArray = [];
-          for (let i = 0; i < 150; i++) {
-            starsArray.push(new Star());
-          }
-        }
-
-        // 生成更多流星
-        function createMeteor() {
-          if (meteorsArray.length < maxMeteors) {
-            meteorsArray.push(new Meteor());
-          }
-        }
-
-        // 生成粒子
-        function createParticle(event) {
-          const x = event.x;
-          const y = event.y;
-          for (let i = 0; i < 1; i++) {
-            particlesArray.push(new Particle(x, y));
-          }
-        }
-
-        // 生成滑鼠流星
-        function createCustomMeteor(event) {
-          const x = event.clientX;
-          const y = event.clientY;
-          const newMeteor = new Meteor(x, y);
-          newMeteor.speedX = Math.random() * 8 + 4;  // 設置滑鼠流星的速度
-          newMeteor.speedY = Math.random() * 4 + 2;
-          newMeteor.size = newMeteor.originalSize; // 立即設定最大大小
-          newMeteor.alpha = 1; // 立即設定最大透明度
-          customMeteorsArray.push(newMeteor);
-        }
-
-        // 更新并绘制星星、流星和粒子
-        function handleParticles() {
-          for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-            particlesArray[i].draw();
-            if (particlesArray[i].alpha <= 0) {
-              particlesArray.splice(i, 1);
-              i--;
-            }
-          }
-        }
-
-        function handleStarsAndMeteors() {
-          for (let i = 0; i < starsArray.length; i++) {
-            starsArray[i].update();
-            starsArray[i].draw();
-          }
-
-          for (let i = 0; i < meteorsArray.length; i++) {
-            meteorsArray[i].update();
-            meteorsArray[i].draw();
-            if (meteorsArray[i].isOutOfView()) {
-              meteorsArray.splice(i, 1);
-              i--;
-            }
-          }
-
-          for (let i = 0; i < customMeteorsArray.length; i++) {
-            if (customMeteorsArray[i].update()) {
-              customMeteorsArray.splice(i, 1); // 移除透明度為0的滑鼠生成流星
-              i--;
-            } else {
-              customMeteorsArray[i].draw();
-            }
-          }
-        }
-
-        // 动画循环
-        function animate() {
-          starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-          particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-          handleStarsAndMeteors();
-          handleParticles();
-          requestAnimationFrame(animate);
-        }
-
-        // 初始化并开始动画
-        initStars();
-        animate();
-
-        // 流星的生成频率增加
-        setInterval(createMeteor, 500);
-
-        // 监听鼠标事件生成粒子
-        window.addEventListener('mousemove', createParticle);
-
-        // // 监听鼠标点击生成额外流星
-        // window.addEventListener('click', createCustomMeteor);
-
-        // TOC 相关逻辑
-        if (contentInner && tocContainer) {
-            updateTocPosition();
-
-            tocContainer.addEventListener('click', function() {
-                tocContainer.classList.toggle('expanded');
-            });
-        }
-
-        function updateTocPosition() {
-            var contentInnerRect = contentInner.getBoundingClientRect();
-            tocContainer.style.top = contentInnerRect.top + 'px';
-            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
-        }
-
-        // 处理图像大小调整的逻辑
-        document.querySelectorAll('img').forEach(function(img) {
-            const match = img.src.match(/=(\d+)%x$/);
-            if (match) {
-                const widthPercentage = match[1];
-                img.style.width = widthPercentage + '%';
-                img.style.height = 'auto';
-                img.src = img.src.replace(/=(\d+)%x$/, '');
-            }
-        });
-      });
-    </script>
+<script src="../assets/pymdownx-extras/material-extra-theme-2ek1P7jT.js" type="text/javascript"></script>
+<script src="../assets/pymdownx-extras/material-extra-3rdparty-BUCF4rjN.js" type="text/javascript"></script>
 
     
       
@@ -382,7 +50,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/custom.css">
+      <link rel="stylesheet" href="../assets/pymdownx-extras/extra-8611f6c398.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -399,7 +67,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="black" data-md-color-accent="deep-orange">
+    <body dir="ltr" data-md-color-scheme="dracula" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -410,22 +78,47 @@
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+
+<!-- 
+<a href="../about/contributing/#become-a-sponsor">Sponsorship</a> -->
+
+<a href="https://github.com/pei-yan-2147">Sponsorship</a>
+
+is now available!
+<span class="twemoji heart-throb">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg>
+</span>
+          </div>
+          
+        </aside>
+      
     </div>
     
     
       
 
-  
 
-<header class="md-header md-header--shadow" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="PEI 演算法筆記" class="md-header__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
+<header class="md-header" data-md-component="header">
+  <nav
+    class="md-header__inner md-grid"
+    aria-label="header.title"
+  >
+    <a
+      href="https://pei-yan-2147.github.io/"
+      title="PEI 演算法筆記"
+      class="md-header__button md-logo"
+      aria-label="PEI 演算法筆記"
+    >
       
   <img src="../logo/peilogo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
@@ -444,14 +137,44 @@
         </div>
       </div>
     </div>
-    
-      
-    
-    
-    
+    <div class="md-header__options">
+      <div class="md-header-nav__scheme md-header-nav__button md-source__icon md-icon">
+          <a
+            href="javascript:toggleScheme();"
+            title="Light mode"
+            class="light-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+          </a>
+          <a
+            href="javascript:toggleScheme();"
+            title="Dark mode"
+            class="dark-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+          </a>
+          <a
+            href="javascript:toggleScheme();"
+            title="System preference"
+            class="system-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.5 2c-1.79 1.15-3 3.18-3 5.5s1.21 4.35 3.03 5.5C4.46 13 2 10.54 2 7.5A5.5 5.5 0 0 1 7.5 2m11.57 1.5 1.43 1.43L4.93 20.5 3.5 19.07 19.07 3.5m-6.18 2.43L11.41 5 9.97 6l.42-1.7L9 3.24l1.75-.12.58-1.65L12 3.1l1.73.03-1.35 1.13.51 1.67m-3.3 3.61-1.16-.73-1.12.78.34-1.32-1.09-.83 1.36-.09.45-1.29.51 1.27 1.36.03-1.05.87.4 1.31M19 13.5a5.5 5.5 0 0 1-5.5 5.5c-1.22 0-2.35-.4-3.26-1.07l7.69-7.69c.67.91 1.07 2.04 1.07 3.26m-4.4 6.58 2.77-1.15-.24 3.35-2.53-2.2m4.33-2.7 1.15-2.77 2.2 2.54-3.35.23m1.15-4.96-1.14-2.78 3.34.24-2.2 2.54M9.63 18.93l2.77 1.15-2.53 2.19-.24-3.34Z"/></svg>
+          </a>
+           <a
+            href="javascript:toggleScheme();"
+            title="Unknown scheme"
+            class="unknown-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m15.07 11.25-.9.92C13.45 12.89 13 13.5 13 15h-2v-.5c0-1.11.45-2.11 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8a4 4 0 0 1 4-4 4 4 0 0 1 4 4 3.2 3.2 0 0 1-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10c0-5.53-4.5-10-10-10Z"/></svg>
+          </a>
+      </div>
+    </div>
     
       <label class="md-header__button md-icon" for="__search">
-        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
@@ -467,11 +190,18 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -489,13 +219,262 @@
     
     
   </nav>
-  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
         
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  首頁
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E5%BE%85%E8%BE%A6%E4%BA%8B%E9%A0%85/" class="md-tabs__link">
+        
+  
+    
+  
+  待辦事項
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/" class="md-tabs__link">
+        
+  
+    
+  
+  學習資源
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../APCS/" class="md-tabs__link">
+        
+  
+    
+  
+  APCS
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/" class="md-tabs__link">
+        
+  
+    
+  
+  考前必看
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E6%9C%89%E4%BA%8B%E6%B2%92%E4%BA%8B%E6%89%93%E4%B8%80%E6%AC%A1/" class="md-tabs__link">
+        
+  
+    
+  
+  有事沒事打一次
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E7%B6%93%E5%85%B8%E5%A0%B1%E9%8C%AF/" class="md-tabs__link">
+          
+  
+    
+  
+  概念、語法、技巧
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../log/" class="md-tabs__link">
+          
+  
+    
+  
+  數論
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../STL/" class="md-tabs__link">
+          
+  
+    
+  
+  資料結構
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E9%81%9E%E8%BF%B4/" class="md-tabs__link">
+          
+  
+    
+  
+  演算法
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../CSEC/" class="md-tabs__link">
+          
+  
+    
+  
+  刷題
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E5%B8%B8%E7%94%A8%E8%8B%B1%E6%96%87/" class="md-tabs__link">
+          
+  
+    
+  
+  其他
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  測試
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
           
         
       
@@ -510,8 +489,10 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="PEI 演算法筆記" class="md-nav__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
       
@@ -651,6 +632,53 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1134,6 +1162,41 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1491,6 +1554,23 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1659,6 +1739,39 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1995,6 +2108,17 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2072,6 +2196,23 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2248,6 +2389,27 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2506,1239 +2668,36 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-<div class="md-content__inner">
-    
+  
                   
 
 
-<html><head><style data-merge-styles="true"></style>
-<style data-merge-styles="true"></style><style data-merge-styles="true"></style><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>114特殊選才｜簡章名額即時更新！報名時間書審面試一覽表！-TKB甄戰學習顧問中心</title>
-<link rel="shortcut icon" type="image/x-icon" href="https://www.reallygood.com.tw/images/favicon_tkb.ico">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<link rel="stylesheet" type="text/css" href="https://www.reallygood.com.tw/css/front_style.css?v=20210705">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<link rel="stylesheet" type="text/css" href="https://www.reallygood.com.tw/css/font-awesome.css">
-<link type="text/css" rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-<link type="text/css" rel="stylesheet" href="https://www.reallygood.com.tw/css/jquery.mCustomScrollbar.css">
-<script id="facebook-jssdk" src="https://connect.facebook.net/zh_TW/sdk/xfbml.customerchat.js "></script><script async="" src="//www.googletagmanager.com/gtm.js?id=GTM-PQJ4V7B"></script><script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':  
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],  
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=  
-'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);  
-})(window,document,'script','dataLayer','GTM-PQJ4V7B');</script>
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-970517127"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'AW-970517127');
-</script>
-<meta name="description" content="113特殊選才簡章已全部公告完畢！，特殊選才各校資格門檻大不同，採各校獨立招生方式進行，特殊選才簡章約在9-11月公布、12月考試、1月放榜，在學測前就會完成招生流程，比的是考生的備審資料與口試成績。特殊選才不像申請、分發入學由統一的單位進行資訊發布與放榜等，而是各自校系獨立招生。各校系特殊選才門檻大不同，也有部分校系上榜率極高，甚至報名即上榜，甄戰建議考生們根據各校特殊選才簡章準備備審面試以及報考策略。">
-<meta name="keywords" content="TKB甄戰學習顧問中心">
-<meta property="og:title" content="114特殊選才｜簡章名額即時更新！報名時間書審面試一覽表！-TKB甄戰學習顧問中心">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.reallygood.com.tw/newExam/inside?str=932DEFBF9A06471E3A1436C3808D1BB7&amp;product_category=">
-<meta property="og:image" content="https://img.reallygood.com.tw/p20160826EC012_1100_380/toPic.action">
-<meta property="og:site_name" content="TKB甄戰學習顧問中心">
-<meta property="og:description" content="113特殊選才簡章已全部公告完畢！，特殊選才各校資格門檻大不同，採各校獨立招生方式進行，特殊選才簡章約在9-11月公布、12月考試、1月放榜，在學測前就會完成招生流程，比的是考生的備審資料與口試成績。特殊選才不像申請、分發入學由統一的單位進行資訊發布與放榜等，而是各自校系獨立招生。各校系特殊選才門檻大不同，也有部分校系上榜率極高，甚至報名即上榜，甄戰建議考生們根據各校特殊選才簡章準備備審面試以及報考策略。">
-<link rel="stylesheet" href="https://www.reallygood.com.tw/js/skin/layer.css" id="layui_layer_skinlayercss" style=""><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script><style type="text/css" data-fbcssmodules="css:fb.css.base css:fb.css.dialog css:fb.css.iframewidget css:fb.css.customer_chat_plugin_iframe">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:'lucida grande', tahoma, verdana, arial, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
-.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:'lucida grande', tahoma, verdana, arial, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
-.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_dialog_advanced{border-radius:8px;padding:10px}.fb_dialog_content{background:#fff;color:#373737}.fb_dialog_close_icon{background:url(https://connect.facebook.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{left:5px;right:auto;top:5px}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://connect.facebook.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent}.fb_dialog_close_icon:active{background:url(https://connect.facebook.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:15px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://connect.facebook.net/rsrc.php/v3/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{height:100%;left:0;margin:0;overflow:visible;position:absolute;top:-10000px;transform:none;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://connect.facebook.net/rsrc.php/v3/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{background:none;height:auto;min-height:initial;min-width:initial;width:auto}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{clear:both;color:#fff;display:block;font-size:19px;padding-top:20px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .4);bottom:0;left:0;min-height:100%;position:absolute;right:0;top:0;width:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_mobile .fb_dialog_iframe{position:sticky;top:0}.fb_dialog_content .dialog_header{background:linear-gradient(from(#738aba), to(#2c4987));border-bottom:1px solid;border-color:#043b87;box-shadow:white 0 1px 1px -1px inset;color:#fff;font:bold 14px Helvetica, sans-serif;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:13px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:13px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:linear-gradient(from(#4267B2), to(#2a4887));background-clip:padding-box;border:1px solid #29487d;border-radius:3px;display:inline-block;line-height:18px;margin-top:3px;max-width:85px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{background:none;border:none;color:#fff;font:bold 12px Helvetica, sans-serif;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:17px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://connect.facebook.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #4a4a4a;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f5f6f7;border:1px solid #4a4a4a;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://connect.facebook.net/rsrc.php/v3/yD/r/t-wz8gw1xG1.png);background-position:50% 50%;background-repeat:no-repeat;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}
-.fb_mpn_mobile_landing_page_slide_out{animation-duration:200ms;animation-name:fb_mpn_landing_page_slide_out;transition-timing-function:ease-in}.fb_mpn_mobile_landing_page_slide_out_from_left{animation-duration:200ms;animation-name:fb_mpn_landing_page_slide_out_from_left;transition-timing-function:ease-in}.fb_mpn_mobile_landing_page_slide_up{animation-duration:500ms;animation-name:fb_mpn_landing_page_slide_up;transition-timing-function:ease-in}.fb_mpn_mobile_bounce_in{animation-duration:300ms;animation-name:fb_mpn_bounce_in;transition-timing-function:ease-in}.fb_mpn_mobile_bounce_out{animation-duration:300ms;animation-name:fb_mpn_bounce_out;transition-timing-function:ease-in}.fb_mpn_mobile_bounce_out_v2{animation-duration:300ms;animation-name:fb_mpn_fade_out;transition-timing-function:ease-in}.fb_customer_chat_bounce_in_v2{animation-duration:300ms;animation-name:fb_bounce_in_v2;transition-timing-function:ease-in}.fb_customer_chat_bounce_in_from_left{animation-duration:300ms;animation-name:fb_bounce_in_from_left;transition-timing-function:ease-in}.fb_customer_chat_bounce_out_v2{animation-duration:300ms;animation-name:fb_bounce_out_v2;transition-timing-function:ease-in}.fb_customer_chat_bounce_out_from_left{animation-duration:300ms;animation-name:fb_bounce_out_from_left;transition-timing-function:ease-in}.fb_invisible_flow{display:inherit;height:0;overflow-x:hidden;width:0}@keyframes fb_mpn_landing_page_slide_out{0%{margin:0 12px;width:100% - 24px}60%{border-radius:18px}100%{border-radius:50%;margin:0 24px;width:60px}}@keyframes fb_mpn_landing_page_slide_out_from_left{0%{left:12px;width:100% - 24px}60%{border-radius:18px}100%{border-radius:50%;left:12px;width:60px}}@keyframes fb_mpn_landing_page_slide_up{0%{bottom:0;opacity:0}100%{bottom:24px;opacity:1}}@keyframes fb_mpn_bounce_in{0%{opacity:.5;top:100%}100%{opacity:1;top:0}}@keyframes fb_mpn_fade_out{0%{bottom:30px;opacity:1}100%{bottom:0;opacity:0}}@keyframes fb_mpn_bounce_out{0%{opacity:1;top:0}100%{opacity:.5;top:100%}}@keyframes fb_bounce_in_v2{0%{opacity:0;transform:scale(0, 0);transform-origin:bottom right}50%{transform:scale(1.03, 1.03);transform-origin:bottom right}100%{opacity:1;transform:scale(1, 1);transform-origin:bottom right}}@keyframes fb_bounce_in_from_left{0%{opacity:0;transform:scale(0, 0);transform-origin:bottom left}50%{transform:scale(1.03, 1.03);transform-origin:bottom left}100%{opacity:1;transform:scale(1, 1);transform-origin:bottom left}}@keyframes fb_bounce_out_v2{0%{opacity:1;transform:scale(1, 1);transform-origin:bottom right}100%{opacity:0;transform:scale(0, 0);transform-origin:bottom right}}@keyframes fb_bounce_out_from_left{0%{opacity:1;transform:scale(1, 1);transform-origin:bottom left}100%{opacity:0;transform:scale(0, 0);transform-origin:bottom left}}@keyframes slideInFromBottom{0%{opacity:.1;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}@keyframes slideInFromBottomDelay{0%{opacity:0;transform:translateY(100%)}97%{opacity:0;transform:translateY(100%)}100%{opacity:1;transform:translateY(0)}}</style></head>
-<body class="vsc-initialized">
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQJ4V7B"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/jquery-2.2.4.min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/goTop-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/menu-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/img-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/sort-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/marquee-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/jquery.cookie.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/logo_list.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/footer-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/layer.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/layer_msg-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/qa-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/min/responsiveslides-min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/tabs.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/FBMessage.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/jquery.mCustomScrollbar.concat.min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/jquery.transit.min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/greensock/TweenMax.min.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/nav_mobile.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/scrollbar_nav_mobile.js"></script>
-<script type="text/javascript" src="https://www.reallygood.com.tw/js/scroll-react.js"></script>
-    <div class="goTop" style="display: block;"></div>
-<a class="btn-top cd-is-visible cd-fade-out" href="javascript:void(0);"><i class="fas fa-arrow-up"></i></a>
-<a class="btn-feature" href="javascript:void(0);"><i class="fas fa-ellipsis-h"></i></a>
-<a class="btn-course" href="https://www.reallygood.com.tw/EDM/edm253/index.jsp?str=741C31581DB3FF18F9B1FEE9DAEC51CB" target="_blank">課程<br>諮詢</a>
-<div class="nav-mobile" style="transform: translate(0px, 0px); opacity: 0;">
-    <aside><a href="javascript:void(0);"><i class="fas fa-power-off"></i>關閉</a></aside>
-    <section class="scroll-container mCustomScrollbar _mCS_1 mCS-autoHide" style="overflow: visible;"><div id="mCSB_1" class="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside" style="max-height: 650.2px;" tabindex="0"><div id="mCSB_1_container" class="mCSB_container mCS_y_hidden mCS_no_scrollbar_y" style="position:relative; top:0; left:0;" dir="ltr">
-        <a class="category" href="javascript:void(0);" style="transform: translate(-50px, 0px); opacity: 0;">
-            <div style="transform: translate(-100px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-150px, 0px); opacity: 0;">高中職升大學</div>
-            <div style="transform: translate(-200px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>最新考情</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=932DEFBF9A06471E3A1436C3808D1BB7">特殊選才</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=1F60869C08E23C1642CB028AF6A0E283">繁星推薦</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=7D729692CC8CACF2CF74477D47EA1D53">個人申請</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=CC85C01C3601D749EDF4DD89244DD1E0">分科測驗</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=9C4A3F45B7C1F0F6CD12DA46E0D73E44">統一入學測驗</a>
-                <a href="https://www.reallygood.com.tw/GSAT/index?str=363084B7B5747365249A9238BCDEDB6D">108新課綱</a>
-            </div>
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>科系介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/18groups/index">大學18學群</a>
-                <a href="https://www.reallygood.com.tw/common/technology_intro">科大21類群</a>
-            </div>
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>書審面試準備</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/common/senior_review">書審製作</a>
-                <a href="https://www.reallygood.com.tw/common/senior_exam">面試考古題</a>
-            </div>
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>課程介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=11CACC520F9B5BB1A5D51C362B717B4A">學科準備</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=D16E7B8BC8F65768879D7DFBF08376E0">甄試準備</a>
-            </div>
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>成功範例</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/winner/index">贏家經驗談</a>
-                <a href="https://www.reallygood.com.tw/admit/index">考取金榜</a>
-            </div>
-        </section>
-        <a class="category" href="javascript:void(0);" style="transform: translate(-250px, 0px); opacity: 0;">
-            <div style="transform: translate(-300px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-350px, 0px); opacity: 0;">學習歷程</div>
-            <div style="transform: translate(-400px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>學習歷程情報</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>主題課程</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/GSAT/index?str=363084B7B5747365249A9238BCDEDB6D">
-                <div><i class="fas fa-caret-right"></i>108新課綱</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>APCS檢測</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=BA2F4774FB02B5CECFE375A9C0A9BF9A">
-                <div><i class="fas fa-caret-right"></i>課程介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-        </section>
-        <a class="category" href="javascript:void(0);" style="transform: translate(-450px, 0px); opacity: 0;">
-            <div style="transform: translate(-500px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-550px, 0px); opacity: 0;">影音教材</div>
-            <div style="transform: translate(-600px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>國中影音教材</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=FD1B62B25081B810A202A7A3209FC1CB">國中課程細說</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=4AC20A88705AB21A44D6DE9849C7653C">會考總複習</a>
-            </div>
-
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>高中影音教材</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=11CACC520F9B5BB1A5D51C362B717B4A">學測細說</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=26682917388D1CB38E9299518C8657C1">分科測驗細說</a>
-                <a href="https://www.reallygood.com.tw/lectures/inside?str=B1C724AE8960084BE78670C9F3443C73">學測總複習</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=AE319D1BA5718EA52A3773AEB2AF223F">分科測驗總複習</a>
-            </div>
-
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>最新考情</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=F7229F6ADD9F230A5FB41A782B73F2A0">會考歷屆考題</a>
-                <a href="https://www.reallygood.com.tw/GSAT/index?str=13BE38143F89F6FD8563A0C6EAE15BC1">素養考題</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=81409192F1861A6551FD23DC875212B2">學測歷屆試題</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=244AE6959993A9D97BFAB0BA20FED495">分科測驗歷屆試題</a>
-            </div>  
-
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>精選題庫</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://reallygood.upad12.com/">知識點題庫</a>
-                <a href="https://eric.csofe.org/">素養題庫</a>
-            </div>  
-
-            <a class="category-sub" href="javascript:void(0);">
-                <div><i class="fas fa-caret-right"></i>教材介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/GSAT/index?str=FD075EBF10438FE68435AC08D4909EFA">師資陣容</a>
-                <a href="https://www.reallygood.com.tw/GSAT/index?str=BA6B176B2AE7534FCB1980DD4790E840">預約試聽</a>
-            </div>                      
-        </section>
-        <a class="category" href="javascript:void(0);" style="transform: translate(-650px, 0px); opacity: 0;">
-            <div style="transform: translate(-700px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-750px, 0px); opacity: 0;">醫學專班</div>
-            <div style="transform: translate(-800px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>醫學甄試情報</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=A50BDF87B5EF9AFCAF0C68F0492A6FE8">
-                <div><i class="fas fa-caret-right"></i>醫學書審口試技巧</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=6C33B5E71B6CE16E6DD6910BB5FFC682">
-                <div><i class="fas fa-caret-right"></i>課程介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=205B1EA90F8D3AAA43487E45BB25AC29&amp;print_id=5288">
-                <div><i class="fas fa-caret-right"></i>暑期先修</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=879754E89B28C153FF2DAEF352CDBDE5">
-                <div><i class="fas fa-caret-right"></i>學士後醫</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/winner/index">
-                <div><i class="fas fa-caret-right"></i>贏家經驗談</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-        </section>
-
-        <a class="category" href="javascript:void(0);" style="transform: translate(-850px, 0px); opacity: 0;">
-            <div style="transform: translate(-900px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-950px, 0px); opacity: 0;">熱門講座</div>
-            <div style="transform: translate(-1000px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>國中升高中</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>高中升大學</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>大學升研究所</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>國營事業複試</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" style="cursor:pointer;">
-                <div><i class="fas fa-caret-right"></i>主題課程</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-        </section>
-        <a class="category" href="javascript:void(0);" style="transform: translate(-1050px, 0px); opacity: 0;">
-            <div style="transform: translate(-1100px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-1150px, 0px); opacity: 0;">大學轉學考</div>
-            <div style="transform: translate(-1200px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=83C44F47F64D6AA60CA0FAB56C0D1AD5&amp;print_id=6485">
-                <div><i class="fas fa-caret-right"></i>寒假轉學考</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=5BB700D6B739BFCC2DAACC5E2B15BCE8">
-                <div><i class="fas fa-caret-right"></i>暑假轉學考</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=879754E89B28C153FF2DAEF352CDBDE5">
-                <div><i class="fas fa-caret-right"></i>學士後醫</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=F0886497A76911489ECBA5D5BCA72868">
-                <div><i class="fas fa-caret-right"></i>課程介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=339876FC35DA12E75EFB1E409961B5C9">
-                <div><i class="fas fa-caret-right"></i>常見Q&amp;A</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-        </section>
-        <a class="category" href="javascript:void(0);" style="transform: translate(-1250px, 0px); opacity: 0;">
-            <div style="transform: translate(-1300px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-1350px, 0px); opacity: 0;">研究所甄試</div>
-            <div style="transform: translate(-1400px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=C839127A8222532F37B9B52B8B075673">
-                <div><i class="fas fa-caret-right"></i>研究所推甄</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=0AB98C37435A1716A3CA5BFEF5596942">
-                <div><i class="fas fa-caret-right"></i>研究所複試</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=C839127A8222532F37B9B52B8B075673">
-                <div><i class="fas fa-caret-right"></i>課程介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <div class="category-basic">
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=4747EA268E81B1F0FD1BB9EEFFDC4465">研究所推甄</a>
-                <a href="https://www.reallygood.com.tw/newExam/inside?str=4747EA268E81B1F0FD1BB9EEFFDC4465">研究所複試</a>
-            </div> 
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=BF5F6A1DAD0E9477E9169649C0A338A6">
-                <div><i class="fas fa-caret-right"></i>常見Q&amp;A</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/chosenArticle/index">
-                <div><i class="fas fa-caret-right"></i>書審面試準備</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/winner/index">
-                <div><i class="fas fa-caret-right"></i>贏家經驗談</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-        </section>
-        <a class="category" href="javascript:void(0);" style="transform: translate(-1450px, 0px); opacity: 0;">
-            <div style="transform: translate(-1500px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-1550px, 0px); opacity: 0;">在職專班</div>
-            <div style="transform: translate(-1600px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" href="https://www.reallygood.com.tw/chosenArticle/inside?str=E0D0F172D1776A8E44490493CC41231D">
-                <div><i class="fas fa-caret-right"></i>入學管道介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/index?categoryId=45">
-                <div><i class="fas fa-caret-right"></i>最新考情</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=ABDE3ABA9F103A2EF03B4DA0FACBC1BD">
-                <div><i class="fas fa-caret-right"></i>課程介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=CD132C1EA4D5C219C5530CFB9DC9C361">
-                <div><i class="fas fa-caret-right"></i>常見Q&amp;A</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-        </section>
-        <a class="category" href="javascript:void(0);" style="transform: translate(-1650px, 0px); opacity: 0;">
-            <div style="transform: translate(-1700px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-1750px, 0px); opacity: 0;">國營/銀行複試</div>
-            <div style="transform: translate(-1800px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/index?categoryId=141">
-                <div><i class="fas fa-caret-right"></i>最新招考消息</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=74A48E26280DD7F2F2F6AD678AAD0BCC">
-                <div><i class="fas fa-caret-right"></i>國營聯招</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=2EF5DD3EAF843CB18BBAA7BE389FFD26">
-                <div><i class="fas fa-caret-right"></i>公股銀行</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=05D09013CE85AF0D6E84C75A77AAEBD1">
-                <div><i class="fas fa-caret-right"></i>中華電信</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/newExam/inside?str=B79927823F1956AE1D5F494E8EE47410&amp;print_id=6714&amp;gclid=CjwKCAiA-_L9BRBQEiwA-bm5fnM2GPuN8MkjIutnb2M_rsfa4YTPz4bF4h5vzETt4FADm-SE-vHp8hoCVLwQAvD_BwE">
-                <div><i class="fas fa-caret-right"></i>課程介紹</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/winner/index">
-                <div><i class="fas fa-caret-right"></i>贏家經驗談</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-        </section>
-        <a class="category" href="javascript:void(0);" style="transform: translate(-1850px, 0px); opacity: 0;">
-            <div style="transform: translate(-1900px, 0px); opacity: 0;"><i class="fas fa-list-ul"></i></div>
-            <div style="transform: translate(-1950px, 0px); opacity: 0;">關於甄戰</div>
-            <div style="transform: translate(-2000px, 0px); opacity: 0;"><i class="fas fa-angle-right"></i></div>
-        </a>
-        <section class="category-sub-container">
-            <a class="category-sub" href="https://www.reallygood.com.tw/schoolBulletin/index">
-                <div><i class="fas fa-caret-right"></i>系統公告</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/location/index">
-                <div><i class="fas fa-caret-right"></i>服務據點</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/lectures/index">
-                <div><i class="fas fa-caret-right"></i>近期活動</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/forecast/index">
-                <div><i class="fas fa-caret-right"></i>落點網站</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-            <a class="category-sub" href="https://www.reallygood.com.tw/camp/index">
-                <div><i class="fas fa-caret-right"></i>主題課程</div>
-                <div><i class="fas fa-angle-right"></i></div>
-            </a>
-        </section>
-    </div></div><div id="mCSB_1_scrollbar_vertical" class="mCSB_scrollTools mCSB_1_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical" style="display: none;"><div class="mCSB_draggerContainer"><div id="mCSB_1_dragger_vertical" class="mCSB_dragger" style="position: absolute; min-height: 50px; top: 0px;"><div class="mCSB_dragger_bar" style="line-height: 50px;"></div></div><div class="mCSB_draggerRail"></div></div></div></section>
-</div>
-<section class="header-topbar">
-    <div class="header-topbar-nav">
-        <a class="header-topbar-navBtn" href="https://www.reallygood.com.tw/lectures/index" target="_blank">
-            <i class="fas fa-tv"></i>免費講座
-        </a>
-        <a class="header-topbar-navBtn" href="https://www.reallygood.com.tw/EDM/edm382/index.jsp?print_id=5573" target="_blank">
-            <i class="fa fa-phone"></i>預約諮詢
-        </a>
-        <a class="header-topbar-navBtn" href="https://www.reallygood.com.tw/location/index" target="_blank">
-            <i class="fas fa-table"></i>服務據點
-        </a>
-    </div>
-</section>
-<div class="wrapper">
-    <div class="header-box">  
-
-
-<div class="header">
-    <a class="btn-nav-area" href="javascript:void(0);"><i class="fas fa-bars"></i></a>
-    <section class="logo">
-    <a href="https://www.reallygood.com.tw/index" title="TKB臺灣知識庫"><img src="https://www.reallygood.com.tw/images/front/tkb_logo.png"></a>
-    <a href="https://www.reallygood.com.tw/index" title="TKB甄戰學習顧問中心"><img src="https://www.reallygood.com.tw/images/front/logo.png"></a>
-    </section>
-
-    <section class="top-nav">
-            <div class="search-box">
-                <div>
-                    <input type="text" id="google_search" placeholder="請輸入關鍵字" spellcheck="false" data-ms-editor="true">
-                </div>
-                <div><i class="fas fa-caret-right"></i></div>
-                <div><a class="btn-search-go"><i class="fas fa-search" style="cursor: pointer;"></i></a></div>
-            </div>
-        <div class="location_btn">
-            <a href="https://www.reallygood.com.tw/camp/index" target="_blank"><i class="fas fa-map-marker-alt"></i>營隊活動</a>
-        </div>
-        <a class="advisory" href="https://www.reallygood.com.tw/common/consultation" target="_blank"><i class="fas fa-file-alt"></i>課程諮詢</a>
-        <a class="declare" href="javascript:void(0);"><i class="fas fa-skull-crossbones"></i>反詐騙聲明</a>
-        <a href="https://www.facebook.com/reallygood.com.tw/" target="_blank"><img src="https://www.reallygood.com.tw/images/front/fb.png"></a>
-        <a href="https://www.youtube.com/channel/UC5jmb4Apa7M6lO6z6zhzsyA" target="_blank"><img src="https://www.reallygood.com.tw/images/front/yt.png"></a>
-           </section>
-</div>
-    <div class="top-nav-mobile">
-        <div class="search-box">
-            <div>
-                <input type="text" id="google_search_rwd" placeholder="請輸入關鍵字" spellcheck="false" data-ms-editor="true">
-            </div>
-            <div><i class="fas fa-caret-right"></i></div>
-            <div><a class="btn-search-go" href="javascript:void(0);"><i class="fas fa-search"></i></a></div>
-        </div>
-        <a href="https://www.youtube.com/channel/UC5jmb4Apa7M6lO6z6zhzsyA" target="_blank"><img src="https://www.reallygood.com.tw/images/front/yt.png"></a>
-        <a href="https://www.facebook.com/reallygood.com.tw/" target="_blank"><img src="https://www.reallygood.com.tw/images/front/fb.png"></a>
-    </div>
-        <script type="text/javascript" src="https://www.reallygood.com.tw/js/XSSFilter.js"></script>
-        <script>
-        function google_search(){
-            // 獲取userInput的內容
-            var input = $("#google_search").val();
-            // 將userInput的內容去除html標籤
-            var google_search = XSSInputFilter(input);
-            location.href= "https://www.reallygood.com.tw/search?keyword="+google_search;
-        }
-
-        function google_search_rwd(){
-            // 獲取userInput的內容
-            var input = $("#google_search_rwd").val();
-            // 將userInput的內容去除html標籤
-            var google_search = XSSInputFilter(input);
-            location.href= "https://www.reallygood.com.tw/search?keyword="+google_search;
-        }
-    </script>
-
-
-
-
-
-<div class="nav_area">
-    <div class="nav">
-    <form id="menuForm" method="POST" enctype="multipart/form-data">
-        <input type="hidden" id="id" name="id">
-        <input type="hidden" id="category_lectures" name="lectures.category">
-        <input type="hidden" id="category_newExam" name="newExam.category">
-        <input type="hidden" id="page_count">
-        <input type="hidden" id="category_courseDiscount" name="courseDiscount.category">
-        <input type="hidden" id="category_admit" name="admit.admit_category">
-        <input type="hidden" id="layer" name="schoolBulletin.layer">
-        <input type="hidden" id="action_name" name="action_name">
-        <input type="hidden" id="year">
-        <input type="hidden" id="category" name="winner.category" value="">
-        <input type="hidden" id="parent_category" name="winner.parent_category" value="">
-        <input type="hidden" id="page_count">
-
-        <input type="hidden" id="savePage" value="0">
-    </form>
-        <ul>
-            <li><a>高中職升大學</a></li>
-            <li><a>學習歷程</a></li>
-            <li><a>影音教材</a></li>
-            <li><a>醫學專班</a></li>
-            <li><a>熱門講座</a></li>
-            <li><a>大學轉學考</a></li>
-            <li><a>研究所甄試</a></li>
-            <li><a>在職專班</a></li>
-            <li><a>國營/銀行複試</a></li>
-            <li><a>關於甄戰</a></li>
-        </ul>
-    </div>
-    <div class="menu_area">
-        <div class="menu">
-            <form id="listForm" method="POST">
-                <input type="hidden" name="searchCategory" id="searchCategoryid" value="42">
-            </form>
-            <div class="menu_01" style="display: none;">
-                <main>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>最新考情</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=932DEFBF9A06471E3A1436C3808D1BB7">特殊選才</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=1F60869C08E23C1642CB028AF6A0E283">繁星推薦</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=7D729692CC8CACF2CF74477D47EA1D53">個人申請</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=CC85C01C3601D749EDF4DD89244DD1E0">分科測驗</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=9C4A3F45B7C1F0F6CD12DA46E0D73E44">統一入學測驗</a></li>
-                            <li><a href="https://www.reallygood.com.tw/GSAT/index?str=363084B7B5747365249A9238BCDEDB6D">108新課綱</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>科系介紹</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/18groups/index">大學18學群</a></li>
-
-                            <li><a href="https://www.reallygood.com.tw/common/technology_intro">科大21類群</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>書審面試準備</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/common/senior_review">書審製作</a></li>
-                            <li><a href="https://www.reallygood.com.tw/common/senior_exam">面試考古題</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>課程介紹</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=11CACC520F9B5BB1A5D51C362B717B4A">學科準備</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=D16E7B8BC8F65768879D7DFBF08376E0">甄試準備</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>成功範例</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/winner/index">贏家經驗談</a></li>
-                            <li><a href="https://www.reallygood.com.tw/admit/index">考取金榜</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                </main>
-            </div>
-            <div class="menu_02" style="display: none;">
-                <nav>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>學習歷程情報</a>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>主題課程</a>
-                    <a href="https://www.reallygood.com.tw/GSAT/index?str=363084B7B5747365249A9238BCDEDB6D"><i class="fas fa-caret-right"></i>108新課綱</a>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>APCS檢測</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=BA2F4774FB02B5CECFE375A9C0A9BF9A"><i class="fas fa-caret-right"></i>課程介紹</a>
-                </nav>
-            </div>
-            <div class="menu_03" style="display: none;">
-                <main>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>國中影音教材</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=FD1B62B25081B810A202A7A3209FC1CB">國中課程細說</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=4AC20A88705AB21A44D6DE9849C7653C">會考總複習</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>高中影音教材</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=11CACC520F9B5BB1A5D51C362B717B4A">學測細說</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=26682917388D1CB38E9299518C8657C1">分科測驗細說</a></li>
-                            <li><a href="https://www.reallygood.com.tw/lectures/inside?str=B1C724AE8960084BE78670C9F3443C73">學測總複習</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=AE319D1BA5718EA52A3773AEB2AF223F">分科測驗總複習</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>最新考情</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=F7229F6ADD9F230A5FB41A782B73F2A0">會考歷屆考題</a></li>
-                            <li><a href="https://www.reallygood.com.tw/GSAT/index?str=13BE38143F89F6FD8563A0C6EAE15BC1">素養考題</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=81409192F1861A6551FD23DC875212B2">學測歷屆試題</a></li>
-                            <li><a href="https://www.reallygood.com.tw/newExam/inside?str=244AE6959993A9D97BFAB0BA20FED495">分科測驗歷屆試題</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>精選題庫</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://reallygood.upad12.com/">知識點題庫</a></li>
-                            <li><a href="https://eric.csofe.org/">素養題庫</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                <dl>
-                    <dt><i class="fas fa-caret-right"></i>教材介紹</dt>
-                    <dd>
-                        <ul>
-                            <li><a href="https://www.reallygood.com.tw/GSAT/index?str=FD075EBF10438FE68435AC08D4909EFA">師資陣容</a></li>
-                            <li><a href="https://www.reallygood.com.tw/GSAT/index?str=BA6B176B2AE7534FCB1980DD4790E840">預約試聽</a></li>
-                        </ul>
-                    </dd>    
-                </dl>
-                </main>
-            </div>
-
-            <div class="menu_04" style="display: none;">
-                <nav>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>醫學甄試情報</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=A50BDF87B5EF9AFCAF0C68F0492A6FE8"><i class="fas fa-caret-right"></i>醫學書審口試技巧</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=6C33B5E71B6CE16E6DD6910BB5FFC682"><i class="fas fa-caret-right"></i>課程介紹</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=205B1EA90F8D3AAA43487E45BB25AC29&amp;print_id=5288"><i class="fas fa-caret-right"></i>暑期先修</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=879754E89B28C153FF2DAEF352CDBDE5"><i class="fas fa-caret-right"></i>學士後醫</a>
-                    <a href="https://www.reallygood.com.tw/winner/index"><i class="fas fa-caret-right"></i>贏家經驗談</a>
-                </nav>
-            </div>
-
-            <div class="menu_05" style="display: none;">
-                <nav>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>國中升高中</a>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>高中升大學</a>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>大學升研究所</a>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>國營事業複試</a>
-                    <a style="cursor:pointer;"><i class="fas fa-caret-right"></i>主題課程</a>
-                </nav>
-            </div>
-            <div class="menu_06" style="display: none;">
-                <nav>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=83C44F47F64D6AA60CA0FAB56C0D1AD5&amp;print_id=6485"><i class="fas fa-caret-right"></i>寒假轉學考</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=5BB700D6B739BFCC2DAACC5E2B15BCE8"><i class="fas fa-caret-right"></i>暑假轉學考</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=879754E89B28C153FF2DAEF352CDBDE5"><i class="fas fa-caret-right"></i>學士後醫</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=F0886497A76911489ECBA5D5BCA72868"><i class="fas fa-caret-right"></i>課程介紹</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=339876FC35DA12E75EFB1E409961B5C9"><i class="fas fa-caret-right"></i>常見Q&amp;A</a>
-                </nav>
-            </div>
-            <div class="menu_07" style="display: none;">
-                <nav>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=C839127A8222532F37B9B52B8B075673"><i class="fas fa-caret-right"></i>研究所推甄</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=0AB98C37435A1716A3CA5BFEF5596942"><i class="fas fa-caret-right"></i>研究所複試</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=4747EA268E81B1F0FD1BB9EEFFDC4465"><i class="fas fa-caret-right"></i>研究所推甄-課程介紹</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=C9AAE4821F1FB7CC436936B25EEFAA10"><i class="fas fa-caret-right"></i>研究所複試-課程介紹</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=BF5F6A1DAD0E9477E9169649C0A338A6"><i class="fas fa-caret-right"></i>常見Q&amp;A</a>
-                    <a href="https://www.reallygood.com.tw/chosenArticle/index"><i class="fas fa-caret-right"></i>書審面試準備</a>
-                    <a href="https://www.reallygood.com.tw/winner/index"><i class="fas fa-caret-right"></i>贏家經驗談</a>
-                </nav>
-            </div>
-            <div class="menu_08" style="display: none;">
-                <nav>
-                    <a href="https://www.reallygood.com.tw/chosenArticle/inside?str=E0D0F172D1776A8E44490493CC41231D"><i class="fas fa-caret-right"></i>入學管道介紹</a>
-                    <a href="https://www.reallygood.com.tw/newExam/index?categoryId=45"><i class="fas fa-caret-right"></i>最新考情</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=ABDE3ABA9F103A2EF03B4DA0FACBC1BD"><i class="fas fa-caret-right"></i>課程介紹</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=CD132C1EA4D5C219C5530CFB9DC9C361"><i class="fas fa-caret-right"></i>常見Q&amp;A</a>
-                 </nav>
-            </div>
-            <div class="menu_09" style="display: none;">
-                <nav>
-                    <a href="https://www.reallygood.com.tw/newExam/index?categoryId=141"><i class="fas fa-caret-right"></i>最新招考消息</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=74A48E26280DD7F2F2F6AD678AAD0BCC"><i class="fas fa-caret-right"></i>國營聯招</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=2EF5DD3EAF843CB18BBAA7BE389FFD26"><i class="fas fa-caret-right"></i>公股銀行</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=05D09013CE85AF0D6E84C75A77AAEBD1"><i class="fas fa-caret-right"></i>中華電信</a>
-                    <a href="https://www.reallygood.com.tw/newExam/inside?str=B79927823F1956AE1D5F494E8EE47410&amp;print_id=6714&amp;gclid=CjwKCAiA-_L9BRBQEiwA-bm5fnM2GPuN8MkjIutnb2M_rsfa4YTPz4bF4h5vzETt4FADm-SE-vHp8hoCVLwQAvD_BwE"><i class="fas fa-caret-right"></i>課程介紹</a>
-                    <a href="https://www.reallygood.com.tw/winner/index"><i class="fas fa-caret-right"></i>贏家經驗談</a>                
-                </nav>
-            </div>
-            <div class="menu_010" style="display: none;">
-                <nav>
-                    <a href="https://www.reallygood.com.tw/schoolBulletin/index"><i class="fas fa-caret-right"></i>系統公告</a>
-                    <a href="https://www.reallygood.com.tw/location/index"><i class="fas fa-caret-right"></i>服務據點</a>
-                    <a href="https://www.reallygood.com.tw/lectures/index"><i class="fas fa-caret-right"></i>近期活動</a>
-                    <a href="https://www.reallygood.com.tw/forecast/index"><i class="fas fa-caret-right"></i>落點網站</a>
-                    <a href="https://www.reallygood.com.tw/camp/index"><i class="fas fa-caret-right"></i>主題課程</a>
-                </nav>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-    $(function(){
-
-        searchMenuCategory = function(id, action_name) {
-            if(action_name == 'newExam'){
-                $("#layer").val("1");
-                $("#category_newExam").val(id);
-
-            }
-            if(action_name == 'lectures'){
-                $("#layer").val("1");
-                $("#category_lectures").val(id);
-
-            }
-            if(action_name == 'chosenArticle'){
-//              $("#layer").val("1");
-                $("#article_category").val(id);
-                $("#categoryLevel").val("2");
-
-            }
-            if(action_name == 'courseDiscount'){
-                $("#layer").val("1");
-                $("#category_courseDiscount").val(id);
-
-            }
-            if(action_name == 'admit'){
-                $("#layer").val("1");
-                $("#category_admit").val(id);
-
-            }
-            if(action_name == 'winner'){
-                //$("#layer").val("1");
-                $("#parent_category").val(id);
-                //$("#pageNo").val("1");
-                //$("#layer").val("1");
-                //$("#category").val(id);
-            }
-            $("#menuForm").attr("action", "https://www.reallygood.com.tw/"+action_name+"/index");
-            $("#menuForm").submit();
-        }
-
-    });
-
-</script>
-
-    </div>  
-        <div class="content">
-
-                <div class="ad">
-
-                                <div><a href="https://www.reallygood.com.tw/newExam/inside?str=8898B7B9A828290C7CB5039C202D9DAB&amp;print_id=16857" target="_blank"><img src="https://www.reallygood.com.tw/upload/image/navBanner/20240820100525000961.jpg"></a><br></div>
-
-                                <div><a href="https://www.reallygood.com.tw/lectures/inside?str=881A5330228DB0205327F2A9A34CF794&amp;print_id=16614" target="_blank"><img src="https://www.reallygood.com.tw/upload/image/navBanner/20240527115229000941.jpg"></a><br></div>
-
-                                <div><a href="https://www.reallygood.com.tw/newExam/inside?str=11CACC520F9B5BB1A5D51C362B717B4A&amp;print_id=16857" target="_blank"><img src="https://www.reallygood.com.tw/upload/image/navBanner/20240611154257000663.jpg"></a><br></div>
-
-                        <div class="metaBox"><iframe src="https://www.facebook.com/plugins/likebox.php?href=https://www.facebook.com/reallygood.com.tw/;width&amp;height=558&amp;colorscheme=light&amp;show_faces=true&amp;header=false&amp;stream=true&amp;show_border=false&amp;appId=570708622978728" scrolling="no" frameborder="0" allowtransparency="true" style="border:none;overflow:hidden;height:558px;" data-reactid="872"></iframe></div>
-
-                </div>
-        <div class="main_area">
-
-
-
-        <form id="getForm" name="getForm" action="/newExam/inside.action" method="GET" enctype="multipart/form-data">
-<table class="wwFormTable">
-            <input type="hidden" id="str" name="str">
-        </table></form>
-
-
-
-
-        <div class="main-area-title">甄戰情報</div>
-        <div class="back"><a href="https://www.reallygood.com.tw/newExam/index">回上頁</a></div>
-        <hr>
-        <h1 class="article-title">114特殊選才｜簡章名額即時更新！報名時間書審面試一覽表！</h1>
-        <div class="community_API">
-
-
-
-            <a href="javascript:void window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent('https://www.reallygood.com.tw/newExam/inside?str=932DEFBF9A06471E3A1436C3808D1BB7'))"><img src="https://www.reallygood.com.tw/images/front/fb_api.png"></a>
-
-
-        </div>      
-
-        <div class="viewers">702643</div>
-        <div class="release">發佈時間：2023/08/02</div>
-        <div class="update">更新時間：2024/09/06</div>
-        <div class="poster"><img src="https://img.reallygood.com.tw/p20160826EC012_1100_380/toPic.action"></div>
-
-        <h1 class="lecture_title">114特殊選才｜簡章名額即時更新！報名時間書審面試一覽表！</h1>
-        <hr>        
-
-
-            <h2 class="article_type02">114學年特殊選才簡章即時更新</h2>
-            <div class="article"><strong style="background:#FFE66F">113特殊選才簡章已全部公告完畢！特殊選才是你免考學測的升大學管道新選擇！</strong><font color="RED">113特殊選才共58所大學參與，核定名額達到有史以來最高1618名！</font>113各校系特殊選才資格門檻大不同，搶先搞懂各校系113特殊選才門檻，上榜贏家可能就是你。<center><h3>113特殊選才新增<font color="blue">資安外加名額</font>，共計有<font color="blue">30個校系開放資安外加名額</font><br>對資安有興趣的同學別錯過利用特殊選才免試入學的機會！</h3></center><table><tbody><tr><td><style><h3>特殊選才是什麼？關於特選你必須知道的4個重點！【114特殊選才】</h3>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class="embed-container"><iframe src="https://www.youtube.com/embed/DX90XM9JJR0?si=zhHn3KZ46MxzMT3a" frameborder="0" allowfullscreen=""></iframe></div>
-<br><table><tbody><tr><td><details><summary>▶特殊選才要怎麼準備？備審資料3大準備秘訣讓你看完就上榜！<span style="color: red;">點我看</span>▾</summary><div class="embed-container"><iframe src="https://www.youtube.com/embed/NsP9B5EZUb0?si=74S6ywzu2eRtOe21" frameborder="0" allowfullscreen=""></iframe></div><table><style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style></table></details></td></tr></tbody></table></td></tr></tbody></table>
-<br><table><colgroup> <col width="25%"> <col width="25%"> <col width="25%"> <col width="25%"> </colgroup><thead><tr><th colspan="4"><center>快速導覽</center></th></tr></thead><tbody><tr><td><center><a href="#113特殊選才國立簡章"><span style="color: #0000ff;">113特殊選才國立簡章</span></a></center></td><td><center><a href="#113特殊選才私立簡章"><span style="color: #0000ff;">113特殊選才私立簡章</span></a></center></td><td><center><a href="#上榜心得"><font color="#0000FF">特殊選才上榜學員心得</font></a></center></td><td><center><a href="#免費講座"><font color="#0000FF">113特殊選才免費講座</font></a></center></td></tr></tbody></table>
-<br><center><a href="#講座場次" style="background: #FF0000; padding: 1px 15px; border-radius: 10px; display: inline-block; color: rgb(255, 255, 255); text-decoration: none; opacity: 1;" target="_self">NEW最新！甄戰特殊選才免費講座</a></center></div>
-
-            <h2 class="article_type03"> </h2>
-            <div class="article"><div class="article"><div style="font-size: 20px; background: #e2d5d5; border-left: 10px solid #F25C05; padding: 5px 0px 1px 10px; ;margin: 5px 0px 5px 0px;"><span style="font-weight: bold;"><span style="background: #FF0000; border-radius: 30px; color: #ffffff; display: inline-block; opacity: 1; padding: 1px 5px; text-decoration: none;">𝐍𝐄𝐖</span>114學年特殊選才簡章</span></div></div><table><tbody><tr><td><details open=""><summary><span style="color: blue;">點我展開(部分學校尚未公告)<br>▼114特殊選才簡章-國立大學▼</span></summary><h2 class="article_type03"> </h2><div class="article"> </div><table><colgroup><col width="15%"><col width="9%"><col width="25%"><col width="25%"><col width="11%"><col width="14%"></colgroup><tbody><tr><th>國立招生學校</th><th>名額</th><th>報名及繳件日期</th><th>面試日期</th><th>放榜日期</th><th>簡章下載</th></tr><tr><td>台灣大學</td><td>54</td><td>112/11/10-112/11/20</td><td>112/12/01-112/12/15</td><td>112/12/20</td><td><a href="https://drive.google.com/file/d/1zlcqmyR1Rt33crQlYVMSYQog_Pr5-7fG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>台灣大學<br>希望入學</td><td>50</td><td>112/11/10-112/11/20</td><td>採書面審查</td><td>112/12/20</td><td><a href="https://drive.google.com/file/d/1oQnof8XFauCubveFypNVxuZe_Zg4VnVP/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>政治大學</td><td>25</td><td>112/11/08-112/11/16</td><td>112/12/15-112/12/18<br>(依各系公告為主)</td><td>112/12/26</td><td><a href="https://drive.google.com/file/d/12GQrjz0bKMFya-dycOR3wZSUPtZPAtkX/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺灣師範大學<br>獅子座計畫<br><span style="background: #FF0000; border-radius: 30px; color: #ffffff; display: inline-block; opacity: 1; padding: 1px 5px; text-decoration: none;">𝐍𝐄𝐖</span></td><td>67</td><td>113/10/01-113/10/09</td><td>113/11/02-113/11/17</td><td>113/12/05</td><td><a href="https://www.aa.ntnu.edu.tw/xhr/announcements/file/66d921da843f758f9bb99b43/114%E5%AD%B8%E5%B9%B4%E5%BA%A6%E7%89%B9%E6%AE%8A%E9%81%B8%E6%89%8D%E6%8B%9B%E7%94%9F%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>114特殊選才簡章下載</u></span></a></td></tr><tr><td>清華大學</td><td>76</td><td>112/10/05-112/10/11</td><td>112/11/23-112/12/10</td><td>112/12/15<br><span style="color: red;">資工系:<br>112/12/28</span></td><td>
-
-            <h2 class="article_type03">  </h2>
-            <div class="article"><a href="https://drive.google.com/file/d/1fNqAz41Ygan_d1DR0IjnY3CWMdiFD1s1/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></div></td></tr><tr><td>陽明交通大學</td><td>57</td><td>112/10/16-112/10/23</td><td>112/12/12-112/12/20</td><td>113/01/03</td><td><a href="https://drive.google.com/file/d/1VL-Nj_rMUumcbb_Sh8JEPmICHRgQX81X/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中山大學</td><td>55</td><td>112/10/18-112/10/25<br>繳件至10/26</td><td>112/11/24-112/11/26</td><td>112/12/13</td><td><a href="https://drive.google.com/file/d/1CE_WzUixPoZZpzQ010JCnvsCqMo-cQRf/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>成功大學</td><td>48</td><td>112/10/19-112/10/25</td><td>112/11/17-112/11/20<br>(依各系公告為主)</td><td>112/12/13</td><td><a href="https://drive.google.com/file/d/1FZbxMXxO2FKUgL04V29J73HAyttoROgB/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>彰化師範大學</td><td>4</td><td>112/10/31-112/11/09</td><td>112/12/04</td><td>112/12/19</td><td><a href="https://drive.google.com/file/d/1GloA4DizRIHmWk97bjJGZG_YHNzv3aAa/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中興大學</td><td>82</td><td>112/10/24-112/11/13</td><td>112/12/07-112/12/15</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1kE_g9Ba-j330bZQZJimHtiMUCspB0GuV/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中央大學</td><td>44</td><td>112/10/04-112/10/11</td><td>112/10/31-112/11/10</td><td>112/11/21</td><td><a href="https://drive.google.com/file/d/1TfB3Hb35I0wM4r0sbpcqJRDQT8v351QY/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中正大學</td><td>69</td><td>112/11/07-112/11/13</td><td>112/12/15</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1ofuaqeAMndTjwDN2w9E9XxcoYMkslvNH/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: blue;"><span style="color: red;"><u>113特殊選才簡章下載</u></span></span></a></td></tr><tr><td>台灣海洋大學</td><td>81</td><td>112/10/23-112/11/09</td><td>112/12/08</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1DNHniAVYPXlGNRpyNNrY0PxOD1n4Lkjt/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>高雄師範大學</td><td>22</td><td>112/11/01-112/11/15</td><td>112/12/11</td><td>112/12/21</td><td><a href="https://drive.google.com/file/d/1zhxveP5GjQeE7EQb3AzWKX7_cIIPjFEv/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>東華大學</td><td>23</td><td>112/10/25-112/11/08</td><td>112/12/09-112/12/10</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1f9IoBRSUQP56GlhQb74mMxbxIej2p4E3/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺灣藝術大學</td><td>9</td><td>112/10/12-112/10/23</td><td>採書審甄試</td><td>112/12/01</td><td><a href="https://drive.google.com/file/d/1Ma7BzP-BZg9bLBrjseAEZP7HXM8DldYG/view?usp=sharing" target="_blank" rel="noopener noreferrer">
-
-            <h2 class="article_type03"> </h2>
-            </a><div class="article"><a href="https://drive.google.com/file/d/1Ma7BzP-BZg9bLBrjseAEZP7HXM8DldYG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></div></td></tr><tr><td>臺北藝術大學</td><td>15</td><td>112/10/24-112/10/30</td><td>112/12/16</td><td>113/01/02</td><td><a href="https://drive.google.com/file/d/1UMqxj6hAVf1-UUgP4ryIp-olpXBrIswl/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺南藝術大學</td><td>7</td><td>112/11/06-112/11/13</td><td>112/12/01</td><td>112/12/08</td><td><a href="https://drive.google.com/file/d/1LAt4fXelHnM7BCxstcEBv_Rjybd0Owec/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>屏東大學</td><td>28</td><td>112/10/23-112/11/03</td><td>112/11/23-112/11/24</td><td>112/12/07</td><td><a href="https://drive.google.com/file/d/1lACM6aRcDFVkstw7HHVMPgZr1axU8mEg/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺南大學<br><span style="background: #FF0000; border-radius: 30px; color: #ffffff; display: inline-block; opacity: 1; padding: 1px 5px; text-decoration: none;">𝐍𝐄𝐖</span></td><td>16</td><td><span id="ContentPlaceHolder1_LabelEnrollBegin" class="labelDD">113/9/23-</span><span id="ContentPlaceHolder1_LabelEnrollEnd" class="labelDD">113/10/14</span></td><td>113/11/12</td><td>113/11/26</td><td><a href="https://drive.google.com/file/d/1kjjWYfy6xjEh4b6lLVwtYZ4jehkbQDjz/view?usp=drive_link" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>114特殊選才簡章下載</u></span></a></td></tr><tr><td>暨南國際大學</td><td>59</td><td>112/10/23-112/11/16</td><td>112/12/08</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/11wez9f2qa2aVAp7RyBJWYO9xQkarOqHF/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>聯合大學</td><td>56</td><td>112/10/27-112/11/20</td><td>112/12/02</td><td>112/12/15</td><td><a href="https://drive.google.com/file/d/1Yb1avBIIJ0J5OtXkaoVfYaa5NLfWRaYG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>宜蘭大學</td><td>77</td><td>112/10/31-112/11/22</td><td>112/12/08</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1CxD7K4KrRJc0q8TWj22Z4CoU8poD2-ej/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>嘉義大學</td><td>41</td><td>112/11/06-112/11/20</td><td>112/12/16</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1wKfnHTdVHEmwqkMCZPvicQT4-Y5JQMQ3/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺東大學</td><td>49</td><td>112/11/02-112/11/30</td><td>112/12/17</td><td>112/12/22</td>
-
-
-            <td><a href="https://drive.google.com/file/d/1SlXgrJKN_LBDpEIbl7R-qVGFYhi9zx7B/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺北教育大學</td><td>10</td><td>112/10/02-112/10/12</td><td>112/11/11</td><td>112/11/21</td><td><a href="https://drive.google.com/file/d/1VQ1msaVt3uvYad7zz3jdO3XELrSJnQcM/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺中教育大學</td><td>5</td><td>112/10/26-112/11/15</td><td>112/11/24</td><td>112/12/15</td><td><a href="https://drive.google.com/file/d/1PQxaNEmTRicl3PNiiP2FZSWLAc6xq7Za/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺北大學</td><td>2</td><td>112/11/15-112/11/30</td><td>112/12/15-112/12/16</td><td>113/01/03</td><td><a href="https://drive.google.com/file/d/1dMxGHR1K7qC-4g2nFy9udFcEB1x1iOJq/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺灣體育運動大學</td><td>5</td><td>112/11/08-112/11/17</td><td>112/12/14</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1PME_sya2ECNXUAkPo9SRdmdI_v9uychG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺北市立大學</td><td>13</td><td>112/11/06-112/11/16</td><td>112/12/01-112/12/02</td><td>112/12/11</td><td><a href="https://drive.google.com/file/d/1vgsSe6JxcyWP5GrZjmpPJXeNKg4rY4fz/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>高雄大學</td><td>11</td><td>112/10/03-112/11/16</td><td>112/12/02</td><td>112/12/14</td><td><a href="https://drive.google.com/file/d/1dI0RE2EFunyb-nep4h6IUg-ZrLXBBj6F/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>金門大學</td><td>19</td><td>112/10/26-112/11/16</td><td>採書面審查</td><td>112/12/08</td><td><a href="https://drive.google.com/file/d/1Ku7LGxJ0BznYGBxvblK0ECWKehdbMebT/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr></tbody></table></details></td></tr></tbody></table><table><tbody><tr><td><details open=""><summary><span style="color: blue;">點我展開<br>▼114特殊選才簡章-私立大學▼</span></summary><h2 class="article_type03"> </h2><div class="article"></div><h2 class="article_type03"> </h2><div class="article"></div><table><colgroup><col width="15%"></colgroup>
-
-
-            <colgroup><col width="9%"><col width="25%"><col width="25%"><col width="11%"><col width="14%"></colgroup><tbody><tr><th>私立招生學校</th><th>名額</th><th>報名及繳件日期</th><th>面試日期</th><th>放榜日期</th><th>簡章下載</th></tr><tr><td>高雄醫學大學</td><td>11</td><td>112/11/08-112/11/15</td><td>112/12/05-112/12/12</td><td>112/12/28</td><td><a href="https://drive.google.com/file/d/1yGxPseYD3lLc4NIHt5Yc1F_IfyBaTMVe/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中山醫學大學</td><td>9</td><td>112/10/27-112/11/13</td><td>112/11/25</td><td>112/12/14</td><td><a href="https://drive.google.com/file/d/1rUbQ_AJ-ybNqSE7V6osALFZVZLG23HbU/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>淡江大學</td><td>21</td><td>112/10/31-112/11/13</td><td>112/12/02</td><td>112/12/14</td><td><a href="https://drive.google.com/file/d/1iOJSMSk7wAJIPcs_wt_2fDAxUR4m8SkF/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>義守大學</td><td>16</td><td>112/10/31-112/11/21</td><td>112/12/06</td><td>112/12/15</td><td><a href="https://drive.google.com/file/d/1aa5jhrvcFNWKS9n6t3F2zV6R8C0Jq9P2/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>靜宜大學</td><td>68</td><td>112/10/23-112/11/16</td><td>112/12/09</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1qbsj74Hy3ifbh4e05YVi1zCkQmtaYM3D/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>大葉大學</td><td>9</td><td>112/10/26-112/12/18</td><td>112/12/22</td><td>113/01/03</td><td><a href="https://drive.google.com/file/d/1eh6yuSVrAjWx6z8k1px6uRs_C4YF5F_A/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中原大學</td><td>69</td><td>112/10/11-112/10/30</td><td>112/12/03前結束(詳細日期依各系公告)</td><td>
-
-            <h2 class="article_type03"> </h2>
-            <div class="article">112/12/12</div></td><td><a href="https://drive.google.com/file/d/1-ZNmEOhNk6AVwk5KQNbYsMgUe946cQe4/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>元智大學</td><td>6</td><td>112/10/31-112/11/14</td><td>112/12/04</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1H5VQv-xgpPyajsoNpXJ8KTOuOGTIQsjE/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>玄奘大學</td><td>20</td><td>112/11/10-112/12/13</td><td>112/12/23</td><td>112/12/28</td><td><a href="https://drive.google.com/file/d/1u3-nyEAnnCftJv6SheJX9p6ICqdqp8c6/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>亞洲大學</td><td>29</td><td>112/10/18-112/11/22</td><td>112/12/02</td><td>112/12/08</td><td><a href="https://drive.google.com/file/d/1CmeynEe1N-saiKxw3QHIulb9Oxci0YrD/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>東海大學</td><td>53</td><td>112/11/09-112/11/29</td><td>112/12/17</td><td>112/12/28</td><td><a href="https://drive.google.com/file/d/1F_7L_t7Dq1QUFmOsCqhPkMW33C-OsB6T/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>南華大學</td><td>22</td><td>112/10/22-112/12/20</td><td>112/12/25-112/12/26</td><td>113/01/03</td><td><a href="https://drive.google.com/file/d/1Ma-_kg2RI4FHoQcmATf2dc6EBcVCWY0m/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>逢甲大學</td><td>79</td><td>112/10/23-112/11/22</td><td>112/12/08-112/12/10</td><td>112/12/16</td><td><a href="https://drive.google.com/file/d/1L_hsaATIEiFWmMjV-fWcWw0BL41HKkAA/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>銘傳大學</td><td>52</td><td>112/11/20-112/12/06</td><td>112/12/22</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1LFRHFpoKUJuIVwtcamDZLyQ8kNVfZ5gG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>世新大學</td><td>8</td><td>112/10/12-112/11/02</td><td>採書面審查</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1f0tJL0Ypy_g1iMQKSKElO-KxCV1jbEd7/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>文化大學</td><td>8</td><td>112/10/26-112/11/29</td><td>採書面審查</td>
-
-
-            <td>112/12/18</td><td><a href="https://drive.google.com/file/d/1LtS9nGBFnvqth6aYf8X0PgQEe1PQBqce/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>大同大學</td><td>11</td><td>112/10/23-112/11/17</td><td>112/12/01</td><td>112/12/08</td><td><a href="https://drive.google.com/file/d/1p2Ku2CgijdhNRk_SNxBvfrhOkDAktS9-/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>實踐大學(北區)</td><td>19</td><td>112/11/13-112/11/29</td><td>112/12/10</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1jFiHR8jMt6f2vWJYyRGN4OLdnP0V3bzT/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>實踐大學(南區)</td><td>6</td><td>112/11/13-112/11/29</td><td>112/12/10</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1jFiHR8jMt6f2vWJYyRGN4OLdnP0V3bzT/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>長庚大學</td><td>19</td><td>112/10/18-112/10/27</td><td>112/11/16-112/11/24</td><td>112/12/12</td><td><a href="https://drive.google.com/file/d/19nH1QHc7uObn1TqA5nskX8VzTlbYddb8/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>長榮大學</td><td>6</td><td>112/10/16-112/11/24</td><td>112/12/11</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1UUFEa_mh3K3xEG45yUQ3AKgqsr5BJZUR/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>慈濟大學</td><td>15</td><td>112/10/18-112/11/10</td><td>採書面審查</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1OOQV3h7NiWmc_Kcf9yMdIkXbQiPf0GxH/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>東吳大學</td><td>16</td><td>112/10/19-112/11/03</td><td>112/11/28-112/12/02</td><td>112/12/20</td><td><a href="https://drive.google.com/file/d/1T2lOkcglkiVXLym9MSeSTba7mZjEX0DG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>輔仁大學</td><td>23</td><td>112/10/17-112/10/24</td><td>112/11/09-112/11/10</td><td>112/12/05</td><td><a href="https://drive.google.com/file/d/18VRgv4iFtT7i8LUT6mq8qP287qkkkTmF/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中華大學</td><td>12</td><td>112/11/1-112/12/13</td><td>採書面審查</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1mSIGurMe4NXEQ2lv8PO8oj4eNCOzZkeE/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>真理大學<br><span style="color: red;">(113新增院校)</span></td><td>8</td><td>112/10/26-112/11/22</td><td>112/12/02</td><td>112/12/22</td><td>
-
-            <h2 class="article_type03"> </h2>
-            <div class="article"><a href="https://drive.google.com/file/d/1SIJ4k82OPY-YScYJzup5bpwa4fR9vfBR/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></div></td></tr><tr><td>佛光大學<br><span style="color: red;">(113新增院校)</span></td><td>4</td><td>112/10/19-112/11/21</td><td>112/12/02</td><td>112/12/07</td><td><a href="https://drive.google.com/file/d/1iJBBjjmbZJ7Jjyd6CwDX2mGcX1jMsJp3/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>馬偕醫學院<br><span style="color: red;">(113新增院校)</span></td><td>6</td><td>112/10/17-112/11/20</td><td>112/12/08</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1XOopwfFV9bMqXSVBFFTeu53oWAUjmy7L/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr></tbody></table></details></td></tr></tbody></table></div>
-
-            <h2 class="article_type03"> </h2>
-            <div class="article"> <div class="article"><div style="font-size:20px;background:#e2d5d5;border-left:10px solid #F25C05;padding:5px 0px 1px 10px;;margin:5px 0px 5px 0px"><span style="font-weight:bold;">113學年特殊選才簡章</span></div></div><table><tbody><tr><td><details><summary><span style="color: blue;">點我展開<br>▼113特殊選才簡章-國立大學▼</span></summary><h2 class="article_type03"> </h2><div class="article"></div><h2 class="article_type03"> </h2><div class="article"></div><h2 class="article_type03"> </h2><div class="article"></div><h2 class="article_type03"> </h2><div class="article"></div><table><colgroup><col width="15%"><col width="9%"><col width="25%"><col width="25%"><col width="11%"><col width="14%"></colgroup><tbody><tr><th>國立招生學校</th><th>名額</th><th>報名及繳件日期</th><th>面試日期</th><th>放榜日期</th><th>簡章下載</th></tr><tr><td>台灣大學</td><td>54</td><td>112/11/10-112/11/20</td><td>112/12/01-112/12/15</td><td>112/12/20</td><td><a href="https://drive.google.com/file/d/1zlcqmyR1Rt33crQlYVMSYQog_Pr5-7fG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>台灣大學<br>希望入學</td><td>50</td><td>112/11/10-112/11/20</td><td>採書面審查</td><td>112/12/20</td><td><a href="https://drive.google.com/file/d/1oQnof8XFauCubveFypNVxuZe_Zg4VnVP/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>政治大學</td><td>25</td><td>112/11/08-112/11/16</td><td>112/12/15-112/12/18<br>(依各系公告為主)</td><td>112/12/26</td><td><a href="https://drive.google.com/file/d/12GQrjz0bKMFya-dycOR3wZSUPtZPAtkX/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺灣師範大學<br>獅子座計畫</td><td>89</td><td>112/10/03-112/10/11</td><td>112/11/04-112/11/19</td><td>112/12/07</td><td><a href="https://drive.google.com/file/d/1jnxzqHMB_pAaRpZ2B1XLRUSljuPsEdFn/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr>
-
-
-            <tr><td>清華大學</td><td>76</td><td>112/10/05-112/10/11</td><td>112/11/23-112/12/10</td><td>112/12/15<br><span style="color: red;">資工系:<br>112/12/28</span></td><td><a href="https://drive.google.com/file/d/1fNqAz41Ygan_d1DR0IjnY3CWMdiFD1s1/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>陽明交通大學</td><td>57</td><td>112/10/16-112/10/23</td><td>112/12/12-112/12/20</td><td>113/01/03</td><td><a href="https://drive.google.com/file/d/1VL-Nj_rMUumcbb_Sh8JEPmICHRgQX81X/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中山大學</td><td>55</td><td>112/10/18-112/10/25<br>繳件至10/26</td><td>112/11/24-112/11/26</td><td>112/12/13</td><td><a href="https://drive.google.com/file/d/1CE_WzUixPoZZpzQ010JCnvsCqMo-cQRf/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>成功大學</td><td>48</td><td>112/10/19-112/10/25</td><td>112/11/17-112/11/20<br>(依各系公告為主)</td><td>112/12/13</td><td><a href="https://drive.google.com/file/d/1FZbxMXxO2FKUgL04V29J73HAyttoROgB/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>彰化師範大學</td><td>4</td><td>112/10/31-112/11/09</td><td>112/12/04</td><td>112/12/19</td><td><a href="https://drive.google.com/file/d/1GloA4DizRIHmWk97bjJGZG_YHNzv3aAa/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr>
-
-
-            <tr><td>中興大學</td><td>82</td><td>112/10/24-112/11/13</td><td>112/12/07-112/12/15</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1kE_g9Ba-j330bZQZJimHtiMUCspB0GuV/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中央大學</td><td>44</td><td>112/10/04-112/10/11</td><td>112/10/31-112/11/10</td><td>112/11/21</td><td><a href="https://drive.google.com/file/d/1TfB3Hb35I0wM4r0sbpcqJRDQT8v351QY/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>中正大學</td><td>69</td><td>112/11/07-112/11/13</td><td>112/12/15</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1ofuaqeAMndTjwDN2w9E9XxcoYMkslvNH/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: blue;"><span style="color: red;"><u>113特殊選才簡章下載</u></span></span></a></td></tr><tr><td>台灣海洋大學</td><td>81</td><td>112/10/23-112/11/09</td><td>112/12/08</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1DNHniAVYPXlGNRpyNNrY0PxOD1n4Lkjt/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>高雄師範大學</td><td>22</td><td>112/11/01-112/11/15</td><td>112/12/11</td><td>112/12/21</td><td><a href="https://drive.google.com/file/d/1zhxveP5GjQeE7EQb3AzWKX7_cIIPjFEv/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr>
-
-
-            <tr><td>東華大學</td><td>23</td><td>112/10/25-112/11/08</td><td>112/12/09-112/12/10</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1f9IoBRSUQP56GlhQb74mMxbxIej2p4E3/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺灣藝術大學</td><td>9</td><td>112/10/12-112/10/23</td><td>採書審甄試</td><td>112/12/01</td><td><a href="https://drive.google.com/file/d/1Ma7BzP-BZg9bLBrjseAEZP7HXM8DldYG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺北藝術大學</td><td>15</td><td>112/10/24-112/10/30</td><td>112/12/16</td><td>113/01/02</td><td><a href="https://drive.google.com/file/d/1UMqxj6hAVf1-UUgP4ryIp-olpXBrIswl/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺南藝術大學</td><td>7</td><td>112/11/06-112/11/13</td><td>112/12/01</td><td>112/12/08</td><td><a href="https://drive.google.com/file/d/1LAt4fXelHnM7BCxstcEBv_Rjybd0Owec/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>屏東大學</td><td>28</td><td>112/10/23-112/11/03</td><td>112/11/23-112/11/24</td><td>112/12/07</td><td><a href="https://drive.google.com/file/d/1lACM6aRcDFVkstw7HHVMPgZr1axU8mEg/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺南大學</td><td>32</td><td>112/10/06-112/10/31</td><td>112/12/08-112/12/09</td><td>112/12/19</td><td><a href="https://drive.google.com/file/d/1jzDMoWWaoqvFP3Eq0H_t0VGu6Daf7jx0/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>暨南國際大學</td><td>59</td><td>112/10/23-112/11/16</td><td>112/12/08</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/11wez9f2qa2aVAp7RyBJWYO9xQkarOqHF/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr>
-
-
-            <tr><td>聯合大學</td><td>56</td><td>112/10/27-112/11/20</td><td>112/12/02</td><td>112/12/15</td><td><a href="https://drive.google.com/file/d/1Yb1avBIIJ0J5OtXkaoVfYaa5NLfWRaYG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>宜蘭大學</td><td>77</td><td>112/10/31-112/11/22</td><td>112/12/08</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1CxD7K4KrRJc0q8TWj22Z4CoU8poD2-ej/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>嘉義大學</td><td>41</td><td>112/11/06-112/11/20</td><td>112/12/16</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1wKfnHTdVHEmwqkMCZPvicQT4-Y5JQMQ3/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺東大學</td><td>49</td><td>112/11/02-112/11/30</td><td>112/12/17</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1SlXgrJKN_LBDpEIbl7R-qVGFYhi9zx7B/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺北教育大學</td><td>10</td><td>112/10/02-112/10/12</td><td>112/11/11</td><td>112/11/21</td><td><a href="https://drive.google.com/file/d/1VQ1msaVt3uvYad7zz3jdO3XELrSJnQcM/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺中教育大學</td><td>5</td><td>112/10/26-112/11/15</td><td>112/11/24</td><td>112/12/15</td><td><a href="https://drive.google.com/file/d/1PQxaNEmTRicl3PNiiP2FZSWLAc6xq7Za/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺北大學</td><td>2</td><td>112/11/15-112/11/30</td><td>112/12/15-112/12/16</td><td>113/01/03</td><td><a href="https://drive.google.com/file/d/1dMxGHR1K7qC-4g2nFy9udFcEB1x1iOJq/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺灣體育運動大學</td><td>5</td><td>112/11/08-112/11/17</td><td>112/12/14</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1PME_sya2ECNXUAkPo9SRdmdI_v9uychG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>臺北市立大學</td><td>13</td><td>112/11/06-112/11/16</td><td>112/12/01-112/12/02</td><td>112/12/11</td><td><a href="https://drive.google.com/file/d/1vgsSe6JxcyWP5GrZjmpPJXeNKg4rY4fz/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>高雄大學</td><td>11</td><td>112/10/03-112/11/16</td><td>112/12/02</td><td>112/12/14</td><td><a href="https://drive.google.com/file/d/1dI0RE2EFunyb-nep4h6IUg-ZrLXBBj6F/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr><tr><td>金門大學</td><td>19</td><td>112/10/26-112/11/16</td><td>採書面審查</td><td>112/12/08</td><td><a href="https://drive.google.com/file/d/1Ku7LGxJ0BznYGBxvblK0ECWKehdbMebT/view?usp=sharing" target="_blank" rel="noopener noreferrer"><span style="color: red;"><u>113特殊選才簡章下載</u></span></a></td></tr></tbody></table></details></td></tr></tbody></table></div>
-
-            <h2 class="article_type03"> </h2>
-            <div class="article"> <table><tbody><tr><td><details><summary><span style="color: blue;">點我展開<br>▼113特殊選才簡章-私立大學▼</span></summary><h2 class="article_type03"> </h2><div class="article"> </div><br><h2 class="article_type03"> </h2><div class="article"> </div><table><colgroup><col width="15%"><col width="9%"><col width="25%"><col width="25%"><col width="11%"><col width="14%"></colgroup><tbody><tr><th>私立招生學校</th><th>名額</th><th>報名及繳件日期</th><th>面試日期</th><th>放榜日期</th><th>簡章下載</th></tr></tbody><tbody><tr><td>高雄醫學大學</td><td>11</td><td>112/11/08-112/11/15</td><td>112/12/05-112/12/12</td><td>112/12/28</td><td><a href="https://drive.google.com/file/d/1yGxPseYD3lLc4NIHt5Yc1F_IfyBaTMVe/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>中山醫學大學</td><td>9</td><td>112/10/27-112/11/13</td><td>112/11/25</td><td>112/12/14</td><td><a href="https://drive.google.com/file/d/1rUbQ_AJ-ybNqSE7V6osALFZVZLG23HbU/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>淡江大學</td><td>21</td><td>112/10/31-112/11/13</td><td>112/12/02</td><td>112/12/14</td><td><a href="https://drive.google.com/file/d/1iOJSMSk7wAJIPcs_wt_2fDAxUR4m8SkF/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>義守大學</td><td>16</td><td>112/10/31-112/11/21</td><td>112/12/06</td><td>112/12/15</td><td><a href="https://drive.google.com/file/d/1aa5jhrvcFNWKS9n6t3F2zV6R8C0Jq9P2/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>靜宜大學</td><td>68</td><td>112/10/23-112/11/16</td><td>112/12/09</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1qbsj74Hy3ifbh4e05YVi1zCkQmtaYM3D/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>大葉大學</td><td>9</td><td>112/10/26-112/12/18</td><td>112/12/22</td><td>113/01/03</td><td><a href="https://drive.google.com/file/d/1eh6yuSVrAjWx6z8k1px6uRs_C4YF5F_A/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a>
-<br></td></tr><tr><td>中原大學</td><td>69</td><td>112/10/11-112/10/30</td><td>112/12/03前結束(詳細日期依各系公告)</td><td>112/12/12</td><td><a href="https://drive.google.com/file/d/1-ZNmEOhNk6AVwk5KQNbYsMgUe946cQe4/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>元智大學</td><td>6</td><td>112/10/31-112/11/14</td><td>112/12/04</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1H5VQv-xgpPyajsoNpXJ8KTOuOGTIQsjE/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>玄奘大學</td><td>20</td><td>112/11/10-112/12/13</td><td>112/12/23</td><td>112/12/28</td><td><a href="https://drive.google.com/file/d/1u3-nyEAnnCftJv6SheJX9p6ICqdqp8c6/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr>
-
-
-            <tr><td>亞洲大學</td><td>29</td><td>112/10/18-112/11/22</td><td>112/12/02</td><td>112/12/08</td><td><a href="https://drive.google.com/file/d/1CmeynEe1N-saiKxw3QHIulb9Oxci0YrD/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>東海大學</td><td>53</td><td>112/11/09-112/11/29</td><td>112/12/17</td><td>112/12/28</td><td><a href="https://drive.google.com/file/d/1F_7L_t7Dq1QUFmOsCqhPkMW33C-OsB6T/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr>
-<tr><td>南華大學</td><td>22</td><td>112/10/22-112/12/20</td><td>112/12/25-112/12/26</td><td>113/01/03</td><td><a href="https://drive.google.com/file/d/1Ma-_kg2RI4FHoQcmATf2dc6EBcVCWY0m/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>逢甲大學</td><td>79</td><td>112/10/23-112/11/22</td><td>112/12/08-112/12/10</td><td>112/12/16</td><td><a href="https://drive.google.com/file/d/1L_hsaATIEiFWmMjV-fWcWw0BL41HKkAA/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>銘傳大學</td><td>52</td><td>112/11/20-112/12/06</td><td>112/12/22</td><td>112/12/29</td><td><a href="https://drive.google.com/file/d/1LFRHFpoKUJuIVwtcamDZLyQ8kNVfZ5gG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>世新大學</td><td>8</td><td>112/10/12-112/11/02</td><td>採書面審查</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1f0tJL0Ypy_g1iMQKSKElO-KxCV1jbEd7/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>文化大學</td><td>8</td><td>112/10/26-112/11/29</td><td>採書面審查</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1LtS9nGBFnvqth6aYf8X0PgQEe1PQBqce/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>大同大學</td><td>11</td><td>112/10/23-112/11/17</td><td>112/12/01</td><td>112/12/08</td><td><a href="https://drive.google.com/file/d/1p2Ku2CgijdhNRk_SNxBvfrhOkDAktS9-/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>實踐大學(北區)</td><td>19</td><td>112/11/13-112/11/29</td><td>112/12/10</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1jFiHR8jMt6f2vWJYyRGN4OLdnP0V3bzT/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>實踐大學(南區)</td><td>6</td><td>112/11/13-112/11/29</td><td>112/12/10</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1jFiHR8jMt6f2vWJYyRGN4OLdnP0V3bzT/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>長庚大學</td><td>19</td><td>112/10/18-112/10/27</td><td>112/11/16-112/11/24</td><td>112/12/12</td><td><a href="https://drive.google.com/file/d/19nH1QHc7uObn1TqA5nskX8VzTlbYddb8/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr>
-
-
-            <tr><td>長榮大學</td><td>6</td><td>112/10/16-112/11/24</td><td>112/12/11</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1UUFEa_mh3K3xEG45yUQ3AKgqsr5BJZUR/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>慈濟大學</td><td>15</td><td>112/10/18-112/11/10</td><td>採書面審查</td><td>112/12/18</td><td><a href="https://drive.google.com/file/d/1OOQV3h7NiWmc_Kcf9yMdIkXbQiPf0GxH/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>東吳大學</td><td>16</td><td>112/10/19-112/11/03</td><td>112/11/28-112/12/02</td><td>112/12/20</td><td><a href="https://drive.google.com/file/d/1T2lOkcglkiVXLym9MSeSTba7mZjEX0DG/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>輔仁大學</td><td>23</td><td>112/10/17-112/10/24</td><td>112/11/09-112/11/10</td><td>112/12/05</td><td><a href="https://drive.google.com/file/d/18VRgv4iFtT7i8LUT6mq8qP287qkkkTmF/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>中華大學</td><td>12</td><td>112/11/1-112/12/13</td><td>採書面審查</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1mSIGurMe4NXEQ2lv8PO8oj4eNCOzZkeE/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>真理大學<br><font color="Red">(113新增院校)</font></td><td>8</td><td>112/10/26-112/11/22</td><td>112/12/02</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1SIJ4k82OPY-YScYJzup5bpwa4fR9vfBR/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>佛光大學<br><font color="Red">(113新增院校)</font></td><td>4</td><td>112/10/19-112/11/21</td><td>112/12/02</td><td>112/12/07</td><td><a href="https://drive.google.com/file/d/1iJBBjjmbZJ7Jjyd6CwDX2mGcX1jMsJp3/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr><tr><td>馬偕醫學院<br><font color="Red">(113新增院校)</font></td><td>6</td><td>112/10/17-112/11/20</td><td>112/12/08</td><td>112/12/22</td><td><a href="https://drive.google.com/file/d/1XOopwfFV9bMqXSVBFFTeu53oWAUjmy7L/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="red"><u>113特殊選才簡章下載</u></font></a></td></tr></tbody></table></details></td></tr></tbody></table></div>
-
-            <h2 class="article_type03"> </h2>
-            <div class="article"> <div class="article"><div style="font-size:20px;background:#e2d5d5;border-left:10px solid #F25C05;padding:5px 0px 1px 10px;;margin:5px 0px 5px 0px"><span style="font-weight:bold;">112學年特殊選才簡章</span></div></div><table><tbody><tr><td><details><summary><font color="blue">點我展開<br>▼112特殊選才國立大學簡章▼</font></summary><h2 class="article_type03"> </h2><div class="article"></div><h2 class="article_type03"> </h2><div class="article"></div><h2 class="article_type01"> </h2><div class="article"></div><h2 class="article_type01"> </h2><div class="article"></div><table><colgroup><col width="15%"><col width="9%"><col width="25%"><col width="25%"><col width="11%"><col width="14%"></colgroup><tbody><tr><th>國立招生學校</th><th>名額</th><th>報名及繳件日期</th><th>面試日期</th><th>放榜日期</th><th>簡章下載</th></tr></tbody><tbody><tr><td>台灣大學</td><td>51</td><td>111/11/11-111/11/21</td><td>111/12/02-111/12/16</td><td>111/12/22</td><td><a href="https://exam.aca.ntu.edu.tw/marsApply/112%E5%AD%B8%E5%A3%AB%E7%8F%AD%E7%89%B9%E6%AE%8A%E4%BA%BA%E6%89%8D%E5%85%A5%E5%AD%B8%E6%8B%9B%E7%94%9F%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>台灣大學<br>希望入學</td><td>50</td><td>111/11/11-111/11/21</td><td>無</td><td>111/12/22</td><td><a href="https://exam.aca.ntu.edu.tw/HopeApply/112%E5%B8%8C%E6%9C%9B%E8%A8%88%E7%95%AB%E5%85%A5%E5%AD%B8%E6%8B%9B%E7%94%9F%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>政治大學</td><td>27</td><td>111/11/09-111/11/17</td><td>111/12/16-111/12/18</td><td>111/12/27</td><td><a href="https://drive.google.com/file/d/1P3qfITq4YHm1-Mh2lLMBCJGCPWnIqMH8/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺灣師範大學<br>獅子座計畫</td><td>89</td><td>111/11/01-111/11/10</td><td>111/12/02-111/12/11</td><td>111/12/22</td><td><a href="https://drive.google.com/file/d/1lM9xGHMeDelFMlShypStG9hFCPLryFse/view" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>清華大學</td><td>78</td><td>111/10/05-111/10/11</td><td>111/11/25-111/12/18</td><td>111/12/16<br>資工系放榜日:111/12/29</td><td><a href="https://adms.site.nthu.edu.tw/var/file/207/1207/img/2232/928255591.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>陽明交通大學</td><td>57</td><td>111/10/17-111/10/24</td><td>111/11/29-111/12/21<br>(依各系公告)</td><td>111/12/16</td><td><a href="https://drive.google.com/file/d/1rfK8xY9fxlIpMhVMf5jARfEv3cFUJvQo/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>中山大學</td><td>55</td><td>111/10/18-111/10/26</td><td>111/11/25-111/11/27</td><td>111/12/14</td><td><a href="https://exam-acad.nsysu.edu.tw/exam_netlist/pdf_file/aca_apply_spe/112ele_brief_22.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>成功大學</td><td>48</td><td>111/10/20-111/10/26</td><td>依各系公告</td><td>111/12/14</td><td><a href="https://adms-acad.ncku.edu.tw/var/file/44/1044/img/3876/400280297.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr>
-
-
-            <tr><td>彰化師範大學</td><td>3</td><td>111/10/24-111/11/09</td><td>111/12/05</td><td>111/12/19</td><td><a href="https://drive.google.com/file/d/1JG67VLH5twV8PNld0wLgW8u7uTMe4Y6h/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>中興大學</td><td>78</td><td>111/10/24-111/11/14</td><td>111/12/08-111/12/16</td><td>111/12/23</td><td><a href="https://recruit.nchu.edu.tw/college-exam/special/112/112special_PAPER.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>中央大學</td><td>45</td><td>111/09/29-111/10/05</td><td>依各系公告</td><td>111/11/21</td><td><a href="https://drive.google.com/file/d/1SgcF5cSKBL0j3xFGJPSoU2G7v_NedXyo/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>中正大學</td><td>74</td><td>111/11/08-111/11/14</td><td>111/12/15-111/12/16</td><td>111/12/30</td><td><a href="https://exams.ccu.edu.tw/var/file/32/1032/img/1149/s22_anno112.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>台灣海洋大學</td><td>84</td><td>111/10/19-111/11/04</td><td>111/12/02</td><td>111/12/16</td><td><a href="https://admission.ntou.edu.tw/files/info-202209291652220826.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>高雄師範大學</td><td>19</td><td>111/11/04-111/11/14</td><td>111/12/02</td><td>111/12/16</td><td><a href="https://c.nknu.edu.tw/aca/UploadFile/userfiles/4/files/%E6%8B%9B%E7%94%9F%E7%9B%AE%E9%8C%84/08%E6%AD%B7%E5%B1%86%E7%B0%A1%E7%AB%A0/05%E7%89%B9%E6%AE%8A%E9%81%B8%E6%89%8D/112S.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>東華大學</td><td>27</td><td>111/10/18-111/11/01</td><td>111/12/03-111/12/04</td><td>111/12/12</td><td><a href="https://exam.ndhu.edu.tw/var/file/104/1104/attach/53/pta_111510_7362587_54187.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr>
-
-
-            <tr><td>臺灣藝術大學</td><td>10</td><td>111/10/27-111/11/03</td><td>無</td><td>111/12/02</td><td><a href="https://aca.ntua.edu.tw/uploads/files/examination/bachelor-special/112/112-bscontent-1110930.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺北藝術大學</td><td>15</td><td>111/10/25-111/10/31</td><td>111/12/17</td><td>112/01/03</td><td><a href="https://drive.google.com/file/d/1Q4_FTgGGF9peC7X_mbVVMO2qkEweR-zg/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺南藝術大學</td><td>7</td><td>111/11/07-111/11/15</td><td>111/12/03</td><td>111/12/09</td><td><a href="https://drive.google.com/file/d/1yrTHEzrO-YYRi17lCxrnkQCzJg-wZuOO/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>屏東大學</td><td>29</td><td>111/10/27-111/11/10</td><td>111/12/02</td><td>111/12/16</td><td><a href="https://admission.nptu.edu.tw/var/file/5/1005/attach/85/pta_126704_9922148_41556.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺南大學</td><td>27</td><td>111/10/11-111/11/04</td><td>依各系公告</td><td>111/12/12</td><td><a href="https://drive.google.com/file/d/1PJ9VcbLbybzTvrIsNK1Baw3Rawxalcv_/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>暨南國際大學</td><td>68</td><td>111/11/07-111/11/24</td><td>111/12/16</td><td>111/12/30</td><td><a href="https://www.admission.ncnu.edu.tw/wp-content/uploads/%E3%80%90%E5%9C%8B%E7%AB%8B%E6%9A%A8%E5%8D%97%E5%9C%8B%E9%9A%9B%E5%A4%A7%E5%AD%B8%E3%80%91112%E5%AD%B8%E5%B9%B4%E5%BA%A6%E7%89%B9%E6%AE%8A%E9%81%B8%E6%89%8D%E6%8B%9B%E7%94%9F%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>聯合大學</td><td>53</td><td>111/10/28-111/11/21</td><td>111/12/03</td><td>111/12/16</td><td><a href="https://drive.google.com/file/d/1wMt2J_KVUlfsaJgAcTBmYKWa0CK4JJk9/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr>
-
-
-            <tr><td>宜蘭大學</td><td>79</td><td>111/10/26-111/11/16</td><td>111/12/02-111/12/03</td><td>111/12/14</td><td><a href="https://drive.google.com/file/d/1i-V5t2dMaassc8aMXhSxOWHla5SPQCt_/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>嘉義大學</td><td>42</td><td>111/11/07-111/11/21</td><td>111/12/17</td><td>111/12/29</td><td><a href="https://www.ncyu.edu.tw/files/list/enroll/112%E7%89%B9%E6%AE%8A%E9%81%B8%E6%89%8D%E6%8B%9B%E7%94%9F%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺東大學</td><td>47</td><td>111/11/07-111/12/02</td><td>111/12/17</td><td>111/12/23</td><td><a href="https://drive.google.com/file/d/1TTm5VsNH_tgkbetrT54OZX46vlKwyhz2/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺北教育大學</td><td>11</td><td>111/10/03-111/10/13</td>
-
-
-            <td>111/11/19</td><td>111/12/01</td><td><a href="https://drive.google.com/file/d/1TrRQWBnLEiAsjYxXVT9n81QJBYNcmaDA/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺中教育大學</td><td>4</td><td>111/10/05-111/11/01</td><td>111/11/18</td><td>111/12/07</td><td><a href="https://drive.google.com/file/d/1Iw_QxtFrxvscQjlOtlDhskFI810at1_T/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺北大學</td><td>3</td><td>111/11/16-111/12/01</td><td>111/12/14</td><td>112/01/03</td><td><a href="https://www.ntpu.edu.tw/admin/a7/org/a7-3/files/recruit/20221021100341.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺灣體育運動大學<br><font color="red">(112新增院校)</font></td><td>5</td><td>111/10/31-111/11/11</td><td>111/12/08</td><td>111/12/23</td><td><a href="https://www.ntus.edu.tw/upload/cht/attachment/933c1fe9ec96389ab2a0bd9d4051becd.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>臺北市立大學</td><td>13</td><td>111/11/07-111/11/17</td><td>111/12/02-111/12/03</td><td>111/12/12</td><td><a href="https://admission.utaipei.edu.tw/var/file/33/1033/img/330517480.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>高雄大學</td><td>12</td><td>111/10/4-111/11/17</td><td>111/12/3</td><td>111/12/15</td><td><a href="https://admissions.nuk.edu.tw/var/file/6/1006/img/598/422698815.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>金門大學</td><td>17</td><td>111/10/27-111/11/17</td><td>無</td><td>111/12/16</td><td><a href="https://drive.google.com/file/d/15oQQYxqfWXrV5aqQ2HSNDDu1_hIeatMJ/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr></tbody></table></details></td></tr></tbody></table></div>
-
-            <h2 class="article_type01"> </h2>
-            <div class="article"><table><tbody><tr><td><details><summary><font color="blue">點我展開<br>▼112特殊選才私立大學簡章▼</font></summary><h2 class="article_type01"> </h2><div class="article"></div><h2 class="article_type01"> </h2><div class="article"> </div><table><colgroup><col width="15%"><col width="9%"><col width="25%"><col width="25%"><col width="11%"><col width="14%"></colgroup><tbody><tr><th>私立招生學校</th><th>名額</th><th>報名及繳件日期</th><th>面試日期</th><th>放榜日期</th><th>簡章下載</th></tr></tbody><tbody><tr><td>高雄醫學大學</td><td>12</td><td>111/11/09-111/11/16</td><td>111/12/06-111/12/13</td><td>111/12/29</td><td><a href="https://drive.google.com/file/d/1irqNTULGIW41yF0C2bFto1PVUACzA9S8/view" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>中山醫學大學</td><td>10</td><td>111/10/28-111/11/10</td><td>111/11/19</td><td>111/12/16</td><td><a href="https://recruit.csmu.edu.tw/var/file/19/1019/attach/46/pta_24941_8339930_71097.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>淡江大學</td><td>21</td><td>111/11/1-111/11/14</td><td>111/12/03</td><td>111/12/15</td><td><a href="https://adms.tku.edu.tw/File/Userfiles/0000000093/files/112%e5%ad%b8%e5%b9%b4%e5%ba%a6%e5%a4%a7%e5%ad%b8%e7%89%b9%e6%ae%8a%e9%81%b8%e6%89%8d%e6%8b%9b%e7%94%9f%e7%b0%a1%e7%ab%a0(1).pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>義守大學</td><td>18</td><td>111/11/01-111/11/22</td><td>111/12/07</td><td>111/12/16</td><td><a href="https://www2.isu.edu.tw/upload/703/4/1121.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>靜宜大學</td><td>73</td><td>111/11/01-111/12/01</td><td>無</td><td>112/01/03</td><td><a href="https://adms.pu.edu.tw/var/file/123/1123/img/693/112sp-epaper.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>大葉大學</td><td>10</td><td>111/10/27-111/12/19</td><td>111/12/23</td><td>112/01/03</td><td><a href="https://bulletin.dyu.edu.tw/file/F1122/108044.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a>
-<br></td></tr><tr><td>中原大學</td><td>73</td><td>111/10/11-111/10/31</td><td>依各系公告</td><td>111/12/09</td><td><a href="https://drive.google.com/file/d/12bnES7uym2heyeXxA4DW8wGotGDb6fGc/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr>
-
-
-            <tr><td>元智大學</td><td>4</td><td>111/11/02-111/11/15</td><td>111/12/05</td><td>111/12/30</td><td><a href="https://www.yzu.edu.tw/admissions/files/ExtraordinaryAdmissionProgram/112/112%E7%89%B9%E6%AE%8A%E9%81%B8%E6%89%8D%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>玄奘大學</td><td>22</td><td>111/11/09-111/12/15</td><td>111/12/24</td><td>111/12/29</td><td><a href="https://www.hcu.edu.tw/upload/userfiles/7C38F4ED57614E278365DBC8FA404F1A/files/%E7%8E%84%E5%A5%98%E5%A4%A7%E5%AD%B8112%E5%AD%B8%E5%B9%B4%E5%BA%A6%E7%89%B9%E6%AE%8A%E9%81%B8%E6%89%8D%E6%8B%9B%E7%94%9F%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>亞洲大學</td><td>31</td><td>111/10/19-111/11/24</td><td>111/12/03</td><td>111/12/09</td><td><a href="https://rd.asia.edu.tw/uploads/archive_file_multiple/file/633405358199fb7e66614a5c/112%E5%AD%B8%E5%B9%B4%E5%BA%A6%E5%AD%B8%E5%A3%AB%E7%8F%AD%E7%89%B9%E6%AE%8A%E9%81%B8%E6%89%8D%E6%8B%9B%E7%94%9F%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>東海大學</td><td>53</td><td>111/11/10-111/11/30</td><td>111/12/17</td><td>111/12/29</td><td><a href="https://exam2.thu.edu.tw/EXAM/download_doc_30/112_regulations.pdf?s=20221021044348" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>南華大學</td><td>17</td><td>111/11/10-111/12/20</td><td>111/12/26-111/12/27</td><td>112/01/03</td><td><a href="https://nhuwebfile.nhu.edu.tw/UploadedFiles/2022/10/2ac3de05-1dae-4e96-a171-7d822cd14eda.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>逢甲大學</td><td>80</td><td>111/10/24-111/11/23</td><td>111/12/09-111/12/11</td><td>111/12/17</td><td><a href="https://drive.google.com/file/d/1JE6UL_av-1Xd2RhATADpR7LmU4pQZUOz/view?usp=sharing/" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>銘傳大學</td><td>61</td><td>111/11/14-111/11/30</td><td>111/12/16</td><td>111/12/23</td><td><a href="https://tea.mcu.edu.tw/msg_text/resume12/04052555.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>世新大學</td><td>6</td><td>111/10/13-111/11/03</td><td>無</td><td>111/12/23</td>
-
-
-            <td><a href="https://drive.google.com/file/d/1SiskC9nRFRe7Y4aon9Rt2C-S8TW3s6TO/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>文化大學</td><td>9</td><td>111/10/25-111/11/28</td><td>111/12/09</td><td>111/12/20</td><td><a href="https://drive.google.com/file/d/1UJUTPMjss_mhJTe_dcVfLhN2j7hYL41_/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>大同大學</td><td>13</td><td>111/10/24-111/11/18</td><td>111/12/02</td><td>111/12/09</td><td><a href="https://drive.google.com/file/d/1rzz6ED1aX1v18wtv3IUcIa-HDLc6Ihrf/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>實踐大學(北區)</td><td>9</td><td>111/11/14-111/11/30</td><td>111/12/11</td><td>111/12/22</td><td><a href="https://recruit.usc.edu.tw/?wpfb_dl=4139" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>實踐大學(南區)</td><td>17</td><td>111/11/14-111/11/30</td><td>111/12/11</td><td>111/12/22</td><td><a href="https://recruit.usc.edu.tw/?wpfb_dl=4139" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>長庚大學</td><td>18</td><td>111/10/31-111/11/11</td><td>111/12/07、111/12/09</td><td>111/12/26</td><td><a href="https://recruit.cgu.edu.tw/var/file/41/1041/img/2852/616113763.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>長榮大學</td><td>7</td><td>111/10/17-111/11/18</td><td>111/12/02</td><td>111/12/30</td><td><a href="https://drive.google.com/file/d/1zqWi0XLlwK5dtkD0CwNn25C94i18KN7i/view?usp=sharing" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>慈濟大學</td><td>17</td><td>111/10/17-111/11/18</td><td>無</td><td>111/12/26</td><td><a href="https://admissions.tcu.edu.tw/wp-content/uploads/2022/09/112%E5%AD%B8%E5%B9%B4%E5%BA%A6%E3%80%8C%E5%AD%B8%E5%A3%AB%E7%8F%AD%E7%89%B9%E6%AE%8A%E9%81%B8%E6%89%8D%E3%80%8D%E6%8B%9B%E7%94%9F%E7%B0%A1%E7%AB%A0.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>東吳大學</td><td>16</td><td>111/10/24-111/11/11</td><td>依各系公告</td><td>111/12/28</td><td><a href="http://www.scu.edu.tw/entrance/anounce/112/K/K-book/K-book.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>輔仁大學</td><td>15</td><td>111/10/18-111/10/25</td><td>111/11/10-111/11/11</td><td>111/12/06</td><td><a href="https://api-gateway.fju.edu.tw/Admission/data/Bulletins/e5895daa-7652-4489-a12e-982e41c6b7d7.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr><tr><td>中華大學</td><td>11</td><td>111/11/01-111/12/14</td><td>無</td><td>111/12/23</td><td><a href="https://admission.chu.edu.tw/var/file/47/1047/img/794/515916807.pdf" target="_blank" rel="noopener noreferrer"><font color="blue"><u>112特選簡章</u></font></a></td></tr></tbody></table></details></td></tr></tbody></table></div>
-
-            <h2 class="article_type01"> </h2>
-            <div class="article"> <div class="article"><div style="font-size:20px;background:#e2d5d5;border-left:10px solid #F25C05;padding:5px 0px 1px 10px;;margin:5px 0px 5px 0px"><span style="font-weight:bold;">特殊選才資格門檻各校不同，甄戰讓你免考學測就能進入理想校系</span></div></div>114特殊選才即將開跑！還在認為特殊選才遙不可及嗎?<a name="上榜心得"><br>各校特殊選才資格門檻不同，讓甄戰發掘你的特殊經歷與亮點！<br>甄戰輔導針對不同背景為你<font color="red">量身打造書審面試輔導</font>，讓您免考學測就能取得理想校系的門票，快來看看上榜同學的經驗分享吧！<center><span style="background:#FF0000; border-radius:30px; color:#FFFFFF; display:inline-block; opacity:1; padding:1px 5px; text-decoration:none">NEW</span><font color="red">113特殊選才上榜學員心得</font></center><table style="width: 100%; border-style: hidden; box-shadow: 0 0 0 1px #FF8000; border-radius: 1px;"><thead><tr><td><details><summary><font color="#FF8000"><font size="4">陳○妤｜特殊選才高分錄取 陽交大學電機工程系 ▼</font></font><br></summary>就讀台中一中科學班陳同學，對二類組有濃厚的興趣，成功通過特殊選才，錄取了【陽明交大電機系】以及【陽明交大百川學士學程】。<br>在備審資料準備中，陳同學強調了動機和高中三年的實際行動，像數學競賽、專題研究等，再加上老師協助修改資料，讓其更貼切每間大學的要求，成為了面試審查中的優勢。<br>口試方面老師藉由引導教學的方式，讓陳同學克服了上台就會緊張的心魔，並協助尋找陽明電機博士進行口試模擬、半導體產業分析，陳同學最終在口試中拿到了98.5的高分！<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class="embed-container"><iframe src="https://www.youtube.com/embed/tJVNRKpGRQw?si=Uiq9HpKdm9VyFoz-" frameborder="0" allowfullscreen=""></iframe></div><a href="https://www.reallygood.com.tw/winner/inside?str=08604713F506F961E760311C5B10E70B" target="_blank"><font color="blue"><u>點我看陽交大特選經驗分享</u></font></a></details></td></tr></thead></table><table style="width: 100%; border-style: hidden; box-shadow: 0 0 0 1px #FF8000; border-radius: 1px;"><thead><tr><td><details><summary><font color="#FF8000"><font size="4">馬○｜特殊選才偏科生錄取 國立清華大學 清華學院學士班▼</font></font><br></summary>從克服脊椎側彎中培養了對流體力學的興趣，馬同學從高一就決定要往科學工程領域、領導領域發展。<br>經過和甄戰的諮詢，老師利用教授的觀點指導書審口試，並幫馬同學提前準備好面試的模擬問題；在書審中，引導馬同學明確地描述過往的能力、經歷，切合了大學教授想要看到的內容，並且協助進行文件排版，確保易於閱讀，最後馬同學成功透過特殊選才錄取清華大學的不分系。<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class="embed-container"><iframe src="https://www.youtube.com/embed/6iwaN7fIqIg?si=EsFDl66CTqN8DPgN" frameborder="0" allowfullscreen=""></iframe></div><a href="https://www.reallygood.com.tw/winner/inside?str=6B0C65CF16F12D5C8F20C9BCBADCE537" target="_blank"><font color="blue"><u>點我看清大特選經驗分享</u></font></a></details></td></tr></thead></table></a></div><a name="上榜心得">
-
-            <h2 class="article_type01"> </h2>
-            </a><div class="article"><a name="上榜心得">▼也可以點擊以下連結，看看其他同學們的上榜心得分享喔！▼</a><a href="https://www.reallygood.com.tw/winner/inside?str=FE122B2567FB778EE32F9075AC864079" target="_blank"><br>
-<br><font color="blue"><u>錄取國立清華大學 資訊工程學系</u></font></a><a name="諮詢"><br></a><a href="https://www.youtube.com/watch?v=_RTZOE_qmRw" target="_blank"><font color="blue"><u>錄取國立清華大學 教育心理諮商學系唯一正取</u></font></a><a name="諮詢"><br></a><a href="https://www.youtube.com/watch?v=vEgzJx8mqEA" target="_blank"><font color="blue"><u>錄取國立海洋大學 輪機工程學系</u></font></a><a name="諮詢"><div class="article"><div style="font-size:20px;background:#e2d5d5;border-left:10px solid #F25C05;padding:5px 0px 1px 10px;;margin:5px 0px 5px 0px"><span style="font-weight:bold;">114特殊選才上榜關鍵</span></div></div>我們針對想了解特殊選才的高中生及家長們舉辦免費一對一諮詢，內容有:
-<br>1.特殊選才歷年錄取資料分析
-<br>2.特殊選才申請流程介紹
-<br>3.特殊選才備審資料及口面試準備方法
-<br>4.114年特殊選才考情分析
-<br><font color="red">講座名額有限，要報要快！</font>
-<br></a><a href="https://www.reallygood.com.tw/lectures/inside?str=31E0C1FD2D2B0D57EF1DAAF8405DA481&amp;print_id=16936" target="_blank"><font color="blue"><u>114特殊選才講座-上榜心得經驗、準備技巧不藏私分享給你</u></font></a><a name="講座場次"></a></div><a name="講座場次">
-
-            <h2 class="article_type01"> </h2>
-            <div class="article"><div class="article"><div style="font-size:20px;background:#e2d5d5;border-left:10px solid #F25C05;padding:5px 0px 1px 10px;;margin:5px 0px 5px 0px"><span style="font-weight:bold;">114特殊選才備審面試上榜秘訣免費講座<span style="background:#FF0000; font-size:13px; border-radius:5px; color:#FFFFFF; display:inline-block; opacity:1; padding:0.25px 1px; text-decoration:none">𝐍𝐄𝐖</span></span></div></div><table><thead><tr><th><center>地區</center></th><th><center>北區</center></th><th><center>桃竹區</center></th><th><center>中區</center></th><th><center>嘉南區</center></th><th><center>高屏區</center></th></tr></thead><tbody><tr><td><center>時間</center></td><td>07/14(日)14:00<br>07/19(五)19:00<br>07/28(日)14:00<br>08/02(五)19:00<br>08/16(五)19:00<br>08/25(日)14:00<br>08/30(五)19:00<br>09/08(日)14:00<br>09/13(五)19:00<br>09/22(日)14:00<br>09/27(五)19:00</td><td><font color="red">桃園場：</font><br>07/04(四)19:00<br>08/01(四)19:00<br>09/07(六)14:00<br><font color="red">中壢場：</font><br>08/15(四)19:00<br>09/12(四)19:00<br><font color="red">新竹場：</font><br>07/10(三)19:00<br>08/21(三)19:00<br>09/11(三)19:00</td><td>07/05(五)19:00<br>07/13(六)14:00<br>07/19(五)19:00<br>07/27(六)14:00<br>08/04(日)14:00<br>08/07(三)19:00<br>08/18(日)14:00<br>08/21(三)19:00<br>09/01(日)14:00<br>09/05(四)19:00<br>09/14(六)14:00<br>09/19(四)19:00<br>09/28(六)14:00</td><td><font color="Red">台南場</font>：<br>06/05(三) 19:00<br>06/12(三) 19:00<br>06/21(五) 19:00<br>06/26(三) 19:00<br>07/03(三) 19:00<br>07/10(三) 19:00<br>07/17(三) 19:00<br>07/24(三) 19:00<br>08/02(五) 19:00<br>08/07(三) 19:00<br>08/14(三) 19:00<br>08/21(三) 19:00<br>09/05(四) 19:00<br>09/12(四) 19:00<br>09/19(四) 19:00<br>09/26(四) 19:00<br>10/02(三) 19:00<br>10/08(二) 19:00<br>10/15(二) 19:00<br>10/22(二) 19:00<br>10/29(二) 19:00<br><font color="Red">嘉義場</font>：<br>10/01(二) 19:00<br>10/07(一) 19:00<br>10/14(一) 19:00<br>10/21(一) 19:00<br></td><td>07/14(日) 14:00<br>07/28(日) 14:00<br>08/11(日) 14:00<br>08/25(日) 14:00<br>09/08(日) 14:00<br>09/22(日) 14:00</td></tr></tbody></table>※講座場次會因現場教室及人數異動，實際講座時間依現場為主<br><font color="RED">※如果填單顯示之報名時間無法配合，可以在備註欄寫上想參加的時間。</font><br><font color="blue">※若講座時間皆無法配合，亦可任選一個時間，只要地點正確且在備註欄備註需一對一諮詢即可。</font><h3>▼立即於下方填單報名講座/一對一諮詢▼</h3></div>
-
-            <h2 class="article_type01"> </h2>
-            <div class="article"><h2><font color="red">◉特殊選才 備審面試輔導課程</font></h2><ul> <li>適用對象：欲提前準備特殊選才之高中學生。</li> <li>課程說明：大學特殊選才，由於準備時間較申請入學大幅提前，內容還包含備審資料與面試準備，要如何呈現你的履歷、讓自己提前成為大學生？甄戰的課程將幫助你收集所有資訊、並提供最放心的優質服務。</li> <li>課程模式：甄戰備審資料與面試的輔導，將<strong style="background:#FFE66F">為孩子搭配欲報考校系相關專業背景的老師</strong>，提供備審、面試的一對一<font color="red">客製化教學</font>，不會有傳統補習不敢發問的情況發生！給予學生最專業的指導！</li> </ul><table><tbody><tr><th>課程名稱</th><th>授課方式</th><th>課程內容</th><th>課程次數</th></tr><tr><td>備審面試輔導</td><td rowspan="2">一對一</td><td>專業師資個別指導。備審資料、面試的堂數可依學生需求做配置</td><td>5堂</td></tr><tr><td>口試模擬</td><td>依照實際面試的進行模擬練習，以提升專業知識與臨場反應</td><td>2次</td></tr></tbody></table> <font color="blue">*因版面有限，課程項目僅列舉部分。</font>
-<br><strong style="background:#FFFF37"><font color="BLUE">※另有線上一對一諮詢，歡迎填單諮詢。</font></strong></div>
-
-        </a></div><a name="講座場次">
-
-        <div class="clear_float"></div>
-
-
-
-        <hr> 
-                <h2>如對本專案有相關問題，歡迎填表洽詢，有專人為您解答　*必填</h2> 
-           </a><form id="ReceiveForm" name="ReceiveForm" action="/newExam/inside.action" method="POST" enctype="multipart/form-data"><a name="講座場次">
-<table class="wwFormTable">
-            <input type="hidden" name="project_name" value="114特殊選才｜簡章名額即時更新！報名時間書審面試一覽表！">
-            <input type="hidden" id="newExam_id" value="1141">
-            <input type="hidden" name="print_id" value="null">
-            <input type="hidden" name="login_equipment" value="COM">
-            </table><table>
-                <tbody><tr>
-                <th width="20%">真實姓名<span>*</span></th>
-                <td><input type="text" id="name" maxlength="6"></td>
-                </tr>
-                <tr>
-                <th>行動電話<span>*</span></th>
-                <td><input type="tel" id="cellphone" maxlength="10"></td>
-                </tr>
-                <tr>
-                <th>電子郵件<span>*</span></th>
-                <td><input type="email" id="email" maxlength="30"></td>
-                </tr>
-                <tr>
-                <th>諮詢地點<span>*</span></th>
-                <td>
-                        <select id="toArea" name="toArea"><option value="0">請選擇</option><option value="58">台北甄戰</option><option value="119">博愛門市</option><option value="94">桃園甄戰</option><option value="59">中壢甄戰</option><option value="60">新竹甄戰</option><option value="61">台中甄戰</option><option value="111">斗六甄戰</option><option value="96">西屯甄戰</option><option value="110">虎尾甄戰</option><option value="117">豐原門市</option><option value="62">台南甄戰</option><option value="95">嘉義甄戰</option><option value="63">高雄甄戰</option></select>                      
-                </td>
-                </tr>
-                <tr>
-                <th>可聯絡時間<span>*</span></th>
-                <td>
-                    <select id="take">
-                        <option value="0">皆可</option>
-                        <option value="1">早上</option>
-                        <option value="2">中午</option>
-                        <option value="3">下午</option>
-                        <option value="4">晚上</option>
-                    </select>
-                </td>
-                </tr>
-                <tr>
-                    <th>是否寄送電子報<span>*</span></th>
-                 <td>
-                    <input type="radio" name="agree_send" value="1">是
-                    <input type="radio" name="agree_send" value="0">否
-                </td>
-                </tr>                
-                <tr>
-                <th>備註描述<br>(例如，就讀學校)</th>
-                <td><textarea name="ps" cols="" rows="" spellcheck="false" data-ms-editor="true"></textarea>
-                    <p style="padding-top: 10px;">註：同學若有預約試聽或課程諮詢等需求，均可留言，我們會儘快與您聯絡。</p>
-                </td>
-                </tr>
-            </tbody></table> 
-            <input name="sale_agree" id="is_read" type="checkbox">請勾選已詳細閱讀及了解本站之</a><a href="https://www.reallygood.com.tw/common/personLaw" target="_blank"><span><u>個資法及隱私權相關規範</u></span></a>。
-            <div class="send"><a style="cursor:pointer;">送出資料</a></div>   
-
-        </form>
-
-
-
-
-
-
-
-        <hr>
-        <div class="read_more">
-             延伸閱讀…
-            <ul>
-
-              <li><a href="#">特殊選才書審競賽開跑！目標114特殊選才不能錯過｜免費獲取書審資料評鑑機會</a></li>
-
-              <li><a href="#">114特殊選才錄取率公開｜公立大學竟高達100%？特選書審面試輔導交給甄戰</a></li>
-
-              <li><a href="#">114特殊選才｜報名必要條件？掌握準備7大重點上榜沒你想的難！</a></li>
-
-            </ul>
-        </div>
-    </div>
-<div class="footer">
-    <div class="footer_label"></div>
-    <div class="link">
-
-        <div class="link_01">
-            <aside>關於我們</aside>
-            <ul>
-                <li><a href="https://www.reallygood.com.tw/common/about">關於甄戰</a></li>
-                <li id="declare"><a href="javascript:;">反詐騙聲明</a></li>
-                <li>
-                    <a href="https://www.reallygood.com.tw/common/disclaimer">免責聲明</a>
-                </li>
-                <li><a href="https://www.reallygood.com.tw/common/harass">性騷擾防治相關</a></li>
-                <li><a href="https://www.reallygood.com.tw/upload/excel/TKB_Complaint.pdf" target="_blank">台灣知識庫申訴書</a></li>
-                <li><a href="https://www.reallygood.com.tw/upload/excel/Harassment_Complaint.pdf" target="_blank">性騷擾事件申訴書</a></li>
-                <li>
-                <a href="https://www.tkb.com.tw/contract.pdf" target="_blank">短期補習班服務契約書(消基會版本)</a>
-                </li>
-                <li><a href="https://www.104.com.tw/jobbank/custjob/index.php?r=cust&amp;j=3f39426b435b3e55303139623353361a747494224336b3e2020202063373a2524290j02&amp;jobsource=104_hotorder" target="_blant">人才招募</a></li>
-            </ul>
-        </div>
-        <div class="link_02">
-            <aside>優惠訊息</aside>
-            <ul>
-                <li id="low-income"><a href="javascript:;">低收入戶優惠</a></li>
-            </ul>
-        </div>
-        <div class="link_03">
-            <aside>諮詢服務</aside>
-            <ul>
-                <li><a href="https://www.reallygood.com.tw/courseDiscount/inside?str=741C31581DB3FF18F9B1FEE9DAEC51CB">課程諮詢</a></li>
-                <li><a href="https://www.reallygood.com.tw/common/qa">升學Q&amp;A</a></li>
-                <li><a href="https://www.reallygood.com.tw/location/index">甄戰電話與地址</a></li>
-            </ul>
-        </div>
-        <div class="link_04">
-            <aside>友站連結</aside>
-            <ul>
-                <li><a href="http://tkbreallygood.pixnet.net/blog" target="_blank">戰神-部落格</a></li>
-                <li><a href="https://www.facebook.com/reallygood.com.tw/" target="_blank">甄戰-粉絲團</a></li>
-                <li><a href="https://www.facebook.com/tkb.humanity" target="_blank">高中職升大-粉絲團</a></li>
-                <li><a href="https://www.facebook.com/tkb.learning.exploration" target="_blank">學習探索-粉絲團</a></li>
-                <li><a href="https://www.facebook.com/groups/257376967996254/?fref=ts" target="_blank">研究所甄試-粉絲團</a></li>
-                <li><a href="https://www.facebook.com/tkb.emba" target="_blank">在職專班-粉絲團</a></li>
-                <li><a href="http://realgood520.pixnet.net/blog" target="_blank">甄試服了你-部落格</a></li>
-                <li><a href="http://www.taso.org.tw/foundation/index.html" target="_blank">大碩青年關懷基金會</a></li>
-                <li><a href="https://www.reallygood.com.tw/camp/index" target="_blank">甄戰高中課程活動網站</a></li>
-                <li><a href="https://www.reallygood.com.tw/18groups/index" target="_blank">大學18學群生涯探索網</a></li>
-            </ul>
-        </div>
-        <div class="link_05 no_board">
-            <aside>集團網站</aside>
-            <ul>
-                <li><a href="https://www.tkblearning.com.tw/" target="_blank">數位學堂</a></li>
-                <li><a href="https://www.long-men.com.tw/" target="_blank">龍門轉學考</a></li>
-                <li><a href="https://byone.tkb.com.tw/" target="_blank">百官網公職</a></li>
-                <li><a href="https://www.ynso.com.tw/" target="_blank">洋碩美語</a></li>
-                <li><a href="https://www.daso.com.tw/" target="_blank">大碩研究所</a></li>
-                <li><a href="https://www.tkbsteam.com.tw" target="_blank">千碩機器人</a></li>
-                <li><a href="http://www.tingmao.com.tw/" target="_blank">大碩教育</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="copyright">TKB甄戰學習顧問中心為回饋社會，凡清寒(領有縣市政府低收入戶證明書)、身障(中度以上)學子，一律五折優待，我們真心希望清寒學子也能享有同齡學子的夢想。<br>Copyright © TKB臺灣知識庫 All Rights Reserved.</div>
-</div>
-    <script type="text/javascript" src="https://www.reallygood.com.tw/js/footer.js"></script>
-    <script src="https://www.reallygood.com.tw/js/facebook_Adjust.js"></script>
-</div>
-<script>
-var toUrl = location.href;
- banner_toInside = function(id) {
-
-    $.ajax({
-        url: "navBannerUpdateClickRate",
-        cache: false,
-        async: false,
-        type:"POST",
-        data:{
-            id : id
-        },
-        error: function(xhr) {
-            alert('Ajax request 發生錯誤');
-        },
-        success: function(data) {
-
-        }
-    });
-
-},  
-$(function(){
-
-    toGetLocationList();
-
-    toInside = function(id) {
-
-        $.ajax({
-            url: "toEncrypt",
-            cache: false,
-            async: false,
-            dataType: "text",
-            type:"POST",
-            data:{
-                id : id
-            },
-            error: function(xhr) {
-                alert('Ajax request 發生錯誤');
-            },
-            success: function(data) {
-                $("#str").val(data);
-                $("#getForm").attr("action", "inside");
-                $("#getForm").submit();
-            }
-        });
-
-    }   
-
-    //送出表單
-    toReceive =function(id){
-
-            var phonecheck = /^[09]{2}[0-9]{8}$/;//檢查手機正則表達式
-//          var emailcheck = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/;//檢查信箱正則表達式
-//          var emailendcheck = /\.$/;//信箱結尾不可為.
-            var printcheck = /^[0-9]*$/;//檢查print_id正則表達式
-
-                if($("input[name='print_id']").val() == null || $("input[name='print_id']").val() == ""){
-                    $("input[name='print_id']").val('3324');
-                }
-
-                if(!printcheck.test($("input[name='print_id']").val())){
-                    $("input[name='print_id']").val('3324');
-                }
-
-                if($("#name").val() == ""){
-                    alert("請輸入真實姓名");
-                    return false;
-                }else if($("#cellphone").val() == ""){
-                    alert("請輸入行動電話");
-                    return false;
-                }else if(!phonecheck.test($("#cellphone").val())){
-                    alert("請輸入正確的行動電話");
-                    return false;
-                }else if($("#email").val() == ""){
-                    alert("請輸入電子郵件");
-                    return false;
-                }else if(!isEmail($("#email").val())){
-                    alert("不是正確的信箱格式");
-                    return false;
-                }
-//              else if(!emailcheck.test($("#email").val())){
-//                  alert("不是正確的信箱格式");
-//                  return false;
-//              }
-//              else if(emailendcheck.test($("#email").val())){
-//                  alert("不是正確的信箱格式");
-//                  return false;
-//              }
-                else if($("#toArea").val() == 0 || $("#toArea").val() == ""){
-                    alert("請選擇參加地點");
-                    return false;
-                }else if($("input[name='agree_send']:checked").val() != 1 && $("input[name='agree_send']:checked").val() != 0){
-                    alert("請勾選是否寄送電子報");
-                    return false;
-                }else if(!$("#is_read").prop("checked")){
-                    alert("請勾選已詳細閱讀及了解本站之個資法及隱私權相關規範");
-                    return false;
-                }else{
-                    $(".send a").attr("disabled",true);
-                    $(".send a").css("pointer-events","none");
-                $.ajax({
-                    url: "https://www.reallygood.com.tw/edmPage/toReceiveInsideForm",
-                    cache: false,
-                    async: true,
-                    dataType: "text",
-                    type:"POST",
-                    data:{
-                        id:id,
-                        title : $("input[name='project_name']").val(),
-                        name : $("#name").val(),
-                        cellphone : $("#cellphone").val(),
-                        email : $("#email").val(),
-                        contact_time : $("#take").val(),
-                        web_location : $("#toArea").val(),
-                        memo : $("textarea[name='ps']").val(),
-                        edm_type_id : "0",
-                        login_equipment : $("input[name='login_equipment']").val(),
-                        sale_agree : $("input[name='agree_send']:checked").val(),
-                        print_id : $("input[name='print_id']").val(),
-                        type_code : "ARTICLE",
-                },
-                    error: function(xhr) {
-                        alert('資料送出失敗');
-                        reSetData();
-                    },
-                    success: function(data) {
-                        if(data=="T"){
-                            window.location.href = 'https://www.reallygood.com.tw/EDM/load/sendFormSuccess.jsp';
-                        }else{
-                            alert("送出失敗");
-                            reSetData();
-                        }
-
-                    }
-            });
-        }
-    }
-//重新整理此頁面
-function reSetData(){
-    document.location.href = toUrl;
-}
-//RFC822 正規則
-function isEmail(email){
-
-    return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test( email );  
-}
-//取得參加地點
-function toGetLocationList(){
-    $.ajax({
-        url: "https://www.reallygood.com.tw/edmPage/getWebLocationList",
-        cache: false,
-        async: false,
-        dataType: "json",
-        type:"POST",
-        data:{
-
-        },
-        error: function(xhr) {
-            alert('取得參加地點失敗1');
-        },
-        success: function(data) {
-            if(data != null && data.length > 0){
-                var str = "<option value='0'>請選擇</option>";
-                $("#toArea").empty();
-                for(i = 0 ; i < data.length; i++){
-                    var area = data[i];
-                    str += "<option value='"+area.id+"'>"+area.location+"</option>";
-                }
-                $("#toArea").append(str);
-            }else{
-                alert('取得參加地點失敗2');
-            }
-        }
-    });
-}
-
-})
-</script>
-
-<div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; width: 0px; height: 0px;"><div></div></div><div class="fb-customerchat" page_id="249135235240281" minimized="true" greeting_dialog_display="hide" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=2468654369827123&amp;current_url=https%3A%2F%2Fwww.reallygood.com.tw%2FnewExam%2Finside%3Fstr%3D932DEFBF9A06471E3A1436C3808D1BB7&amp;greeting_dialog_display=hide&amp;is_loaded_by_facade=true&amp;locale=zh_TW&amp;log_id=3b203bfc-7b5a-4ca5-bade-e61ce0411b16&amp;minimized=true&amp;page_id=249135235240281&amp;request_time=1725709608373&amp;sdk=joey&amp;should_use_new_domain=false"><div id="f41db95349a0212f4"></div></div><div class=" fb_iframe_widget fb_invisible_flow" fb-iframe-plugin-query="app_id=2468654369827123&amp;container_width=1519&amp;current_url=https%3A%2F%2Fwww.reallygood.com.tw%2FnewExam%2Finside%3Fstr%3D932DEFBF9A06471E3A1436C3808D1BB7&amp;greeting_dialog_display=hide&amp;is_loaded_by_facade=true&amp;local_state=%7B%22v%22%3A1%2C%22path%22%3A5%2C%22chatState%22%3A1%2C%22visibility%22%3A%22not-hidden%22%2C%22showUpgradePrompt%22%3A%22not_shown%22%2C%22greetingVisibility%22%3A%22hidden%22%7D&amp;locale=zh_TW&amp;log_id=3b203bfc-7b5a-4ca5-bade-e61ce0411b16&amp;minimized=true&amp;page_id=249135235240281&amp;request_time=1725709616390&amp;sdk=joey"><span style="vertical-align: bottom; width: 0px; height: 0px;"><iframe name="fb00b2090d69c5465" width="1000px" height="1000px" data-testid="fb:customerchat Facebook Social Plugin" title="" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" allow="encrypted-media" src="https://www.facebook.com/v2.11/plugins/customerchat.php?app_id=2468654369827123&amp;channel=https%3A%2F%2Fstaticxx.facebook.com%2Fx%2Fconnect%2Fxd_arbiter%2F%3Fversion%3D46%23cb%3Df2e268d97bf9facad%26domain%3Dwww.reallygood.com.tw%26is_canvas%3Dfalse%26origin%3Dhttps%253A%252F%252Fwww.reallygood.com.tw%252Ffd1e207a17c1d797b%26relation%3Dparent.parent&amp;container_width=1519&amp;current_url=https%3A%2F%2Fwww.reallygood.com.tw%2FnewExam%2Finside%3Fstr%3D932DEFBF9A06471E3A1436C3808D1BB7&amp;greeting_dialog_display=hide&amp;is_loaded_by_facade=true&amp;local_state=%7B%22v%22%3A1%2C%22path%22%3A5%2C%22chatState%22%3A1%2C%22visibility%22%3A%22not-hidden%22%2C%22showUpgradePrompt%22%3A%22not_shown%22%2C%22greetingVisibility%22%3A%22hidden%22%7D&amp;locale=zh_TW&amp;log_id=3b203bfc-7b5a-4ca5-bade-e61ce0411b16&amp;minimized=true&amp;page_id=249135235240281&amp;request_time=1725709616390&amp;sdk=joey" style="border: none; visibility: visible; width: 0px; height: 0px;" class=""></iframe></span></div></div></body><editor-card style="position:absolute;top:0px;left:0px;z-index:auto;display: block !important"><div dir="auto" style="all: initial;"><div style="color-scheme: initial; forced-color-adjust: initial; mask: initial; math-depth: initial; position: absolute; position-anchor: initial; text-size-adjust: initial; appearance: initial; color: initial; font: initial; font-palette: initial; font-synthesis: initial; inset-area: initial; text-orientation: initial; text-rendering: initial; text-spacing-trim: initial; -webkit-font-smoothing: initial; -webkit-locale: initial; -webkit-text-orientation: initial; -webkit-writing-mode: initial; writing-mode: initial; zoom: initial; accent-color: initial; place-content: initial; place-items: initial; place-self: initial; alignment-baseline: initial; anchor-name: initial; animation-composition: initial; animation: initial; app-region: initial; aspect-ratio: initial; backdrop-filter: initial; backface-visibility: initial; background: initial; background-blend-mode: initial; baseline-shift: initial; baseline-source: initial; block-size: initial; border-block: initial; border: initial; border-radius: initial; border-collapse: initial; border-end-end-radius: initial; border-end-start-radius: initial; border-inline: initial; border-start-end-radius: initial; border-start-start-radius: initial; inset: initial; box-shadow: initial; box-sizing: initial; break-after: initial; break-before: initial; break-inside: initial; buffered-rendering: initial; caption-side: initial; caret-color: initial; clear: initial; clip: initial; clip-path: initial; clip-rule: initial; color-interpolation: initial; color-interpolation-filters: initial; color-rendering: initial; columns: initial; column-fill: initial; gap: initial; column-rule: initial; column-span: initial; contain: initial; contain-intrinsic-block-size: initial; contain-intrinsic-size: initial; contain-intrinsic-inline-size: initial; container: initial; content: initial; content-visibility: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; cursor: initial; cx: initial; cy: initial; d: initial; display: initial; dominant-baseline: initial; empty-cells: initial; field-sizing: initial; fill: initial; fill-opacity: initial; fill-rule: initial; filter: initial; flex: initial; flex-flow: initial; float: initial; flood-color: initial; flood-opacity: initial; grid: initial; grid-area: initial; height: initial; hyphenate-character: initial; hyphenate-limit-chars: initial; hyphens: initial; image-orientation: initial; image-rendering: initial; initial-letter: initial; inline-size: initial; inset-block: initial; inset-inline: initial; isolation: initial; letter-spacing: initial; lighting-color: initial; line-break: initial; list-style: initial; margin-block: initial; margin: initial; margin-inline: initial; marker: initial; mask-type: initial; math-shift: initial; math-style: initial; max-block-size: initial; max-height: initial; max-inline-size: initial; max-width: initial; min-block-size: initial; min-height: initial; min-inline-size: initial; min-width: initial; mix-blend-mode: initial; object-fit: initial; object-position: initial; object-view-box: initial; offset: initial; opacity: initial; order: initial; orphans: initial; outline: initial; outline-offset: initial; overflow-anchor: initial; overflow-clip-margin: initial; overflow-wrap: initial; overflow: initial; overlay: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; overscroll-behavior: initial; padding-block: initial; padding: initial; padding-inline: initial; page: initial; page-orientation: initial; paint-order: initial; perspective: initial; perspective-origin: initial; pointer-events: initial; position-try: initial; position-visibility: initial; quotes: initial; r: initial; resize: initial; rotate: initial; ruby-align: initial; ruby-position: initial; rx: initial; ry: initial; scale: initial; scroll-behavior: initial; scroll-margin-block: initial; scroll-margin: initial; scroll-margin-inline: initial; scroll-padding-block: initial; scroll-padding: initial; scroll-padding-inline: initial; scroll-snap-align: initial; scroll-snap-stop: initial; scroll-snap-type: initial; scroll-timeline: initial; scrollbar-color: initial; scrollbar-gutter: initial; scrollbar-width: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; shape-rendering: initial; size: initial; speak: initial; stop-color: initial; stop-opacity: initial; stroke: initial; stroke-dasharray: initial; stroke-dashoffset: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-width: initial; tab-size: initial; table-layout: initial; text-align: initial; text-align-last: initial; text-anchor: initial; text-combine-upright: initial; text-decoration: initial; text-decoration-skip-ink: initial; text-emphasis: initial; text-emphasis-position: initial; text-indent: initial; text-overflow: initial; text-shadow: initial; text-transform: initial; text-underline-offset: initial; text-underline-position: initial; white-space: initial; timeline-scope: initial; touch-action: initial; transform: initial; transform-box: initial; transform-origin: initial; transform-style: initial; transition: initial; translate: initial; user-select: initial; vector-effect: initial; vertical-align: initial; view-timeline: initial; view-transition-class: initial; view-transition-name: initial; visibility: initial; border-spacing: initial; -webkit-box-align: initial; -webkit-box-decoration-break: initial; -webkit-box-direction: initial; -webkit-box-flex: initial; -webkit-box-ordinal-group: initial; -webkit-box-orient: initial; -webkit-box-pack: initial; -webkit-box-reflect: initial; -webkit-line-break: initial; -webkit-line-clamp: initial; -webkit-mask-box-image: initial; -webkit-print-color-adjust: initial; -webkit-rtl-ordering: initial; -webkit-ruby-position: initial; -webkit-tap-highlight-color: initial; -webkit-text-combine: initial; -webkit-text-decorations-in-effect: initial; -webkit-text-fill-color: initial; -webkit-text-security: initial; -webkit-text-stroke: initial; -webkit-user-drag: initial; widows: initial; width: initial; will-change: initial; word-break: initial; word-spacing: initial; x: initial; y: initial; z-index: 2147483647;"><link rel="stylesheet" href="chrome-extension://gpaiobkfhnonedkhhfjpmhdalgeoebfa/fonts/fabric-icons.css"><div style="all: initial;"></div></div><div style="color-scheme: initial; forced-color-adjust: initial; mask: initial; math-depth: initial; position: absolute; position-anchor: initial; text-size-adjust: initial; appearance: initial; color: initial; font: initial; font-palette: initial; font-synthesis: initial; inset-area: initial; text-orientation: initial; text-rendering: initial; text-spacing-trim: initial; -webkit-font-smoothing: initial; -webkit-locale: initial; -webkit-text-orientation: initial; -webkit-writing-mode: initial; writing-mode: initial; zoom: initial; accent-color: initial; place-content: initial; place-items: initial; place-self: initial; alignment-baseline: initial; anchor-name: initial; animation-composition: initial; animation: initial; app-region: initial; aspect-ratio: initial; backdrop-filter: initial; backface-visibility: initial; background: initial; background-blend-mode: initial; baseline-shift: initial; baseline-source: initial; block-size: initial; border-block: initial; border: initial; border-radius: initial; border-collapse: initial; border-end-end-radius: initial; border-end-start-radius: initial; border-inline: initial; border-start-end-radius: initial; border-start-start-radius: initial; inset: initial; box-shadow: initial; box-sizing: initial; break-after: initial; break-before: initial; break-inside: initial; buffered-rendering: initial; caption-side: initial; caret-color: initial; clear: initial; clip: initial; clip-path: initial; clip-rule: initial; color-interpolation: initial; color-interpolation-filters: initial; color-rendering: initial; columns: initial; column-fill: initial; gap: initial; column-rule: initial; column-span: initial; contain: initial; contain-intrinsic-block-size: initial; contain-intrinsic-size: initial; contain-intrinsic-inline-size: initial; container: initial; content: initial; content-visibility: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; cursor: initial; cx: initial; cy: initial; d: initial; display: initial; dominant-baseline: initial; empty-cells: initial; field-sizing: initial; fill: initial; fill-opacity: initial; fill-rule: initial; filter: initial; flex: initial; flex-flow: initial; float: initial; flood-color: initial; flood-opacity: initial; grid: initial; grid-area: initial; height: initial; hyphenate-character: initial; hyphenate-limit-chars: initial; hyphens: initial; image-orientation: initial; image-rendering: initial; initial-letter: initial; inline-size: initial; inset-block: initial; inset-inline: initial; isolation: initial; letter-spacing: initial; lighting-color: initial; line-break: initial; list-style: initial; margin-block: initial; margin: initial; margin-inline: initial; marker: initial; mask-type: initial; math-shift: initial; math-style: initial; max-block-size: initial; max-height: initial; max-inline-size: initial; max-width: initial; min-block-size: initial; min-height: initial; min-inline-size: initial; min-width: initial; mix-blend-mode: initial; object-fit: initial; object-position: initial; object-view-box: initial; offset: initial; opacity: initial; order: initial; orphans: initial; outline: initial; outline-offset: initial; overflow-anchor: initial; overflow-clip-margin: initial; overflow-wrap: initial; overflow: initial; overlay: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; overscroll-behavior: initial; padding-block: initial; padding: initial; padding-inline: initial; page: initial; page-orientation: initial; paint-order: initial; perspective: initial; perspective-origin: initial; pointer-events: initial; position-try: initial; position-visibility: initial; quotes: initial; r: initial; resize: initial; rotate: initial; ruby-align: initial; ruby-position: initial; rx: initial; ry: initial; scale: initial; scroll-behavior: initial; scroll-margin-block: initial; scroll-margin: initial; scroll-margin-inline: initial; scroll-padding-block: initial; scroll-padding: initial; scroll-padding-inline: initial; scroll-snap-align: initial; scroll-snap-stop: initial; scroll-snap-type: initial; scroll-timeline: initial; scrollbar-color: initial; scrollbar-gutter: initial; scrollbar-width: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; shape-rendering: initial; size: initial; speak: initial; stop-color: initial; stop-opacity: initial; stroke: initial; stroke-dasharray: initial; stroke-dashoffset: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-width: initial; tab-size: initial; table-layout: initial; text-align: initial; text-align-last: initial; text-anchor: initial; text-combine-upright: initial; text-decoration: initial; text-decoration-skip-ink: initial; text-emphasis: initial; text-emphasis-position: initial; text-indent: initial; text-overflow: initial; text-shadow: initial; text-transform: initial; text-underline-offset: initial; text-underline-position: initial; white-space: initial; timeline-scope: initial; touch-action: initial; transform: initial; transform-box: initial; transform-origin: initial; transform-style: initial; transition: initial; translate: initial; user-select: initial; vector-effect: initial; vertical-align: initial; view-timeline: initial; view-transition-class: initial; view-transition-name: initial; visibility: initial; border-spacing: initial; -webkit-box-align: initial; -webkit-box-decoration-break: initial; -webkit-box-direction: initial; -webkit-box-flex: initial; -webkit-box-ordinal-group: initial; -webkit-box-orient: initial; -webkit-box-pack: initial; -webkit-box-reflect: initial; -webkit-line-break: initial; -webkit-line-clamp: initial; -webkit-mask-box-image: initial; -webkit-print-color-adjust: initial; -webkit-rtl-ordering: initial; -webkit-ruby-position: initial; -webkit-tap-highlight-color: initial; -webkit-text-combine: initial; -webkit-text-decorations-in-effect: initial; -webkit-text-fill-color: initial; -webkit-text-security: initial; -webkit-text-stroke: initial; -webkit-user-drag: initial; widows: initial; width: initial; will-change: initial; word-break: initial; word-spacing: initial; x: initial; y: initial; z-index: 2147483647;"><link rel="stylesheet" href="chrome-extension://gpaiobkfhnonedkhhfjpmhdalgeoebfa/fonts/fabric-icons.css"></div><div id="editorNotificationContainer" style="color-scheme: initial; forced-color-adjust: initial; mask: initial; math-depth: initial; position: fixed; position-anchor: initial; text-size-adjust: initial; appearance: initial; color: initial; font: initial; font-palette: initial; font-synthesis: initial; inset-area: initial; text-orientation: initial; text-rendering: initial; text-spacing-trim: initial; -webkit-font-smoothing: initial; -webkit-locale: initial; -webkit-text-orientation: initial; -webkit-writing-mode: initial; writing-mode: initial; zoom: initial; accent-color: initial; place-content: initial; place-items: initial; place-self: initial; alignment-baseline: initial; anchor-name: initial; animation-composition: initial; animation: initial; app-region: initial; aspect-ratio: initial; backdrop-filter: initial; backface-visibility: initial; background: initial; background-blend-mode: initial; baseline-shift: initial; baseline-source: initial; block-size: initial; border-block: initial; border: initial; border-radius: initial; border-collapse: initial; border-end-end-radius: initial; border-end-start-radius: initial; border-inline: initial; border-start-end-radius: initial; border-start-start-radius: initial; bottom: 0px; box-shadow: initial; box-sizing: initial; break-after: initial; break-before: initial; break-inside: initial; buffered-rendering: initial; caption-side: initial; caret-color: initial; clear: initial; clip: initial; clip-path: initial; clip-rule: initial; color-interpolation: initial; color-interpolation-filters: initial; color-rendering: initial; columns: initial; column-fill: initial; gap: initial; column-rule: initial; column-span: initial; contain: initial; contain-intrinsic-block-size: initial; contain-intrinsic-size: initial; contain-intrinsic-inline-size: initial; container: initial; content: initial; content-visibility: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; cursor: initial; cx: initial; cy: initial; d: initial; display: flex; dominant-baseline: initial; empty-cells: initial; field-sizing: initial; fill: initial; fill-opacity: initial; fill-rule: initial; filter: initial; flex: initial; flex-direction: column-reverse; flex-wrap: initial; float: initial; flood-color: initial; flood-opacity: initial; grid: initial; grid-area: initial; height: initial; hyphenate-character: initial; hyphenate-limit-chars: initial; hyphens: initial; image-orientation: initial; image-rendering: initial; initial-letter: initial; inline-size: initial; inset-block: initial; inset-inline: initial; isolation: initial; left: initial; letter-spacing: initial; lighting-color: initial; line-break: initial; list-style: initial; margin-block: initial; margin: 1em; margin-inline: initial; marker: initial; mask-type: initial; math-shift: initial; math-style: initial; max-block-size: initial; max-height: initial; max-inline-size: initial; max-width: initial; min-block-size: initial; min-height: initial; min-inline-size: initial; min-width: initial; mix-blend-mode: initial; object-fit: initial; object-position: initial; object-view-box: initial; offset: initial; opacity: initial; order: initial; orphans: initial; outline: initial; outline-offset: initial; overflow-anchor: initial; overflow-clip-margin: initial; overflow-wrap: initial; overflow: initial; overlay: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; overscroll-behavior: initial; padding-block: initial; padding: initial; padding-inline: initial; page: initial; page-orientation: initial; paint-order: initial; perspective: initial; perspective-origin: initial; pointer-events: initial; position-try: initial; position-visibility: initial; quotes: initial; r: initial; resize: initial; right: 0px; rotate: initial; ruby-align: initial; ruby-position: initial; rx: initial; ry: initial; scale: initial; scroll-behavior: initial; scroll-margin-block: initial; scroll-margin: initial; scroll-margin-inline: initial; scroll-padding-block: initial; scroll-padding: initial; scroll-padding-inline: initial; scroll-snap-align: initial; scroll-snap-stop: initial; scroll-snap-type: initial; scroll-timeline: initial; scrollbar-color: initial; scrollbar-gutter: initial; scrollbar-width: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; shape-rendering: initial; size: initial; speak: initial; stop-color: initial; stop-opacity: initial; stroke: initial; stroke-dasharray: initial; stroke-dashoffset: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-width: initial; tab-size: initial; table-layout: initial; text-align: initial; text-align-last: initial; text-anchor: initial; text-combine-upright: initial; text-decoration: initial; text-decoration-skip-ink: initial; text-emphasis: initial; text-emphasis-position: initial; text-indent: initial; text-overflow: initial; text-shadow: initial; text-transform: initial; text-underline-offset: initial; text-underline-position: initial; white-space: initial; timeline-scope: initial; top: initial; touch-action: initial; transform: initial; transform-box: initial; transform-origin: initial; transform-style: initial; transition: initial; translate: initial; user-select: initial; vector-effect: initial; vertical-align: initial; view-timeline: initial; view-transition-class: initial; view-transition-name: initial; visibility: initial; border-spacing: initial; -webkit-box-align: initial; -webkit-box-decoration-break: initial; -webkit-box-direction: initial; -webkit-box-flex: initial; -webkit-box-ordinal-group: initial; -webkit-box-orient: initial; -webkit-box-pack: initial; -webkit-box-reflect: initial; -webkit-line-break: initial; -webkit-line-clamp: initial; -webkit-mask-box-image: initial; -webkit-print-color-adjust: initial; -webkit-rtl-ordering: initial; -webkit-ruby-position: initial; -webkit-tap-highlight-color: initial; -webkit-text-combine: initial; -webkit-text-decorations-in-effect: initial; -webkit-text-fill-color: initial; -webkit-text-security: initial; -webkit-text-stroke: initial; -webkit-user-drag: initial; widows: initial; width: initial; will-change: initial; word-break: initial; word-spacing: initial; x: initial; y: initial; z-index: 2147483647;"></div></div></editor-card></html>
+  <h1>測試</h1>
+
+<p>$$
+\text{如果 } a \mid bc \text{ 且 } \gcd(a,b) = 1 \text{，那麼 } a \mid c。
+$$</p>
+<ol>
+<li><strong>宣告與初始化</strong>
+    <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;map&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">myMap</span><span class="p">;</span><span class="w"> </span><span class="c1">// 宣告一個空的 map，鍵為 int，值為 string</span>
+<span class="w">    </span><span class="n">myMap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Apple&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">myMap</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Banana&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">myMap</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Cherry&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// 使用 initializer list 初始化</span>
+<span class="w">    </span><span class="n">map</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">anotherMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Apple&quot;</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Banana&quot;</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Cherry&quot;</span><span class="p">}};</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+如果一個正整數整除另外兩個正整數的乘積，第一個整數與第二個整數互質，那麼第一個整數整除第三個整數。</li>
+</ol>
+<p>可以這樣表達這個引理：</p>
 
 
 
@@ -3752,40 +2711,82 @@ function toGetLocationList(){
 
 
                 
-    <!-- 新增的 TOC 區塊，引用 toc 擴展生成的永久鏈接 -->
-    <div class="custom-toc-container">
-        <div class="custom-toc-title">目錄</div>
-        <nav class="custom-toc">
-            <ul>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
+  
+  <footer class="sponsorship">
+    <hr>
+    <a href="https://github.com/pei-yan-2147" title="Become a sponsor">
+      <span class="twemoji heart-throb-hover">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg>
+      </span>
+    </a>
+    <hr>
+  </footer>
+  
 
               </article>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
       </main>
       
-        <footer class="md-footer">
+        
+
+<footer class="md-footer">
+  
+    <nav
+      class="md-footer__inner md-grid"
+      aria-label="footer.title"
+    >
+      
+        <a
+          href="../%E5%8A%A0%E6%B7%B1%E5%8A%A0%E5%BB%A3/"
+          class="md-footer__link md-footer__link--prev"
+          rel="prev"
+        >
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              加深加廣
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
-      <div class="md-copyright">
-  
-  
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        with emoji by
+        <a href="https://github.com/twitter/twemoji" target="_blank" rel="noopener">
+          Twemoji
+        </a>
+      </div>
+      <div class="md-social">
   
 </div>
-      
     </div>
   </div>
 </footer>
@@ -3796,12 +2797,16 @@ function toGetLocationList(){
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["sitemap"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.instant", "navigation.indexes", "toc.follow", "content.tabs.link", "search.share", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotations"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../assets/javascripts/bundle.471ce7a9.min.js"></script>
       
-        <script src="../assets/custom.js"></script>
+        <script src="https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../assets/pymdownx-extras/extra-loader-iLQ-keay.js"></script>
       
     
   </body>

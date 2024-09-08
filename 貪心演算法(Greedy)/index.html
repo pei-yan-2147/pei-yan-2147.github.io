@@ -36,343 +36,11 @@
 
     
     
-    
+
       
     
-
-    <script type="text/javascript">
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            },
-            options: {
-                processEscapes: true
-            }
-        };
-    </script>
-
-    <script type="text/javascript" id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-    <!-- 背景图片 -->
-    <div class="image-background"></div>
-
-    <!-- 星空和流星效果的Canvas背景 -->
-    <canvas id="starCanvas" style="z-index: -2; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-
-    <!-- 粒子效果的Canvas背景，放置在星空和流星前面 -->
-    <canvas id="particleCanvas" style="z-index: -1; position: fixed; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        var tocContainer = document.querySelector('.custom-toc-container');
-        var contentInner = document.querySelector('.md-content__inner');
-
-        // 设置星空流星的 Canvas 尺寸
-        var starCanvas = document.getElementById('starCanvas');
-        var starCtx = starCanvas.getContext('2d');
-        function resizeStarCanvas() {
-          starCanvas.width = window.innerWidth;
-          starCanvas.height = window.innerHeight;
-        }
-        resizeStarCanvas();
-        window.addEventListener('resize', resizeStarCanvas);
-
-        // 设置粒子效果的 Canvas 尺寸
-        var particleCanvas = document.getElementById('particleCanvas');
-        var particleCtx = particleCanvas.getContext('2d');
-        function resizeParticleCanvas() {
-          particleCanvas.width = window.innerWidth;
-          particleCanvas.height = window.innerHeight;
-        }
-        resizeParticleCanvas();
-        window.addEventListener('resize', resizeParticleCanvas);
-
-        // 星星类
-        class Star {
-          constructor() {
-            this.reset();  // 随机初始化星星的位置、大小和透明度
-          }
-
-          reset() {
-            this.x = Math.random() * starCanvas.width;
-            this.y = Math.random() * starCanvas.height;
-            this.originalSize = Math.random() * 2 + 1;
-            this.size = 0;
-            this.alpha = 0;
-            this.growthSpeed = 0.02;
-            this.shrinkSpeed = 0.01;
-            this.life = Math.random() * 200 + 100;
-          }
-
-          update() {
-            if (this.life > 100) {
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-            } else {
-              this.size -= this.shrinkSpeed;
-              this.alpha -= this.shrinkSpeed;
-              if (this.size < 0) this.size = 0;
-              if (this.alpha < 0) this.alpha = 0;
-            }
-
-            this.life -= 1;
-            if (this.life <= 0) this.reset();
-          }
-
-          draw() {
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.beginPath();
-            starCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-        }
-
-        // 流星类
-        class Meteor {
-          constructor(x = null, y = null) {
-            this.isCustom = (x !== null && y !== null); // 判斷是否是滑鼠生成的流星
-            this.reset(x, y);
-          }
-
-          reset(x = null, y = null) {
-            if (this.isCustom) {
-              this.x = x;
-              this.y = y;
-              this.size = this.originalSize; // 立即设为最大值
-              this.alpha = 1; // 立即设为最大透明度
-            } else {
-              this.x = Math.random() * starCanvas.width / 2;
-              this.y = Math.random() * starCanvas.height;
-              this.size = 0;
-              this.alpha = 0;
-            }
-            this.originalSize = Math.random() * 1 + 1;
-            this.growthSpeed = 0.03;
-            this.speedX = Math.random() * 8 + 4;
-            this.speedY = Math.random() * 4 + 2;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-
-            if (!this.isCustom) { // 非滑鼠生成的流星才有增大過程
-              this.size += this.growthSpeed;
-              this.alpha += this.growthSpeed;
-              if (this.size > this.originalSize) this.size = this.originalSize;
-              if (this.alpha > 1) this.alpha = 1;
-              this.alpha -= 0.025;
-            } else {
-              // 滑鼠生成的流星更快消失
-              this.alpha -= 0.025; // 透明度更快減少
-            }
-
-            // 如果是滑鼠生成的流星且透明度為0，將其從數組中移除
-            if (this.isCustom && this.alpha <= 0) {
-              return true; // 返回true表示可以從數組中移除
-            }
-
-            if (!this.isCustom && this.isOutOfView()) {
-              this.reset(); // 非滑鼠生成的流星需要重新生成
-            }
-            return false; // 不移除流星
-          }
-
-          draw() {
-            starCtx.strokeStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            starCtx.lineWidth = this.size;
-            starCtx.beginPath();
-            starCtx.moveTo(this.x, this.y);
-            starCtx.lineTo(this.x - this.speedX * 5, this.y - this.speedY * 5);
-            starCtx.stroke();
-
-            starCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            this.drawStarShape(this.x, this.y, this.size, 5);
-          }
-
-          drawStarShape(cx, cy, outerRadius, spikes) {
-            let rot = Math.PI / 2 * 3;
-            let step = Math.PI / spikes;
-
-            starCtx.beginPath();
-            starCtx.moveTo(cx, cy - outerRadius);
-            for (let i = 0; i < spikes; i++) {
-              let x = cx + Math.cos(rot) * outerRadius;
-              let y = cy + Math.sin(rot) * outerRadius;
-              starCtx.lineTo(x, y);
-              rot += step;
-            }
-            starCtx.lineTo(cx, cy - outerRadius);
-            starCtx.closePath();
-            starCtx.fill();
-          }
-
-          isOutOfView() {
-            return this.x > starCanvas.width || this.y > starCanvas.height || this.alpha <= 0;
-          }
-        }
-
-        // 粒子类
-        class Particle {
-          constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 3 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-            this.alpha = 1;
-          }
-
-          update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.size > 0.2) this.size -= 0.1;
-            this.alpha -= 0.02;  // 粒子逐渐消失
-          }
-
-          draw() {
-            particleCtx.fillStyle = `rgba(242, 187, 255, ${this.alpha})`;
-            particleCtx.beginPath();
-            particleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            particleCtx.closePath();
-            particleCtx.fill();
-          }
-        }
-
-        // 初始化粒子、星星、流星数组
-        let starsArray = [];
-        let meteorsArray = [];
-        let customMeteorsArray = [];
-        let particlesArray = [];
-        const maxMeteors = 10;
-
-        // 初始化星星
-        function initStars() {
-          starsArray = [];
-          for (let i = 0; i < 150; i++) {
-            starsArray.push(new Star());
-          }
-        }
-
-        // 生成更多流星
-        function createMeteor() {
-          if (meteorsArray.length < maxMeteors) {
-            meteorsArray.push(new Meteor());
-          }
-        }
-
-        // 生成粒子
-        function createParticle(event) {
-          const x = event.x;
-          const y = event.y;
-          for (let i = 0; i < 1; i++) {
-            particlesArray.push(new Particle(x, y));
-          }
-        }
-
-        // 生成滑鼠流星
-        function createCustomMeteor(event) {
-          const x = event.clientX;
-          const y = event.clientY;
-          const newMeteor = new Meteor(x, y);
-          newMeteor.speedX = Math.random() * 8 + 4;  // 設置滑鼠流星的速度
-          newMeteor.speedY = Math.random() * 4 + 2;
-          newMeteor.size = newMeteor.originalSize; // 立即設定最大大小
-          newMeteor.alpha = 1; // 立即設定最大透明度
-          customMeteorsArray.push(newMeteor);
-        }
-
-        // 更新并绘制星星、流星和粒子
-        function handleParticles() {
-          for (let i = 0; i < particlesArray.length; i++) {
-            particlesArray[i].update();
-            particlesArray[i].draw();
-            if (particlesArray[i].alpha <= 0) {
-              particlesArray.splice(i, 1);
-              i--;
-            }
-          }
-        }
-
-        function handleStarsAndMeteors() {
-          for (let i = 0; i < starsArray.length; i++) {
-            starsArray[i].update();
-            starsArray[i].draw();
-          }
-
-          for (let i = 0; i < meteorsArray.length; i++) {
-            meteorsArray[i].update();
-            meteorsArray[i].draw();
-            if (meteorsArray[i].isOutOfView()) {
-              meteorsArray.splice(i, 1);
-              i--;
-            }
-          }
-
-          for (let i = 0; i < customMeteorsArray.length; i++) {
-            if (customMeteorsArray[i].update()) {
-              customMeteorsArray.splice(i, 1); // 移除透明度為0的滑鼠生成流星
-              i--;
-            } else {
-              customMeteorsArray[i].draw();
-            }
-          }
-        }
-
-        // 动画循环
-        function animate() {
-          starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
-          particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
-          handleStarsAndMeteors();
-          handleParticles();
-          requestAnimationFrame(animate);
-        }
-
-        // 初始化并开始动画
-        initStars();
-        animate();
-
-        // 流星的生成频率增加
-        setInterval(createMeteor, 500);
-
-        // 监听鼠标事件生成粒子
-        window.addEventListener('mousemove', createParticle);
-
-        // // 监听鼠标点击生成额外流星
-        // window.addEventListener('click', createCustomMeteor);
-
-        // TOC 相关逻辑
-        if (contentInner && tocContainer) {
-            updateTocPosition();
-
-            tocContainer.addEventListener('click', function() {
-                tocContainer.classList.toggle('expanded');
-            });
-        }
-
-        function updateTocPosition() {
-            var contentInnerRect = contentInner.getBoundingClientRect();
-            tocContainer.style.top = contentInnerRect.top + 'px';
-            tocContainer.style.left = contentInnerRect.right - 100 + 25 + 'px';
-        }
-
-        // 处理图像大小调整的逻辑
-        document.querySelectorAll('img').forEach(function(img) {
-            const match = img.src.match(/=(\d+)%x$/);
-            if (match) {
-                const widthPercentage = match[1];
-                img.style.width = widthPercentage + '%';
-                img.style.height = 'auto';
-                img.src = img.src.replace(/=(\d+)%x$/, '');
-            }
-        });
-      });
-    </script>
+<script src="../assets/pymdownx-extras/material-extra-theme-2ek1P7jT.js" type="text/javascript"></script>
+<script src="../assets/pymdownx-extras/material-extra-3rdparty-BUCF4rjN.js" type="text/javascript"></script>
 
     
       
@@ -384,7 +52,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/custom.css">
+      <link rel="stylesheet" href="../assets/pymdownx-extras/extra-8611f6c398.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -401,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="dark" data-md-color-primary="black" data-md-color-accent="deep-orange">
+    <body dir="ltr" data-md-color-scheme="dracula" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -410,29 +78,54 @@
     <div data-md-component="skip">
       
         
-        <a href="#greedy" class="md-skip">
+        <a href="#貪心演算法greedy" class="md-skip">
           Skip to content
         </a>
       
     </div>
     <div data-md-component="announce">
       
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+
+<!-- 
+<a href="../about/contributing/#become-a-sponsor">Sponsorship</a> -->
+
+<a href="https://github.com/pei-yan-2147">Sponsorship</a>
+
+is now available!
+<span class="twemoji heart-throb">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg>
+</span>
+          </div>
+          
+        </aside>
+      
     </div>
     
     
       
 
-  
 
-<header class="md-header md-header--shadow" data-md-component="header">
-  <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="PEI 演算法筆記" class="md-header__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
+<header class="md-header" data-md-component="header">
+  <nav
+    class="md-header__inner md-grid"
+    aria-label="header.title"
+  >
+    <a
+      href="https://pei-yan-2147.github.io/"
+      title="PEI 演算法筆記"
+      class="md-header__button md-logo"
+      aria-label="PEI 演算法筆記"
+    >
       
   <img src="../logo/peilogo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
-      
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
@@ -451,14 +144,44 @@
         </div>
       </div>
     </div>
-    
-      
-    
-    
-    
+    <div class="md-header__options">
+      <div class="md-header-nav__scheme md-header-nav__button md-source__icon md-icon">
+          <a
+            href="javascript:toggleScheme();"
+            title="Light mode"
+            class="light-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+          </a>
+          <a
+            href="javascript:toggleScheme();"
+            title="Dark mode"
+            class="dark-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+          </a>
+          <a
+            href="javascript:toggleScheme();"
+            title="System preference"
+            class="system-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.5 2c-1.79 1.15-3 3.18-3 5.5s1.21 4.35 3.03 5.5C4.46 13 2 10.54 2 7.5A5.5 5.5 0 0 1 7.5 2m11.57 1.5 1.43 1.43L4.93 20.5 3.5 19.07 19.07 3.5m-6.18 2.43L11.41 5 9.97 6l.42-1.7L9 3.24l1.75-.12.58-1.65L12 3.1l1.73.03-1.35 1.13.51 1.67m-3.3 3.61-1.16-.73-1.12.78.34-1.32-1.09-.83 1.36-.09.45-1.29.51 1.27 1.36.03-1.05.87.4 1.31M19 13.5a5.5 5.5 0 0 1-5.5 5.5c-1.22 0-2.35-.4-3.26-1.07l7.69-7.69c.67.91 1.07 2.04 1.07 3.26m-4.4 6.58 2.77-1.15-.24 3.35-2.53-2.2m4.33-2.7 1.15-2.77 2.2 2.54-3.35.23m1.15-4.96-1.14-2.78 3.34.24-2.2 2.54M9.63 18.93l2.77 1.15-2.53 2.19-.24-3.34Z"/></svg>
+          </a>
+           <a
+            href="javascript:toggleScheme();"
+            title="Unknown scheme"
+            class="unknown-mode"
+          >
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m15.07 11.25-.9.92C13.45 12.89 13 13.5 13 15h-2v-.5c0-1.11.45-2.11 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41a2 2 0 0 0-2-2 2 2 0 0 0-2 2H8a4 4 0 0 1 4-4 4 4 0 0 1 4 4 3.2 3.2 0 0 1-.93 2.25M13 19h-2v-2h2M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10c0-5.53-4.5-10-10-10Z"/></svg>
+          </a>
+      </div>
+    </div>
     
       <label class="md-header__button md-icon" for="__search">
-        
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
       </label>
       <div class="md-search" data-md-component="search" role="dialog">
@@ -474,11 +197,18 @@
       </label>
       <nav class="md-search__options" aria-label="Search">
         
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
         </button>
       </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
       
     </form>
     <div class="md-search__output">
@@ -496,13 +226,262 @@
     
     
   </nav>
-  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
         
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  首頁
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E5%BE%85%E8%BE%A6%E4%BA%8B%E9%A0%85/" class="md-tabs__link">
+        
+  
+    
+  
+  待辦事項
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E5%AD%B8%E7%BF%92%E8%B3%87%E6%BA%90/" class="md-tabs__link">
+        
+  
+    
+  
+  學習資源
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../APCS/" class="md-tabs__link">
+        
+  
+    
+  
+  APCS
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E8%80%83%E5%89%8D%E5%BF%85%E7%9C%8B/" class="md-tabs__link">
+        
+  
+    
+  
+  考前必看
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E6%9C%89%E4%BA%8B%E6%B2%92%E4%BA%8B%E6%89%93%E4%B8%80%E6%AC%A1/" class="md-tabs__link">
+        
+  
+    
+  
+  有事沒事打一次
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E7%B6%93%E5%85%B8%E5%A0%B1%E9%8C%AF/" class="md-tabs__link">
+          
+  
+    
+  
+  概念、語法、技巧
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../log/" class="md-tabs__link">
+          
+  
+    
+  
+  數論
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../STL/" class="md-tabs__link">
+          
+  
+    
+  
+  資料結構
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../%E9%81%9E%E8%BF%B4/" class="md-tabs__link">
+          
+  
+    
+  
+  演算法
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../CSEC/" class="md-tabs__link">
+          
+  
+    
+  
+  刷題
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../%E5%B8%B8%E7%94%A8%E8%8B%B1%E6%96%87/" class="md-tabs__link">
+          
+  
+    
+  
+  其他
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../%E6%B8%AC%E8%A9%A6/" class="md-tabs__link">
+        
+  
+    
+  
+  測試
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
           
         
       
@@ -517,8 +496,10 @@
                     
 
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="PEI 演算法筆記" class="md-nav__button md-logo" aria-label="PEI 演算法筆記" data-md-component="logo">
       
@@ -658,6 +639,53 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1141,6 +1169,41 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1498,6 +1561,23 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1668,16 +1748,52 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -1954,7 +2070,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#greedy" class="md-nav__link">
+  <a href="#貪心演算法greedy" class="md-nav__link">
     <span class="md-ellipsis">
       貪心演算法(Greedy)
     </span>
@@ -1964,9 +2080,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-2024-ionc" class="md-nav__link">
+  <a href="#反證法流程2024-ionc" class="md-nav__link">
     <span class="md-ellipsis">
-      反證法--流程(2024 IONC)
+      反證法&ndash;流程(2024 IONC)
     </span>
   </a>
   
@@ -1978,7 +2094,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#題型整理" class="md-nav__link">
     <span class="md-ellipsis">
       題型整理
     </span>
@@ -1988,7 +2104,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#p-4-1" class="md-nav__link">
+  <a href="#p-4-1-少林寺的代幣" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-1. 少林寺的代幣
     </span>
@@ -1997,7 +2113,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-2" class="md-nav__link">
+  <a href="#p-4-2-笑傲江湖之三戰" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-2. 笑傲江湖之三戰
     </span>
@@ -2006,7 +2122,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-3" class="md-nav__link">
+  <a href="#p-4-3-十年磨一劍最少完成時間" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-3. 十年磨一劍(最少完成時間)
     </span>
@@ -2015,7 +2131,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-4-activity-selection" class="md-nav__link">
+  <a href="#p-4-4-幾場華山論劍activity-selection" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-4. 幾場華山論劍(activity selection)
     </span>
@@ -2024,7 +2140,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-5" class="md-nav__link">
+  <a href="#p-4-5-嵩山磨劍坊的問題加權最小完成時間" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-5. 嵩山磨劍坊的問題(加權最小完成時間)
     </span>
@@ -2033,7 +2149,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#q-4-6-apcs201710" class="md-nav__link">
+  <a href="#q-4-6-少林寺的自動寄物櫃apcs201710" class="md-nav__link">
     <span class="md-ellipsis">
       Q-4-6. 少林寺的自動寄物櫃(APCS201710)
     </span>
@@ -2042,7 +2158,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-7-two-way-merge" class="md-nav__link">
+  <a href="#p-4-7-岳不群的併派問題two-way-merge-" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-7. 岳不群的併派問題(Two-way merge) (*)
     </span>
@@ -2051,7 +2167,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#q-4-8" class="md-nav__link">
+  <a href="#q-4-8-先到先服務-" class="md-nav__link">
     <span class="md-ellipsis">
       Q-4-8. 先到先服務 (*)
     </span>
@@ -2060,7 +2176,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-9-apcs201703" class="md-nav__link">
+  <a href="#p-4-9-基地台-apcs201703" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-9. 基地台 (APCS201703)
     </span>
@@ -2160,6 +2276,17 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2237,6 +2364,23 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2413,6 +2557,27 @@
   
     
     
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -2660,7 +2825,7 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#greedy" class="md-nav__link">
+  <a href="#貪心演算法greedy" class="md-nav__link">
     <span class="md-ellipsis">
       貪心演算法(Greedy)
     </span>
@@ -2670,9 +2835,9 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#-2024-ionc" class="md-nav__link">
+  <a href="#反證法流程2024-ionc" class="md-nav__link">
     <span class="md-ellipsis">
-      反證法--流程(2024 IONC)
+      反證法&ndash;流程(2024 IONC)
     </span>
   </a>
   
@@ -2684,7 +2849,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_1" class="md-nav__link">
+  <a href="#題型整理" class="md-nav__link">
     <span class="md-ellipsis">
       題型整理
     </span>
@@ -2694,7 +2859,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#p-4-1" class="md-nav__link">
+  <a href="#p-4-1-少林寺的代幣" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-1. 少林寺的代幣
     </span>
@@ -2703,7 +2868,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-2" class="md-nav__link">
+  <a href="#p-4-2-笑傲江湖之三戰" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-2. 笑傲江湖之三戰
     </span>
@@ -2712,7 +2877,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-3" class="md-nav__link">
+  <a href="#p-4-3-十年磨一劍最少完成時間" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-3. 十年磨一劍(最少完成時間)
     </span>
@@ -2721,7 +2886,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-4-activity-selection" class="md-nav__link">
+  <a href="#p-4-4-幾場華山論劍activity-selection" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-4. 幾場華山論劍(activity selection)
     </span>
@@ -2730,7 +2895,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-5" class="md-nav__link">
+  <a href="#p-4-5-嵩山磨劍坊的問題加權最小完成時間" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-5. 嵩山磨劍坊的問題(加權最小完成時間)
     </span>
@@ -2739,7 +2904,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#q-4-6-apcs201710" class="md-nav__link">
+  <a href="#q-4-6-少林寺的自動寄物櫃apcs201710" class="md-nav__link">
     <span class="md-ellipsis">
       Q-4-6. 少林寺的自動寄物櫃(APCS201710)
     </span>
@@ -2748,7 +2913,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-7-two-way-merge" class="md-nav__link">
+  <a href="#p-4-7-岳不群的併派問題two-way-merge-" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-7. 岳不群的併派問題(Two-way merge) (*)
     </span>
@@ -2757,7 +2922,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#q-4-8" class="md-nav__link">
+  <a href="#q-4-8-先到先服務-" class="md-nav__link">
     <span class="md-ellipsis">
       Q-4-8. 先到先服務 (*)
     </span>
@@ -2766,7 +2931,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#p-4-9-apcs201703" class="md-nav__link">
+  <a href="#p-4-9-基地台-apcs201703" class="md-nav__link">
     <span class="md-ellipsis">
       P-4-9. 基地台 (APCS201703)
     </span>
@@ -2791,18 +2956,17 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-<div class="md-content__inner">
-    
+  
                   
 
 
   <h1>貪心演算法(Greedy)</h1>
 
-<h2 id="greedy">貪心演算法(Greedy)<a class="headerlink" href="#greedy" title="Permanent link">&para;</a></h2>
+<h2 id="貪心演算法greedy">貪心演算法(Greedy)<a class="headerlink" href="#貪心演算法greedy" title="Permanent link"></a></h2>
 <blockquote>
 <p>貪心法按照最好情況選擇</p>
 </blockquote>
-<h3 id="-2024-ionc">反證法--流程(2024 IONC)<a class="headerlink" href="#-2024-ionc" title="Permanent link">&para;</a></h3>
+<h3 id="反證法流程2024-ionc">反證法&ndash;流程(2024 IONC)<a class="headerlink" href="#反證法流程2024-ionc" title="Permanent link"></a></h3>
 <ol>
 <li>假設算法不一定找得到最佳解</li>
 <li>考慮一個任意的反例</li>
@@ -2810,7 +2974,7 @@
 <li>反駁假設「算法不一定找得到最佳解」</li>
 <li>成功證明算法一定找得到最佳解</li>
 </ol>
-<h2 id="_1">題型整理<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h2 id="題型整理">題型整理<a class="headerlink" href="#題型整理" title="Permanent link"></a></h2>
 <blockquote>
 <ol>
 <li>硬幣問題
@@ -2828,7 +2992,7 @@
 <a href="#P-4-9-基地台-APCS201703">P-4-9. 基地台 (APCS201703)</a></li>
 </ol>
 </blockquote>
-<h3 id="p-4-1">P-4-1. 少林寺的代幣<a class="headerlink" href="#p-4-1" title="Permanent link">&para;</a></h3>
+<h3 id="p-4-1-少林寺的代幣">P-4-1. 少林寺的代幣<a class="headerlink" href="#p-4-1-少林寺的代幣" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d042">https://judge.tcirc.tw/ShowProblem?problemid=d042</a></p>
 <p>令狐沖去少林寺觀光，少林寺有四種代幣，面額分別是[1, 5, 10, 50]，令狐沖 拿了 n 元去換代幣，請問以這四種代幣湊成 n 元，最少要多少枚代幣？ </p>
 <p>Time limit: 1 秒 
@@ -2870,7 +3034,7 @@ c就是上面的v[i]。假設有x元，x=2b，使用兩個硬幣。
 <span class="p">}</span>
 </code></pre></div></p>
 </blockquote>
-<h3 id="p-4-2">P-4-2. 笑傲江湖之三戰<a class="headerlink" href="#p-4-2" title="Permanent link">&para;</a></h3>
+<h3 id="p-4-2-笑傲江湖之三戰">P-4-2. 笑傲江湖之三戰<a class="headerlink" href="#p-4-2-笑傲江湖之三戰" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d043">https://judge.tcirc.tw/ShowProblem?problemid=d043</a></p>
 <p>笑傲江湖的遊戲中，你扮演令狐沖的角色，因為「長恨此身非我有，何時忘卻盈盈」， 所以你率領任我行等魔教高手前往少林寺搭救任盈盈，欲知故事原委可參見笑傲江湖 第 27 回「三戰」。套句丸尾班長的口頭禪，總而言之，少林寺與五嶽劍派等正教派 出 n 位高手，而你方也有 n 位高手，每個人都有一個戰力值。雙方要進行一對一的對 戰，每個人不管輸或贏都只能比一場，假設兩人對戰時，戰力值高的獲勝。對於對方 的每一位高手，你可以指定派哪一位與其對戰，為了解救盈盈，你希望贏越多場越好， 平手則沒有幫助。請計算出最多能贏多少場。 
 Time limit: 1 秒 
@@ -2935,7 +3099,7 @@ Time limit: 1 秒
 
 <span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="n">x</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">n</span><span class="p">;</span>
-
+<span class="w">    </span>
 <span class="w">    </span><span class="n">multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">s1</span><span class="p">;</span>
 <span class="w">    </span><span class="n">multiset</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">s2</span><span class="p">;</span>
 <span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
@@ -2961,7 +3125,7 @@ Time limit: 1 秒
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="p-4-3">P-4-3. 十年磨一劍(最少完成時間)<a class="headerlink" href="#p-4-3" title="Permanent link">&para;</a></h3>
+<h3 id="p-4-3-十年磨一劍最少完成時間">P-4-3. 十年磨一劍(最少完成時間)<a class="headerlink" href="#p-4-3-十年磨一劍最少完成時間" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d044">https://judge.tcirc.tw/ShowProblem?problemid=d044</a></p>
 <p>人們常用說「十年磨一劍」來比喻下的功夫深，但是這句話對於華山磨劍坊就不適用 了，因為要磨劍的客人非常的多，一把劍如果磨太久，客人等待的時間過長是會被客訴的。華山磨劍坊目前有 n 筆訂單，每筆訂單要磨一把劍，每把劍所需的時間不盡相同。磨劍師傅每次只能磨一把劍，現在希望每一筆訂單的完成時間之總和能夠最小， 希望能找出最好的磨劍順序。舉例來說，如果有四把劍，磨劍需要的時間分別是 (3,1,3,4)，如果以(3,1,3,4)的順序來磨，第一把的完成時間是 3，第二把完成 時間是 3+1=4，第三把是 3+1+3=7，第四把是 3+1+3+4=11，總和是 3+4+7+11=25。 如果把順序改成(1,3,3,4)，那麼完成時間分別是(1,4,7,11)，總和是 23，這是 這一題最好的解。 </p>
 <p>Time limit: 1 秒 </p>
@@ -3023,7 +3187,7 @@ a,a+b,a+b+c
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="p-4-4-activity-selection">P-4-4. 幾場華山論劍(activity selection)<a class="headerlink" href="#p-4-4-activity-selection" title="Permanent link">&para;</a></h3>
+<h3 id="p-4-4-幾場華山論劍activity-selection">P-4-4. 幾場華山論劍(activity selection)<a class="headerlink" href="#p-4-4-幾場華山論劍activity-selection" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d045">https://judge.tcirc.tw/ShowProblem?problemid=d045</a></p>
 <p>自從華山論劍聲名大噪之後，想參加的人絡繹不絕，因此華山派決定每年都舉辦非常 多場的華山論劍，每一場都有自己的開始時間與結束時間，參加者必須全程在場，所 以不能在同一時間參加兩場。令狐沖拿到了今年所有場次的資料，希望能參加越多場 越好，以便盡速累積經驗值，請你幫忙計算最多可以參加幾場。請注意，所挑選活動 必須完全不重疊，兩場活動只在端點重疊也是不可以同時參加的，也就是說前一場的 結束時間必須小於下一場的開始時間。 </p>
 <p>Time limit: 1 秒</p>
@@ -3099,7 +3263,7 @@ a,a+b,a+b+c
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="p-4-5">P-4-5. 嵩山磨劍坊的問題(加權最小完成時間)<a class="headerlink" href="#p-4-5" title="Permanent link">&para;</a></h3>
+<h3 id="p-4-5-嵩山磨劍坊的問題加權最小完成時間">P-4-5. 嵩山磨劍坊的問題(加權最小完成時間)<a class="headerlink" href="#p-4-5-嵩山磨劍坊的問題加權最小完成時間" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d046">https://judge.tcirc.tw/ShowProblem?problemid=d046</a></p>
 <p>嵩山磨劍坊接了 n 筆磨劍工作，磨劍師傅每次只能磨一把劍。除了每把劍各有所需的 時間之外，每件工作的重要性也不同。假設第 i 筆訂單需要的時間是 t[i]，而重要 性是 w[i]。磨劍坊的計價方式是：每件工作都已經先收了一筆款項，假設第 i 筆訂 單在時間 f 時完成，則需要扣款 f*w[i]，現在希望將 n 筆磨劍工作安排最好的順 序，使得扣款總額越小越好。嵩山派掌門左冷禪是非常嚴厲的老闆，希望你能幫磨劍 師傅找出最好的順序以免他遭到處罰。 </p>
 <p>舉例來說，如果有四把劍，磨劍需要的時間分別是 t=(1,4,5,6)，而重要性依序是 w=(1,3,4,7)。如果依訂單編號順序(1,2,3,4)來磨，也剛好是工作時間由短到長 的順序，每件工作的完成時間依序是(1,5,10,16)，扣款總額是 1*1 + 5*3 + 10*4 + 16*7 = 168。如果依照訂單編號順序(4,1,3,2) 來磨,則 t 與 w 重新排 列後分別是 t=(6,1,5,4)，w=(7,1,4,3)。完工時間是(6,7,12,16)，扣款總額 是 6*7 + 7*1 + 12*4 + 16*3 = 145。這是這一題 24 種排列中最好的解。 </p>
@@ -3191,7 +3355,7 @@ ans2=Aa+Ba+Bb</p>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="q-4-6-apcs201710">Q-4-6. 少林寺的自動寄物櫃(APCS201710)<a class="headerlink" href="#q-4-6-apcs201710" title="Permanent link">&para;</a></h3>
+<h3 id="q-4-6-少林寺的自動寄物櫃apcs201710">Q-4-6. 少林寺的自動寄物櫃(APCS201710)<a class="headerlink" href="#q-4-6-少林寺的自動寄物櫃apcs201710" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d047">https://judge.tcirc.tw/ShowProblem?problemid=d047</a></p>
 <p>少林寺的自動寄物櫃系統存放物品時，是將 N 個物品堆在一個垂直的貨架上，每個物 品各佔一層。系統運作的方式如下：每次只會取用一個物品，取用時必須先將在其上 方的物品貨架升高，取用後必須將該物品放回，然後將剛才升起的貨架降回原始位置， 之後才會進行下一個物品的取用。</p>
 <p>每一次升高貨架所需要消耗的能量是以這些物品的總重來計算。現在有 N 個物品，第 i 個物品的重量是 w(i)而需要取用的次數為 f(i)，我們需要決定如何擺放這些物 品的順序來讓消耗的能量越小越好。 </p>
@@ -3384,7 +3548,7 @@ t[3]={d,b,a};
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">ans</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="p-4-7-two-way-merge">P-4-7. 岳不群的併派問題(Two-way merge) (*)<a class="headerlink" href="#p-4-7-two-way-merge" title="Permanent link">&para;</a></h3>
+<h3 id="p-4-7-岳不群的併派問題two-way-merge-">P-4-7. 岳不群的併派問題(Two-way merge) (*)<a class="headerlink" href="#p-4-7-岳不群的併派問題two-way-merge-" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d048">https://judge.tcirc.tw/ShowProblem?problemid=d048</a></p>
 <p>江湖上門派林立，華山派掌門岳不群認為要消除門派的衝突就是要合併各門派，但不能操之過急，必須每次挑兩個門派合併，如此逐步合併，最後將所有門派合併成一派。合併門派需要一些成本，每個門派都有他的成員數，第 i 個門派的成員數是 m(i)， 合併兩派的成本就是雙方成員數之和，而兩派合併後，雙方成員就會歸到新合併的門 派。岳不群不希望耗費太多成本，輸入各派人數，請幫他計算最少的合併總成本。 </p>
 <p>舉例來說，一開始如果有三派，m=(3, 5, 1)，若 3 人與 5 人的兩派先合併，成本 是 3+5=8，合併後剩下兩派，人數是(8,1)，再合併這兩派，成本是 8+1=9，此時 已經只剩下一派，也就是完成所有合併統一江湖了，總成本是 8+9=17。如果我們更 換合併的順序，先合併 3 人與 1 人的兩派(成本 4)，再合併剩下的 5 人(成本 4+5=9)， 則總成本只有 4+9=13。這是這個例子的最低成本。 </p>
@@ -3449,7 +3613,7 @@ A+C+(A+C)+B</p>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">total</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">&lt;&lt;-</span><span class="n">ans</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="q-4-8">Q-4-8. 先到先服務 (*)<a class="headerlink" href="#q-4-8" title="Permanent link">&para;</a></h3>
+<h3 id="q-4-8-先到先服務-">Q-4-8. 先到先服務 (*)<a class="headerlink" href="#q-4-8-先到先服務-" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d053">https://judge.tcirc.tw/ShowProblem?problemid=d053</a></p>
 <p>有 n 個客人要分配到 m 個櫃台來服務，客人依編號順序到達，第 i 個客人需要 t(i) 的時間來完成(無論分配到哪一個櫃台)，而且每個客人的需求必須在同一個櫃台完 成。因為公平的因素，先到客人不可以比晚到客人更晚開始服務。現在希望安排每個 客人的服務櫃檯，以便可以在最短的時間內完成所有客人的需求。舉例來說，如果有三位客人與兩個櫃台，需求的時間依序是(3,1,5)，我們可以如下 圖分配，最後的完成時間是 6。 </p>
 <p><img alt="" src="https://hackmd.io/_uploads/SkkU4vZ02.png" /></p>
@@ -3502,7 +3666,7 @@ A+C+(A+C)+B</p>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;-</span><span class="n">mi</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="p-4-9-apcs201703">P-4-9. 基地台 (APCS201703)<a class="headerlink" href="#p-4-9-apcs201703" title="Permanent link">&para;</a></h3>
+<h3 id="p-4-9-基地台-apcs201703">P-4-9. 基地台 (APCS201703)<a class="headerlink" href="#p-4-9-基地台-apcs201703" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d049">https://judge.tcirc.tw/ShowProblem?problemid=d049</a></p>
 <p>直線上有 N 個要服務的點，每架設一座基地台可以涵蓋直徑 R 範圍以內的服務點。輸 入服務點的座標位置以及一個正整數 K，請問：在架設 K 座基地台以及每個基地台的 直徑皆相同的條件下，基地台最小直徑 R 為多少？ 
 Time limit: 1 秒 </p>
@@ -3550,7 +3714,7 @@ P-4-4. 幾場華山論劍(activity selection)
 <span class="w">            </span><span class="n">time</span><span class="o">--</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
-
+<span class="w">    </span>
 
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
@@ -3587,108 +3751,100 @@ P-4-4. 幾場華山論劍(activity selection)
 
 
                 
-    <!-- 新增的 TOC 區塊，引用 toc 擴展生成的永久鏈接 -->
-    <div class="custom-toc-container">
-        <div class="custom-toc-title">目錄</div>
-        <nav class="custom-toc">
-            <ul>
-                
-                <li>
-                    <a href="#greedy">貪心演算法(Greedy)</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="#-2024-ionc">反證法--流程(2024 IONC)</a>
-                            
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="#_1">題型整理</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="#p-4-1">P-4-1. 少林寺的代幣</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#p-4-2">P-4-2. 笑傲江湖之三戰</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#p-4-3">P-4-3. 十年磨一劍(最少完成時間)</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#p-4-4-activity-selection">P-4-4. 幾場華山論劍(activity selection)</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#p-4-5">P-4-5. 嵩山磨劍坊的問題(加權最小完成時間)</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#q-4-6-apcs201710">Q-4-6. 少林寺的自動寄物櫃(APCS201710)</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#p-4-7-two-way-merge">P-4-7. 岳不群的併派問題(Two-way merge) (*)</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#q-4-8">Q-4-8. 先到先服務 (*)</a>
-                            
-                        </li>
-                        
-                        <li>
-                            <a href="#p-4-9-apcs201703">P-4-9. 基地台 (APCS201703)</a>
-                            
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
+  
+  <footer class="sponsorship">
+    <hr>
+    <a href="https://github.com/pei-yan-2147" title="Become a sponsor">
+      <span class="twemoji heart-throb-hover">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.655 14.916v-.001h-.002l-.006-.003-.018-.01a22.066 22.066 0 0 1-3.744-2.584C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.044 5.231-3.886 6.818a22.094 22.094 0 0 1-3.433 2.414 7.152 7.152 0 0 1-.31.17l-.018.01-.008.004a.75.75 0 0 1-.69 0Z"/></svg>
+      </span>
+    </a>
+    <hr>
+  </footer>
+  
 
               </article>
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
         
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
       </main>
       
-        <footer class="md-footer">
+        
+
+<footer class="md-footer">
+  
+    <nav
+      class="md-footer__inner md-grid"
+      aria-label="footer.title"
+    >
+      
+        <a
+          href="../%E6%8E%83%E7%9E%84%E7%B7%9A%E6%BC%94%E7%AE%97%E6%B3%95/"
+          class="md-footer__link md-footer__link--prev"
+          rel="prev"
+        >
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              掃瞄線演算法
+            </div>
+          </div>
+        </a>
+      
+      
+        <a
+          href="../%E5%8B%95%E6%85%8B%E8%A6%8F%E5%8A%83%28dp%29/"
+          class="md-footer__link md-footer__link--next"
+          rel="next"
+        >
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              動態規劃(dp)
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
-      <div class="md-copyright">
-  
-  
-    Made with
-    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-      Material for MkDocs
-    </a>
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        with emoji by
+        <a href="https://github.com/twitter/twemoji" target="_blank" rel="noopener">
+          Twemoji
+        </a>
+      </div>
+      <div class="md-social">
   
 </div>
-      
     </div>
   </div>
 </footer>
@@ -3699,12 +3855,16 @@ P-4-4. 幾場華山論劍(activity selection)
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["sitemap"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "navigation.instant", "navigation.indexes", "toc.follow", "content.tabs.link", "search.share", "search.highlight", "search.suggest", "content.code.copy", "content.code.annotations"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../assets/javascripts/bundle.471ce7a9.min.js"></script>
       
-        <script src="../assets/custom.js"></script>
+        <script src="https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../assets/pymdownx-extras/extra-loader-iLQ-keay.js"></script>
       
     
   </body>

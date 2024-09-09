@@ -727,6 +727,9 @@ body[data-md-prefers-color-scheme=true] .md-icon .unknown-mode {
     --md-admonition-shadow-color--quote: rgba(120, 125, 140, 0.1)
 }
 
+
+
+
 [data-md-color-scheme=dracula] .md-typeset .admonition,
 [data-md-color-scheme=dracula] .md-typeset details {
     border-color: var(--md-admonition-icon-color--note);
@@ -2059,18 +2062,58 @@ p {
   }
    */
 /* === 引用樣式(>) ============================================== */
-blockquote {
-    border-left: 2px solid #F2BBFF !important;
-    /* 左边框为红色 */
+[data-md-color-scheme=dracula] blockquote {
+    border-left: 0.1px solid #F2BBFF !important;
+    border-right: 0.1px solid #F2BBFF !important;
+    border-top: 0.1px solid #F2BBFF !important;
+    border-bottom: 0.1px solid #F2BBFF !important;
+    padding-right: 15px; /*增加左側內邊距，讓文字遠離邊框 */
+    /* border-left: none !important; 隱藏左邊框 */
+    color: #ffffff !important; /* 設置文字顏色為淺灰色 */
+    /* 左边框为淺紫色 */
 }
 
+blockquote {
+    border-left: 0.1px solid #F2BBFF !important;
+    border-right: 0.1px solid #F2BBFF !important;
+    border-top: 0.1px solid #F2BBFF !important;
+    border-bottom: 0.1px solid #F2BBFF !important;
+    padding-right: 15px; /*增加左側內邊距，讓文字遠離邊框 */
+    /*border-left: none !important;  隱藏左邊框 */
+    color: #000000 !important; /* 設置文字顏色為淺灰色 */
+    /* 左边框为淺紫色 */
+}
+/* === 標題 ============================================== */
 
+/* [data-md-color-scheme=dracula] h1, */
+[data-md-color-scheme=dracula] h2,
+[data-md-color-scheme=dracula] h3,
+[data-md-color-scheme=dracula] h4,
+[data-md-color-scheme=dracula] h5{
+     /*border-bottom: 4px solid #F2BBFF !important; 設置底部邊框為淺紫色 */
+    border-left: 4px solid #F2BBFF !important;
+    color: #ffffff !important; /* 設置文字顏色為淺灰色 */
+    padding-left: 15px; /*增加左側內邊距，讓文字遠離邊框 */
+}
+
+/* h1, */
+h2,
+h3,
+h4,
+h5{
+    /*border-bottom: 4px solid #F2BBFF !important;  設置底部邊框為淺紫色 */
+    border-left: 4px solid #F2BBFF !important;
+    color: #000000 !important; /* 設置文字顏色為淺灰色 */
+     padding-left: 15px; /*增加左側內邊距，讓文字遠離邊框 */
+}
+
+/* 
 img[alt="alt text"] {
     width: 80%;
-    /* 设置宽度为70% */
+    设置宽度为70%
     height: auto;
-    /* 保持高度比例 */
-}
+    保持高度比例
+} */
 
 /* === 折叠标题 ============================================== */
 
@@ -2090,6 +2133,28 @@ details summary {
 }
 
 details[open] {
-  padding: 10px 15px !important; /* 增加内文的内边距 */
   font-size: 20px; /* 設定字體大小 */
+}
+
+
+
+/* 
+
+內文使用
+/// html | div.i
+some *markdown* content
+/// 
+
+*/
+
+.i{
+    border-left: 0.1px solid #F2BBFF !important;
+    border-right: 0.1px solid #F2BBFF !important;
+    border-top: 0.1px solid #F2BBFF !important;
+    border-bottom: 0.1px solid #F2BBFF !important;
+    padding-right: 15px; /*增加左側內邊距，讓文字遠離邊框 */
+    padding-left: 15px; /*增加左側內邊距，讓文字遠離邊框 */
+    /*border-left: none !important;  隱藏左邊框 */
+    /* color: #000000 !important; 設置文字顏色為淺灰色 */
+    /* 左边框为淺紫色 */
 }

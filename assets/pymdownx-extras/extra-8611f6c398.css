@@ -2158,3 +2158,11 @@ some *markdown* content
     /* color: #000000 !important; 設置文字顏色為淺灰色 */
     /* 左边框为淺紫色 */
 }
+
+
+
+
+/* 隱藏最下面的 from mkdocs */
+.md-footer-meta.md-typeset {
+    display: none;
+}

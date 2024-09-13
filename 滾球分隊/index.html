@@ -347,30 +347,32 @@ is now available!
             margin-top: 10px;
             white-space: pre-line; /* 保持換行格式 */
         }
-    </style></head> <body> <h1>分組計算</h1> <label for=numberInput>輸入人數 n:</label> <input type=number id=numberInput placeholder=輸入人數> <p id=result></p> <script>
+    </style></head> <body> <h1>分組計算</h1> <label for=numberInput>輸入人數 n：</label> <input type=number id=numberInput placeholder=輸入人數> <p id=result></p> <script>
         function calculateGroups(n) {
             let resultText = "";
-            let w = 3;
+            let w = n;
 
             while (w--) {
                 let p = 0;
-
+                resultText += `共 ${n} 人時：\n`;
                 // 計算分組
                 for (let a = Math.floor(n / 2); a >= 0; a--) {
                     let b = n - a * 2;
                     if (b % 3 === 0) {
                         b /= 3;
                         if ((a + b) % 2 === 0) {
-                            if (p === 0) {
-                                resultText += `共 ${n} 人時：\n`;
-                                p = 1;
-                            }
+                            p = 1;
                             resultText += `${a} 組二人，${b} 組三人，共 ${(a + b) / 2} 個場地\n`;
                         }
                     }
+
+                }
+                if(p==0){
+                    resultText += `無法分隊\n`;
                 }
 
                 n--;
+                resultText += `--------------------------------------------------------\n`;
             }
 
             return resultText === "" ? "沒有符合條件的組合" : resultText;

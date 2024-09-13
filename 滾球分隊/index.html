@@ -350,6 +350,10 @@ is now available!
     </style></head> <body> <h1>滾球分隊</h1> <label for=numberInput>輸入人數：</label> <input type=number id=numberInput placeholder=輸入人數> <p id=result></p> <script>
         function calculateGroups(n) {
             let resultText = "";
+            if(n>1000){
+                return "請不要輸入大於1000的數字";
+            }
+
             let w = n;
 
             while (w--) {
@@ -375,7 +379,7 @@ is now available!
                 resultText += `--------------------------------------------------------\n`;
             }
 
-            return resultText === "" ? "沒有符合條件的組合" : resultText;
+            return resultText;
         }
 
         function updateResult() {

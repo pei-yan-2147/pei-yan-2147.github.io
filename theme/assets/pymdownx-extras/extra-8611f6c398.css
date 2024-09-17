@@ -728,9 +728,36 @@ body[data-md-prefers-color-scheme=true] .md-icon .unknown-mode {
 }
 
 
-
-
+/* 摺疊 */
 [data-md-color-scheme=dracula] .md-typeset .admonition,
+[data-md-color-scheme=dracula] .md-typeset details {
+    border-color:  #F2BBFF;
+    box-shadow: var(--md-shadow-z2)
+}
+
+[data-md-color-scheme=dracula] .md-typeset .admonition:focus-within,
+[data-md-color-scheme=dracula] .md-typeset details:focus-within {
+    box-shadow: 0 0 0 .2rem  #000000
+}
+
+[data-md-color-scheme=dracula] .md-typeset .admonition>.admonition-title,
+[data-md-color-scheme=dracula] .md-typeset details>.admonition-title,
+[data-md-color-scheme=dracula] .md-typeset details>summary {
+    background-color:  #000000
+}
+
+[data-md-color-scheme=dracula] .md-typeset .admonition>.admonition-title::before,
+[data-md-color-scheme=dracula] .md-typeset details>.admonition-title::before,
+[data-md-color-scheme=dracula] .md-typeset details>summary::before {
+    background-color:  #F2BBFF
+}
+
+[data-md-color-scheme=dracula] .md-typeset .admonition>.admonition-title::after,
+[data-md-color-scheme=dracula] .md-typeset details>.admonition-title::after,
+[data-md-color-scheme=dracula] .md-typeset details>summary::after {
+    color: #F2BBFF
+}
+/* [data-md-color-scheme=dracula] .md-typeset .admonition,
 [data-md-color-scheme=dracula] .md-typeset details {
     border-color: var(--md-admonition-icon-color--note);
     box-shadow: var(--md-shadow-z2)
@@ -757,7 +784,11 @@ body[data-md-prefers-color-scheme=true] .md-icon .unknown-mode {
 [data-md-color-scheme=dracula] .md-typeset details>.admonition-title::after,
 [data-md-color-scheme=dracula] .md-typeset details>summary::after {
     color: var(--md-admonition-icon-color--note)
-}
+} */
+
+
+
+
 
 [data-md-color-scheme=dracula] .md-typeset .admonition.note,
 [data-md-color-scheme=dracula] .md-typeset details.note {

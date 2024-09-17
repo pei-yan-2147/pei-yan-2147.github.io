@@ -2183,11 +2183,10 @@ some *markdown* content
     border-right: 0.1px solid #F2BBFF !important;
     border-top: 0.1px solid #F2BBFF !important;
     border-bottom: 0.1px solid #F2BBFF !important;
-    padding-right: 15px; /*增加左側內邊距，讓文字遠離邊框 */
-    padding-left: 15px; /*增加左側內邊距，讓文字遠離邊框 */
-    /*border-left: none !important;  隱藏左邊框 */
-    /* color: #000000 !important; 設置文字顏色為淺灰色 */
-    /* 左边框为淺紫色 */
+    padding-right: 15px;
+    padding-left: 15px;
+    /* padding-top: 15px;
+    padding-bottom: 15px; */
 }
 
 /* 隱藏最下面的 from mkdocs */

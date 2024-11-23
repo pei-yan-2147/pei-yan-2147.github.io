@@ -428,10 +428,10 @@ is now available!
 
 <span class=w>    </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>i</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span><span class=n>i</span><span class=o>&lt;=</span><span class=n>n</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>){</span>
 
-<span class=w>        </span><span class=c1>//例外狀況交換(目標為 0)</span>
+<span class=w>        </span><span class=c1>//例外狀況交換(目標為0)</span>
 <span class=w>        </span><span class=k>if</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>i</span><span class=p>]</span><span class=o>==</span><span class=mi>0</span><span class=p>){</span>
-<span class=w>            </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=n>i</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span><span class=c1>//往後找不是 0 的</span>
-<span class=w>                </span><span class=k>if</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>j</span><span class=p>][</span><span class=n>i</span><span class=p>]</span><span class=o>!=</span><span class=mi>0</span><span class=p>){</span><span class=c1>//找到不是 0 的</span>
+<span class=w>            </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=n>i</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span><span class=c1>//往後找不是0的</span>
+<span class=w>                </span><span class=k>if</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>j</span><span class=p>][</span><span class=n>i</span><span class=p>]</span><span class=o>!=</span><span class=mi>0</span><span class=p>){</span><span class=c1>//找到不是0的</span>
 <span class=w>                    </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>k</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span><span class=n>k</span><span class=o>&lt;=</span><span class=n>n</span><span class=o>+</span><span class=mi>1</span><span class=p>;</span><span class=n>k</span><span class=o>++</span><span class=p>){</span><span class=c1>//交換</span>
 <span class=w>                        </span><span class=n>swap</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>k</span><span class=p>],</span><span class=n>v</span><span class=p>[</span><span class=n>j</span><span class=p>][</span><span class=n>k</span><span class=p>]);</span>
 <span class=w>                    </span><span class=p>}</span>
@@ -440,13 +440,13 @@ is now available!
 <span class=w>            </span><span class=p>}</span>
 <span class=w>        </span><span class=p>}</span>
 
-<span class=w>        </span><span class=c1>//第 i 個變成 1</span>
+<span class=w>        </span><span class=c1>//第i個變成1</span>
 <span class=w>        </span><span class=kt>int</span><span class=w> </span><span class=n>e</span><span class=o>=</span><span class=n>fpow</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>i</span><span class=p>],</span><span class=n>mod</span><span class=mi>-2</span><span class=p>);</span>
-<span class=w>        </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=n>i</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=o>+</span><span class=mi>1</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span><span class=c1>//前面都是 0 了，往後乘模逆元就好</span>
+<span class=w>        </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=n>i</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=o>+</span><span class=mi>1</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span><span class=c1>//前面都是0了，往後乘模逆元就好</span>
 <span class=w>            </span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>=</span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>*</span><span class=n>e</span><span class=o>%</span><span class=n>mod</span><span class=p>;</span>
 <span class=w>        </span><span class=p>}</span>
 
-<span class=w>        </span><span class=c1>//其他變成 0</span>
+<span class=w>        </span><span class=c1>//其他變成0</span>
 <span class=w>        </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span>
 <span class=w>            </span><span class=k>if</span><span class=p>(</span><span class=n>j</span><span class=o>==</span><span class=n>i</span><span class=p>)</span><span class=k>continue</span><span class=p>;</span><span class=c1>//跳過自己</span>
 
@@ -478,7 +478,7 @@ is now available!
 <span class=mi>1</span><span class=w> </span><span class=mi>0</span><span class=w> </span><span class=mi>0</span><span class=w> </span><span class=mi>30</span>
 <span class=mi>0</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=mi>0</span><span class=w> </span><span class=mi>20</span>
 <span class=mi>0</span><span class=w> </span><span class=mi>0</span><span class=w> </span><span class=mi>1</span><span class=w> </span><span class=mi>10</span>
-</code></pre></div> <div class=code-footer><label class=expand for=__collapse1 tabindex=0 title=expand></label><label class=collapse for=__collapse1 tabindex=0 title=collapse></label></div> </div> <h3 id="例題 2170--地圖編修-map">例題：<a href=https://tioj.ck.tp.edu.tw/problems/2170>2170 . 地圖編修 (Map)</a><a class=headerlink href="#例題 2170--地圖編修-map" title="Permanent link"></a></h3> <div class=collapse-code><input checked=checked id=__collapse2 name=__collapse2 type=checkbox><div class=highlight><span class=filename>題解</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
+</code></pre></div> <div class=code-footer><label class=expand for=__collapse1 tabindex=0 title=expand></label><label class=collapse for=__collapse1 tabindex=0 title=collapse></label></div> </div> <h3 id=例題2170--地圖編修-map>例題：<a href=https://tioj.ck.tp.edu.tw/problems/2170>2170 . 地圖編修 (Map)</a><a class=headerlink href=#例題2170--地圖編修-map title="Permanent link"></a></h3> <div class=collapse-code><input checked=checked id=__collapse2 name=__collapse2 type=checkbox><div class=highlight><span class=filename>題解</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
 <span class=k>using</span><span class=w> </span><span class=k>namespace</span><span class=w> </span><span class=nn>std</span><span class=p>;</span>
 <span class=cp>#define int long long</span>
 <span class=cp>#define nn &quot;\n&quot;</span>
@@ -525,10 +525,10 @@ is now available!
 
 <span class=w>    </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>i</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span><span class=n>i</span><span class=o>&lt;=</span><span class=n>n</span><span class=p>;</span><span class=n>i</span><span class=o>++</span><span class=p>){</span>
 
-<span class=w>        </span><span class=c1>//例外狀況交換(目標為 0)</span>
+<span class=w>        </span><span class=c1>//例外狀況交換(目標為0)</span>
 <span class=w>        </span><span class=k>if</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>i</span><span class=p>]</span><span class=o>==</span><span class=mi>0</span><span class=p>){</span>
-<span class=w>            </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=n>i</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span><span class=c1>//往後找不是 0 的</span>
-<span class=w>                </span><span class=k>if</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>j</span><span class=p>][</span><span class=n>i</span><span class=p>]</span><span class=o>!=</span><span class=mi>0</span><span class=p>){</span><span class=c1>//找到不是 0 的</span>
+<span class=w>            </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=n>i</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span><span class=c1>//往後找不是0的</span>
+<span class=w>                </span><span class=k>if</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>j</span><span class=p>][</span><span class=n>i</span><span class=p>]</span><span class=o>!=</span><span class=mi>0</span><span class=p>){</span><span class=c1>//找到不是0的</span>
 <span class=w>                    </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>k</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span><span class=n>k</span><span class=o>&lt;=</span><span class=n>n</span><span class=o>+</span><span class=mi>1</span><span class=p>;</span><span class=n>k</span><span class=o>++</span><span class=p>){</span><span class=c1>//交換</span>
 <span class=w>                        </span><span class=n>swap</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>k</span><span class=p>],</span><span class=n>v</span><span class=p>[</span><span class=n>j</span><span class=p>][</span><span class=n>k</span><span class=p>]);</span>
 <span class=w>                    </span><span class=p>}</span>
@@ -537,13 +537,13 @@ is now available!
 <span class=w>            </span><span class=p>}</span>
 <span class=w>        </span><span class=p>}</span>
 
-<span class=w>        </span><span class=c1>//第 i 個變成 1</span>
+<span class=w>        </span><span class=c1>//第i個變成1</span>
 <span class=w>        </span><span class=kt>int</span><span class=w> </span><span class=n>e</span><span class=o>=</span><span class=n>fpow</span><span class=p>(</span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>i</span><span class=p>],</span><span class=n>mod</span><span class=mi>-2</span><span class=p>);</span>
-<span class=w>        </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=n>i</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=o>+</span><span class=mi>1</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span><span class=c1>//前面都是 0 了，往後乘模逆元就好</span>
+<span class=w>        </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=n>i</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=o>+</span><span class=mi>1</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span><span class=c1>//前面都是0了，往後乘模逆元就好</span>
 <span class=w>            </span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>=</span><span class=n>v</span><span class=p>[</span><span class=n>i</span><span class=p>][</span><span class=n>j</span><span class=p>]</span><span class=o>*</span><span class=n>e</span><span class=o>%</span><span class=n>mod</span><span class=p>;</span>
 <span class=w>        </span><span class=p>}</span>
 
-<span class=w>        </span><span class=c1>//其他變成 0</span>
+<span class=w>        </span><span class=c1>//其他變成0</span>
 <span class=w>        </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>j</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span><span class=n>j</span><span class=o>&lt;=</span><span class=n>n</span><span class=p>;</span><span class=n>j</span><span class=o>++</span><span class=p>){</span>
 <span class=w>            </span><span class=k>if</span><span class=p>(</span><span class=n>j</span><span class=o>==</span><span class=n>i</span><span class=p>)</span><span class=k>continue</span><span class=p>;</span><span class=c1>//跳過自己</span>
 

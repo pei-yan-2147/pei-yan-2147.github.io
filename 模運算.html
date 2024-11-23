@@ -330,7 +330,7 @@ is now available!
 <span class=k>using</span><span class=w> </span><span class=k>namespace</span><span class=w> </span><span class=nn>std</span><span class=p>;</span>
 <span class=kt>int</span><span class=w> </span><span class=nf>mod</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>a</span><span class=p>,</span><span class=kt>int</span><span class=w> </span><span class=n>b</span><span class=p>){</span>
 <span class=w>    </span><span class=n>b</span><span class=o>=</span><span class=n>abs</span><span class=p>(</span><span class=n>b</span><span class=p>);</span>
-<span class=w>    </span><span class=k>return</span><span class=w> </span><span class=p>((</span><span class=n>a</span><span class=w> </span><span class=o>%</span><span class=w> </span><span class=n>b</span><span class=p>)</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>b</span><span class=p>)</span><span class=w> </span><span class=o>%</span><span class=w> </span><span class=n>b</span><span class=p>;</span><span class=w> </span><span class=c1>//要多%一次b，不然a % b=0時會回傳b</span>
+<span class=w>    </span><span class=k>return</span><span class=w> </span><span class=p>((</span><span class=n>a</span><span class=w> </span><span class=o>%</span><span class=w> </span><span class=n>b</span><span class=p>)</span><span class=w> </span><span class=o>+</span><span class=w> </span><span class=n>b</span><span class=p>)</span><span class=w> </span><span class=o>%</span><span class=w> </span><span class=n>b</span><span class=p>;</span><span class=w> </span><span class=c1>//要多%一次 b，不然 a % b=0 時會回傳 b</span>
 <span class=p>}</span>
 <span class=kt>int</span><span class=w> </span><span class=nf>main</span><span class=p>(){</span>
 <span class=w>    </span><span class=n>cout</span><span class=o>&lt;&lt;</span><span class=n>mod</span><span class=p>(</span><span class=mi>-5</span><span class=p>,</span><span class=mi>3</span><span class=p>);</span>
@@ -349,7 +349,7 @@ a + b = (kc + r_a) + (mc + r_b) = (k + m)c + (r_a + r_b)
 (a + b) \% c = [(a \% c) + (b \% c)] \% c
 \]</pre> <h4 id=乘法分配律證明>乘法分配律證明<a class=headerlink href=#乘法分配律證明 title="Permanent link"></a></h4> <p>接下來，我們要證明：</p> <pre class=arithmatex>\[
 (a \times b) \% c = [(a \% c) \times (b \% c)] \% c
-\]</pre> <p>1.<strong>定義符號和等式：</strong></p> <ul> <li>設 <span class=arithmatex>\(a = kc + r_a\)</span>，其中 <span class=arithmatex>\(k\)</span> 是整數，<span class=arithmatex>\(r_a = a \% c\)</span> 且 <span class=arithmatex>\(0 \le r_a &lt; c\)</span>。</li> <li>設 <span class=arithmatex>\(b = mc + r_b\)</span>，其中 <span class=arithmatex>\(m\)</span> 是整數，<span class=arithmatex>\(r_b = b \% c\)</span> 且 <span class=arithmatex>\(0 \le r_b &lt; c\)</span>。</li> </ul> <p>2.<strong>代入乘法分配律左邊：</strong></p> <pre class=arithmatex>\[
+\]</pre> <p>1.<strong>定義符號和等式：</strong></p> <ul> <li>設 <span class=arithmatex>\(a = kc + r_a\)</span>，其中 <span class=arithmatex>\(k\)</span> 是整數，<span class=arithmatex>\(r_a = a \% c\)</span> 且 <span class=arithmatex>\(0 \le r_a &lt; c\)</span>。</li> <li>設 <span class=arithmatex>\(b = mc + r_b\)</span>，其中 <span class=arithmatex>\(m\)</span> 是整數，<span class=arithmatex>\(r_b = b \% c\)</span>且 <span class=arithmatex>\(0 \le r_b &lt; c\)</span>。</li> </ul> <p>2.<strong>代入乘法分配律左邊：</strong></p> <pre class=arithmatex>\[
 a \times b = (kc + r_a) \times (mc + r_b)
 \]</pre> <p>3.<strong>展開並簡化：</strong></p> <pre class=arithmatex>\[
 a \times b = kcmc + kcr_b + mcr_a + r_a r_b

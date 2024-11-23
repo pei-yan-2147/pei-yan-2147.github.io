@@ -6,26 +6,11 @@
 {% include "star.html" ignore missing %}
 {% include "google.html" ignore missing %}
 
-
-<!-- 
-<script type="text/javascript">
-  window.MathJax = {
-      tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']],  // 支持 $...$ 和 \(...\) 语法
-          displayMath: [['$$', '$$'], ['\\[', '\\]']],
-      },
-      options: {
-          processEscapes: true
-      }
-  };
-</script> -->
-
-
 {% endblock %}
 
 <!-- 贊助 -->
-<!-- {% block announce %}{% include "announce.html" ignore missing %}{% endblock %} -->
-<!-- 
+<!-- {% block announce %}{% include "announce.html" ignore missing %}{% endblock %}
+
 {% block content %}
   {{ super() }}
   {% if config.theme.pymdownx and config.theme.pymdownx.sponsor %}

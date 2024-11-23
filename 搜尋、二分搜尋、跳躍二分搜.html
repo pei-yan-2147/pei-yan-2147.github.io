@@ -328,10 +328,10 @@ is now available!
 <span class=w>    </span><span class=k>for</span><span class=p>(</span><span class=kt>int</span><span class=w> </span><span class=n>i</span><span class=o>:</span><span class=n>v</span><span class=p>){</span>
 <span class=w>        </span><span class=n>cout</span><span class=o>&lt;&lt;</span><span class=n>i</span><span class=o>&lt;&lt;</span><span class=s>&quot; &quot;</span><span class=p>;</span>
 <span class=w>    </span><span class=p>}</span><span class=n>cout</span><span class=o>&lt;&lt;</span><span class=n>nn</span><span class=p>;</span>
-<span class=w>    </span><span class=n>cout</span><span class=o>&lt;&lt;</span><span class=s>&quot;5的位置： &quot;</span><span class=o>&lt;&lt;</span><span class=w> </span><span class=n>distance</span><span class=p>(</span><span class=n>v</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span><span class=n>find</span><span class=p>(</span><span class=n>v</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span><span class=n>v</span><span class=p>.</span><span class=n>end</span><span class=p>(),</span><span class=mi>5</span><span class=p>));</span>
+<span class=w>    </span><span class=n>cout</span><span class=o>&lt;&lt;</span><span class=s>&quot;5 的位置： &quot;</span><span class=o>&lt;&lt;</span><span class=w> </span><span class=n>distance</span><span class=p>(</span><span class=n>v</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span><span class=n>find</span><span class=p>(</span><span class=n>v</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span><span class=n>v</span><span class=p>.</span><span class=n>end</span><span class=p>(),</span><span class=mi>5</span><span class=p>));</span>
 <span class=p>}</span>
 </code></pre></div><br> <div class=highlight><span class=filename>output</span><pre><span></span><code>2 3 1 5 6    
-5的位置： 3   
+5 的位置： 3   
 </code></pre></div></p> <h2 id=二分搜尋>二分搜尋<a class=headerlink href=#二分搜尋 title="Permanent link"></a></h2> <blockquote> <p>只可用於已排序之資料 <br> 例如：set、map、multiset、multiset、已排序陣列 </p> </blockquote> <h3 id=自製find>自製find<a class=headerlink href=#自製find title="Permanent link"></a></h3> <div class=highlight><span class=filename>code</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
 <span class=k>using</span><span class=w> </span><span class=k>namespace</span><span class=w> </span><span class=nn>std</span><span class=p>;</span>
 <span class=cp>#define nn &quot;\n&quot;;</span>
@@ -358,7 +358,7 @@ is now available!
 <span class=w>    </span><span class=n>sort</span><span class=p>(</span><span class=n>v</span><span class=p>,</span><span class=n>v</span><span class=o>+</span><span class=mi>10</span><span class=p>);</span>
 <span class=w>    </span><span class=n>cout</span><span class=o>&lt;&lt;</span><span class=n>fi</span><span class=p>(</span><span class=n>v</span><span class=p>,</span><span class=mi>10</span><span class=p>,</span><span class=mi>7</span><span class=p>);</span>
 <span class=p>}</span>
-</code></pre></div> <h3 id=非自製>非自製<a class=headerlink href=#非自製 title="Permanent link"></a></h3> <blockquote> <p>種類有: <br> 1. find <br> 直接回傳位置 <br> 2. lower_bound <br> 回傳大於等於 n 的「最小值」 <br> 3. upper_bound <br> 回傳大於 n 的「最小值」 </p> <p>網站資料： <br> <a href=https://blog.csdn.net/tjpuacm/article/details/26389441>https://blog.csdn.net/tjpuacm/article/details/26389441</a> </p> </blockquote> <h2 id=find>find<a class=headerlink href=#find title="Permanent link"></a></h2> <ol> <li>若資料結構為陣列，直接使用 lower_bound，然後因為 lower_bound 包含=，再排除大於的即可。 </li> <li>set、map： <br> <div class=highlight><pre><span></span><code><span class=cp>#include</span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
+</code></pre></div> <h3 id=非自製>非自製<a class=headerlink href=#非自製 title="Permanent link"></a></h3> <blockquote> <p>種類有: <br> 1. find <br> 直接回傳位置 <br> 2. lower_bound <br> 回傳大於等於 n 的「最小值」 <br> 3. upper_bound <br> 回傳大於 n 的「最小值」 </p> <p>網站資料： <br> <a href=https://blog.csdn.net/tjpuacm/article/details/26389441>https://blog.csdn.net/tjpuacm/article/details/26389441</a> </p> </blockquote> <h2 id=find>find<a class=headerlink href=#find title="Permanent link"></a></h2> <ol> <li>若資料結構為陣列，直接使用lower_bound，然後因為lower_bound包含=，再排除大於的即可。 </li> <li>set、map： <br> <div class=highlight><pre><span></span><code><span class=cp>#include</span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
 <span class=k>using</span><span class=w> </span><span class=k>namespace</span><span class=w> </span><span class=nn>std</span><span class=p>;</span>
 <span class=cp>#define nn &quot;\n&quot;;</span>
 <span class=kt>int</span><span class=w> </span><span class=nf>main</span><span class=p>(){</span>
@@ -424,7 +424,7 @@ is now available!
 <span class=n>vector</span><span class=o>&lt;</span><span class=n>st</span><span class=o>&gt;</span><span class=n>v</span><span class=p>;</span>
 
 <span class=kt>bool</span><span class=w> </span><span class=nf>cmp</span><span class=p>(</span><span class=n>st</span><span class=w> </span><span class=n>a</span><span class=p>,</span><span class=n>st</span><span class=w> </span><span class=n>b</span><span class=p>){</span>
-<span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=n>x</span><span class=o>&lt;</span><span class=n>b</span><span class=p>.</span><span class=n>x</span><span class=p>;</span><span class=c1>// 告訴程式要根據X來尋找，lower_bound、upper_bound正常使用時，都使用&lt;</span>
+<span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=n>x</span><span class=o>&lt;</span><span class=n>b</span><span class=p>.</span><span class=n>x</span><span class=p>;</span><span class=c1>// 告訴程式要根據 X 來尋找，lower_bound、upper_bound 正常使用時，都使用&lt;</span>
 <span class=p>}</span>
 
 <span class=kt>int</span><span class=w> </span><span class=nf>main</span><span class=p>(){</span>
@@ -450,7 +450,7 @@ is now available!
 <span class=n>vector</span><span class=o>&lt;</span><span class=n>st</span><span class=o>&gt;</span><span class=n>v</span><span class=p>;</span>
 
 <span class=kt>bool</span><span class=w> </span><span class=nf>cmp</span><span class=p>(</span><span class=n>st</span><span class=w> </span><span class=n>a</span><span class=p>,</span><span class=n>st</span><span class=w> </span><span class=n>b</span><span class=p>){</span>
-<span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=n>x</span><span class=o>&gt;</span><span class=n>b</span><span class=p>.</span><span class=n>x</span><span class=p>;</span><span class=c1>// 告訴程式要根據X來尋找，而且是大到小排序</span>
+<span class=w>    </span><span class=k>return</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=n>x</span><span class=o>&gt;</span><span class=n>b</span><span class=p>.</span><span class=n>x</span><span class=p>;</span><span class=c1>// 告訴程式要根據 X 來尋找，而且是大到小排序</span>
 <span class=p>}</span>
 
 <span class=kt>int</span><span class=w> </span><span class=nf>main</span><span class=p>(){</span>

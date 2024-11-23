@@ -319,7 +319,7 @@ is now available!
 </code></pre></div><br> 緩衝區會從這樣<br> <div class=highlight><pre><span></span><code>&quot; \n  \n   \n  123  \n 4 5&quot;
 </code></pre></div><br> 變為這樣<br> <div class=highlight><pre><span></span><code>&quot;  \n 4 5&quot;
 </code></pre></div><br> 而輸入目標(n)為<br> <div class=highlight><pre><span></span><code>&quot;123&quot;
-</code></pre></div></p> <p>過程圖示：<br> <img alt="alt text" src="images/getline 搭配 stringstream/image-18.png"></p> <hr> <div class=highlight><span class=filename>code</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
+</code></pre></div></p> <p>過程圖示：<br> <img alt="alt text" src=images/getline%E6%90%AD%E9%85%8Dstringstream/image-18.png></p> <hr> <div class=highlight><span class=filename>code</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
 <span class=k>using</span><span class=w> </span><span class=k>namespace</span><span class=w> </span><span class=nn>std</span><span class=p>;</span>
 <span class=kt>int</span><span class=w> </span><span class=nf>main</span><span class=p>(){</span>
 <span class=w>    </span><span class=n>istringstream</span><span class=w> </span><span class=n>cin</span><span class=p>(</span><span class=s>&quot; </span><span class=se>\n</span><span class=s>  </span><span class=se>\n</span><span class=s>   </span><span class=se>\n</span><span class=s>  123  </span><span class=se>\n</span><span class=s> 4 5&quot;</span><span class=p>);</span>
@@ -330,14 +330,14 @@ is now available!
 </code></pre></div> <div class=highlight><span class=filename>output</span><pre><span></span><code>123
 </code></pre></div> <h2 id=getline>getline<a class=headerlink href=#getline title="Permanent link"></a></h2> <h3 id=介紹>介紹<a class=headerlink href=#介紹 title="Permanent link"></a></h3> <blockquote> <p><code>getline(輸入流,字串);</code> <br> <code>getline(輸入流,字串,分割元素);</code> <br> <div class=highlight><pre><span></span><code>getline(cin,s);
 getline(cin,s,&#39;2&#39;);
-</code></pre></div></p> </blockquote> <ul> <li>輸入流種類：<br> cin<br> stringstream<br> istringstream </li> <li>字串種類：<br> 必須是 string </li> <li>分割元素種類：<br> 必須是 char </li> </ul> <blockquote> <p>分割元素可以選擇要不要打，若沒有打，分割元素預設為<code>'\n'</code>。<br> 如果打了字元，會將分割元素變更為該字元</p> </blockquote> <p>範例：<br> <div class=highlight><pre><span></span><code>getline(cin,s);     //遇到&#39;\n&#39;分割
+</code></pre></div></p> </blockquote> <ul> <li>輸入流種類：<br> cin<br> stringstream<br> istringstream </li> <li>字串種類：<br> 必須是string </li> <li>分割元素種類：<br> 必須是char </li> </ul> <blockquote> <p>分割元素可以選擇要不要打，若沒有打，分割元素預設為<code>'\n'</code>。<br> 如果打了字元，會將分割元素變更為該字元</p> </blockquote> <p>範例：<br> <div class=highlight><pre><span></span><code>getline(cin,s);     //遇到&#39;\n&#39;分割
 getline(cin,s,&#39;2&#39;);  //遇到&#39;2&#39;分割
 </code></pre></div></p> <h3 id=運作>運作<a class=headerlink href=#運作 title="Permanent link"></a></h3> <blockquote> <p>從左至右將所有元素認作輸入目標，直到遇到<strong>分割元素</strong>，將<strong>分割元素</strong>以及<strong>分割元素</strong>之前所有元素捨棄。</p> </blockquote> <h4 id=1-不選擇分割元素>1. 不選擇分割元素<a class=headerlink href=#1-不選擇分割元素 title="Permanent link"></a></h4> <p>假設一開始的緩衝區為<br> <div class=highlight><pre><span></span><code>&quot;545 1 \n 1 2 3&quot;
 </code></pre></div><br> 執行以下程式<br> <div class=highlight><pre><span></span><code>getline(cin,s);
 </code></pre></div><br> 緩衝區會從這樣<br> <div class=highlight><pre><span></span><code>&quot;545 1 \n 1 2 3&quot;
 </code></pre></div><br> 變為這樣<br> <div class=highlight><pre><span></span><code>&quot; 1 2 3&quot;
 </code></pre></div><br> 而輸入目標(s)為<br> <div class=highlight><pre><span></span><code>&quot;545 1 &quot;
-</code></pre></div></p> <p>過程圖示：<br> <img alt="alt text" src="images/getline 搭配 stringstream/image-19.png"></p> <hr> <div class=highlight><span class=filename>code</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
+</code></pre></div></p> <p>過程圖示：<br> <img alt="alt text" src=images/getline%E6%90%AD%E9%85%8Dstringstream/image-19.png></p> <hr> <div class=highlight><span class=filename>code</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
 <span class=k>using</span><span class=w> </span><span class=k>namespace</span><span class=w> </span><span class=nn>std</span><span class=p>;</span>
 <span class=kt>int</span><span class=w> </span><span class=nf>main</span><span class=p>(){</span>
 <span class=w>    </span><span class=n>istringstream</span><span class=w> </span><span class=n>cin</span><span class=p>(</span><span class=s>&quot;545 1 </span><span class=se>\n</span><span class=s> 1 2 3&quot;</span><span class=p>);</span>
@@ -351,7 +351,7 @@ getline(cin,s,&#39;2&#39;);  //遇到&#39;2&#39;分割
 </code></pre></div><br> 緩衝區會從<br> <div class=highlight><pre><span></span><code>&quot;545 1 \n 1 2 3&quot;
 </code></pre></div><br> 變為<br> <div class=highlight><pre><span></span><code>&quot; 3&quot;
 </code></pre></div><br> 而輸入目標(s)為<br> <div class=highlight><pre><span></span><code>&quot;545 1 \n 1 &quot;
-</code></pre></div></p> <p>過程圖示：<br> <img alt="alt text" src="images/getline 搭配 stringstream/image-20.png"></p> <hr> <div class=highlight><span class=filename>code</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
+</code></pre></div></p> <p>過程圖示：<br> <img alt="alt text" src=images/getline%E6%90%AD%E9%85%8Dstringstream/image-20.png></p> <hr> <div class=highlight><span class=filename>code</span><pre><span></span><code><span class=cp>#include</span><span class=w> </span><span class=cpf>&lt;bits/stdc++.h&gt;</span>
 <span class=k>using</span><span class=w> </span><span class=k>namespace</span><span class=w> </span><span class=nn>std</span><span class=p>;</span>
 <span class=kt>int</span><span class=w> </span><span class=nf>main</span><span class=p>(){</span>
 <span class=w>    </span><span class=n>istringstream</span><span class=w> </span><span class=n>cin</span><span class=p>(</span><span class=s>&quot;545 1 </span><span class=se>\n</span><span class=s> 1 2 3&quot;</span><span class=p>);</span>

@@ -2205,7 +2205,22 @@ some *markdown* content
 }
 
 
-/* 內文字體 */
-/* html {
-    font-size: 30px; 
-} */
+/* 字體：中標楷 */
+/* @font-face {
+    font-family: "CustomChinese";
+    src: local("標楷體"), local("DFKai-SB");
+    unicode-range: U+4E00-9FFF, U+3000-303F, U+FF00-FFEF; 
+}
+body {
+    font-family: "Roboto Mono", "CustomChinese", sans-serif;
+}
+ */
+
+
+
+
+/* 全局英文字體：Roboto Mono */
+body {
+    font-family: "Roboto Mono";
+}
+

@@ -355,7 +355,7 @@ is now available!
             font-size: 16px;
             white-space: pre-line; /* 保持換行格式 */
         }
-    </style></head> <body> <div class=input-container> <div> <label>初始值 (x): 10</label> </div> <div> <label>學習率 (learning rate): <input type=number id=learningRate value=0.7 step=0.1></label> </div> <div> <label>最大迭代次數 (max iterations): <input type=number id=maxIterations value=50 step=1></label> </div> <div> <label>收斂條件 (tolerance): <input type=number id=tolerance value=0.1 step=0.01></label> </div> </div> <div class=chart-container> <canvas id=gradientChart></canvas> </div> <div class=chart-container> <canvas id=lossChart></canvas> </div> <div class=chart-container> <canvas id=xChart></canvas> </div> <p id=output></p> <script>
+    </style></head> <body> <div class=input-container> <div> <label>初始值 (x): 10</label> </div> <div> <label>學習率 (learning rate): <input type=number id=learningRate value=0.7 step=0.1></label> </div> <div> <label>最大迭代次數 (max iterations): <input type=number id=maxIterations value=50 step=1></label> </div> <div> <label>收斂條件 (tolerance): <input type=number id=tolerance value=0.1 step=0.01></label> </div> </div> <div class=chart-container> <canvas id=gradientChart></canvas> </div> <div class=chart-container> <canvas id=lossChart></canvas> </div> <div class=chart-container> <canvas id=xChart></canvas> </div> <p id=gradientOutput></p> <script>
         let lossChart, xChart, gradientChart;
 
         // 定義損失函數和梯度
@@ -369,7 +369,7 @@ is now available!
 
         // 計算梯度下降並更新圖表
         function runGradientDescent() {
-            const outputDiv = document.getElementById('output');
+            const outputDiv = document.getElementById('gradientOutput');
             outputDiv.innerHTML = ''; // 清空結果
 
             // 獲取參數
@@ -377,12 +377,6 @@ is now available!
             const learningRate = parseFloat(document.getElementById('learningRate').value);
             const maxIterations = parseInt(document.getElementById('maxIterations').value);
             const tolerance = parseFloat(document.getElementById('tolerance').value);
-
-            // 驗證輸入
-            if (isNaN(x0) || isNaN(learningRate) || isNaN(maxIterations) || isNaN(tolerance)) {
-                outputDiv.textContent = '請確保所有輸入都是有效的數字。';
-                return;
-            }
 
             let x = x0;
             let iteration = 0;
@@ -394,26 +388,21 @@ is now available!
 
             resultText += `計算: x_new = x - learning_rate * gradient ：\n`;
 
-            // 迭代過程
             while (iteration < maxIterations) {
                 const grad = gradient(x);
                 const loss = lossFunction(x);
                 const prex = x;
-                <!-- resultText += `Iteration ${iteration}: x = ${x.toFixed(6)}, Loss = ${loss.toFixed(6)}, Gradient = ${grad.toFixed(6)}\n`; -->
 
                 // 更新 x
                 x = x - learningRate * grad;
 
                 resultText += `${x.toFixed(6)} = ${prex.toFixed(6)} - ${learningRate} * ${grad.toFixed(6)}\n`;
 
-
-
                 iteration++;
                 xValues.push(x);
                 lossValues.push(lossFunction(x));
                 iterationIndices.push(iteration);
 
-                // 檢查收斂條件
                 if (Math.abs(grad) < tolerance) {
                     resultText += `梯度下降已收斂，停止迭代。\n\n`;
                     break;
@@ -429,7 +418,7 @@ is now available!
             drawXChart(iterationIndices, xValues);
         }
 
-        // 繪製損失函數上的梯度下降分布圖
+        // 繪製梯度下降圖表
         function drawGradientChart(xValues, lossValues) {
             const ctx = document.getElementById('gradientChart').getContext('2d');
             const xRange = Array.from({ length: 500 }, (_, i) => -12 + (i * 24) / 500);

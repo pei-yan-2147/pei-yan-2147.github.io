@@ -350,7 +350,7 @@ is now available!
             font-size: 16px;
             white-space: pre-line;
         }
-    </style></head> <body> <div class=input-container> <label>學習率 (learning rate): <input type=number id=model2_learningRate value=0.01 step=0.001></label> <label>最大迭代次數 (max iterations): <input type=number id=model2_maxIterations value=300 step=1></label> <label>收斂條件 (tolerance): <input type=number id=model2_tolerance value=0.1 step=0.01></label> </div> <div class=chart-container> <div id=model2_3d_chart></div> </div> <p id=model2_output></p> <script>
+    </style></head> <body> <div class=input-container> <label>學習率 (learning rate): <input type=number id=model2_learningRate value=0.01 step=0.01></label> <label>最大迭代次數 (max iterations): <input type=number id=model2_maxIterations value=300 step=1></label> <label>收斂條件 (tolerance): <input type=number id=model2_tolerance value=0.1 step=0.01></label> </div> <div class=chart-container> <div id=model2_3d_chart></div> </div> <p id=model2_output></p> <script>
         function model2_runGradientDescent() {
             const outputDiv = document.getElementById('model2_output');
             outputDiv.innerHTML = ''; // 清空結果
@@ -374,7 +374,7 @@ is now available!
             // 用來存儲每次迭代的損失
             let resultText = `開始梯度下降:\n初始值 w = ${model2_w}, b = ${model2_b}, 學習率 = ${learningRate}, 最大迭代次數 = ${maxIterations}, 收斂條件 = ${tolerance}\n\n`;
 
-            resultText += `計算: w_new = w - 𝛼 * f'(w) ：\n`;
+            resultText += `計算: w_new = w - η * f'(w) ：\n`;
 
             while (model2_iteration < maxIterations) {
                 const y_hat = X.map(xi => model2_w * xi + model2_b);

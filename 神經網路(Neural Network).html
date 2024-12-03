@@ -503,7 +503,7 @@ Softma𝑥(\mathbf{x_i}) = \frac{e^{x_i}}{\sum^n_j e^{x_j}} = \frac{e^{-m}}{e^{-
 
         // 頁面加載時自動計算
         window.addEventListener('DOMContentLoaded', calculateSoftmax);
-    </script> </body> </html> </div> <h2 id=損失函數>損失函數<a class=headerlink href=#損失函數 title="Permanent link"></a></h2> <p>我們要告訴人工智慧他找到的假設到底好不好，所以我們需要一個「評分標準」，被稱為損失函數。<br> 損失函數通常是計算「模型輸出」與「標籤(正確答案)」的差異程度，損失函數值越高，代表差異越大。</p> <p>回歸問題的損失函數：</p> <ul> <li><a href=#l1l2-loss>L1/L2 loss</a></li> </ul> <p>分類問題的損失函數：</p> <ul> <li><a href=#01-loss>0/1 loss</a></li> <li><a href=#negative-log-likelihoodnll>Negative Log-Likelihood(NLL)</a></li> </ul> <h3 id=回歸問題的損失函數>回歸問題的損失函數<a class=headerlink href=#回歸問題的損失函數 title="Permanent link"></a></h3> <h4 id=l1l2-loss>L1/L2 loss<a class=headerlink href=#l1l2-loss title="Permanent link"></a></h4> <p>輸出和標籤都是實數，所以計算他們之間的「距離」或是「距離平方」。</p> <pre class=arithmatex>\[
+    </script> </body> </html> <p>(內容消失時請重新整理或按下f5)</p> </div> <h2 id=損失函數>損失函數<a class=headerlink href=#損失函數 title="Permanent link"></a></h2> <p>我們要告訴人工智慧他找到的假設到底好不好，所以我們需要一個「評分標準」，被稱為損失函數。<br> 損失函數通常是計算「模型輸出」與「標籤(正確答案)」的差異程度，損失函數值越高，代表差異越大。</p> <p>回歸問題的損失函數：</p> <ul> <li><a href=#l1l2-loss>L1/L2 loss</a></li> </ul> <p>分類問題的損失函數：</p> <ul> <li><a href=#01-loss>0/1 loss</a></li> <li><a href=#negative-log-likelihoodnll>Negative Log-Likelihood(NLL)</a></li> </ul> <h3 id=回歸問題的損失函數>回歸問題的損失函數<a class=headerlink href=#回歸問題的損失函數 title="Permanent link"></a></h3> <h4 id=l1l2-loss>L1/L2 loss<a class=headerlink href=#l1l2-loss title="Permanent link"></a></h4> <p>輸出和標籤都是實數，所以計算他們之間的「距離」或是「距離平方」。</p> <pre class=arithmatex>\[
 輸出：L_m =[ x_1 , x_2 , \cdots , x_n ]
 \]</pre> <pre class=arithmatex>\[
 標籤：y =[ y_1 , y_2 , \cdots , y_n ]

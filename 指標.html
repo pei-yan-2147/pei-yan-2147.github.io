@@ -3921,14 +3921,14 @@ v: 37 21
 <ul>
 <li>格式：<br />
 {資料型態}*{變數} </li>
-<li>範例(*靠近資料型態或是變數不影響結果<br />
-    :::danger<br />
-    注意不能 <code>int * n, * k</code>，不能連續使用，此時的k不會如預期。<br />
-    :::<br />
-    <div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">;</span>
+<li>
+<p>範例(*靠近資料型態或是變數不影響結果</p>
+<p>注意不能 <code>int * n, * k</code>，不能連續使用，此時的k不會如預期。</p>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">n</span><span class="p">;</span>
 <span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">k</span><span class="p">;</span><span class="w"> </span><span class="c1">//0x61ff08</span>
-</code></pre></div></li>
+</code></pre></div>
+</li>
 </ul>
 </div>
 <div class="tabbed-block">

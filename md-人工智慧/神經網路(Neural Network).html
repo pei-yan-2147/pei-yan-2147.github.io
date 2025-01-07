@@ -726,7 +726,7 @@ is now available!
   
   
     <li class="md-tabs__item">
-      <a href="../md-mack微積分/基礎微積分.md" class="md-tabs__link">
+      <a href="../md-%E5%9F%BA%E7%A4%8E%E5%BE%AE%E7%A9%8D%E5%88%86/%E5%9F%BA%E7%A4%8E%E5%BE%AE%E7%A9%8D%E5%88%86.html" class="md-tabs__link">
         
   
     
@@ -4319,7 +4319,7 @@ is now available!
   
   
     <li class="md-nav__item">
-      <a href="../md-mack微積分/基礎微積分.md" class="md-nav__link">
+      <a href="../md-%E5%9F%BA%E7%A4%8E%E5%BE%AE%E7%A9%8D%E5%88%86/%E5%9F%BA%E7%A4%8E%E5%BE%AE%E7%A9%8D%E5%88%86.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -5166,7 +5166,187 @@ Softma𝑥(\mathbf{x_i}) = \frac{e^{x_i}}{\sum^n_j e^{x_j}} = \frac{e^{-m}}{e^{-
 </div>
 </div>
 </div>
-<div class="i"></div>
+<div class="i">
+<p>假設 <span class="arithmatex">\(L_m=\)</span> (你可以更改以下數字)</p>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #F2BBFF;
+            font-size: 18px;
+            padding: 5px;
+            width: 60px;
+            text-align: center;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-bottom-color: #F2BBFF;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #chart-container {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white; /* 設置圖表容器背景為白色 */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #output {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="input-container">
+        <p>[</p>
+        <input type="number" id="num1" value="1">
+        <p>,</p>
+        <input type="number" id="num2" value="2">
+        <p>,</p>
+        <input type="number" id="num3" value="5">
+        <p>,</p>
+        <input type="number" id="num4" value="3">
+        <p>,</p>
+        <input type="number" id="num5" value="4">
+        <p>]</p>
+    </div>
+
+    <!-- 圖表容器 -->
+    <div id="chart-container">
+        <canvas id="probabilityChart"></canvas>
+    </div>
+
+    <!-- 計算過程輸出 -->
+    <p id="output"></p>
+
+    <script>
+        let chart; // 用於存儲圖表實例
+
+        // Softmax 計算函數
+        function calculateSoftmax() {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // 清空結果
+
+            // 獲取輸入數值
+            const inputs = [
+                parseFloat(document.getElementById('num1').value),
+                parseFloat(document.getElementById('num2').value),
+                parseFloat(document.getElementById('num3').value),
+                parseFloat(document.getElementById('num4').value),
+                parseFloat(document.getElementById('num5').value)
+            ];
+
+            // 確保所有輸入是有效數字
+            if (inputs.some(isNaN)) {
+                outputDiv.textContent = '請確保所有輸入都是有效的數字。';
+                return;
+            }
+
+            // 計算 Softmax 步驟
+            let resultText = "";
+            resultText += `原始數字：Lm=[x1,x2,...,xn]\n[${inputs.join(', ')}]\n\n`;
+
+            // 最大值
+            const maxVal = Math.max(...inputs);
+            resultText += `最大值：m\n ${maxVal}\n\n`;
+
+            // 減去最大值
+            const subtracted = inputs.map(num => num - maxVal);
+            resultText += `減去最大值：xi-m\n [${subtracted.join(', ')}]\n\n`;
+
+            // 指數函數
+            const expValues = subtracted.map(num => Math.exp(num));
+            resultText += `計算指數函數：e^(xi):\n [${expValues.join(', ')}]\n\n`;
+
+            // 總和
+            const sumExp = expValues.reduce((a, b) => a + b, 0);
+            resultText += `指數值總和：Σ(e^(xj):\n ${sumExp}\n\n`;
+
+            // Softmax 值
+            const softmaxValues = expValues.map(num => num / sumExp);
+            resultText += `Softmax 值：e^(xi)/Σ(e^(xj)\n [${softmaxValues.join(', ')}]\n\n`;
+
+            // 總和檢查
+            const total = softmaxValues.reduce((a, b) => a + b, 0);
+            resultText += `Softmax 總和 (應接近 1):\n ${total}\n\n`;
+
+            outputDiv.innerHTML = resultText.replace(/\n/g, "<br>");
+
+            // 繪製機率分布圖
+            drawChart(softmaxValues);
+        }
+
+        // 繪製長條圖
+        function drawChart(data) {
+            const ctx = document.getElementById('probabilityChart').getContext('2d');
+
+            // 如果圖表已經存在，先銷毀再重建
+            if (chart) {
+                chart.destroy();
+            }
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['x1', 'x2', 'x3', 'x4', 'x5'], // 標籤
+                    datasets: [{
+                        label: 'Softmax 機率分布',
+                        data: data, // Softmax 值
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1 // 確保機率分布在 [0, 1] 範圍內
+                        }
+                    }
+                }
+            });
+        }
+
+        // 監聽輸入框的變化
+        document.querySelectorAll('.input-container input').forEach(input => {
+            input.addEventListener('input', calculateSoftmax);
+        });
+
+        // 頁面加載時自動計算
+        window.addEventListener('DOMContentLoaded', calculateSoftmax);
+    </script>
+</body>
+</html>
+<p>(內容消失時請重新整理或按下f5)</p>
+</div>
 <h2 id="損失函數">損失函數<a class="headerlink" href="#損失函數" title="Permanent link"></a></h2>
 <p>我們要告訴人工智慧他找到的假設到底好不好，所以我們需要一個「評分標準」，被稱為損失函數。<br />
 損失函數通常是計算「模型輸出」與「標籤(正確答案)」的差異程度，損失函數值越高，代表差異越大。</p>
@@ -5381,7 +5561,253 @@ x_{new} := x - η f'(x)
 <li>最大跌代次數：防止無限迭代，及避免過度計算，節省運算資源。</li>
 </ul>
 <h4 id="模擬">模擬<a class="headerlink" href="#模擬" title="Permanent link"></a></h4>
-<div class="i"></div>
+<div class="i">
+<p>你可以更改以下數字(初始值不可更改)，你可以從「最大迭代次數 (max iterations)=0」開始，慢慢增加迭代次數，看看迭代過程。</p>
+<hr />
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        input[type="number"] {
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #F2BBFF;
+            font-size: 16px;
+            padding: 5px;
+            width: 100px;
+            text-align: center;
+            outline: none;
+        }
+        input[type="number"]:focus {
+            border-bottom-color: #F2BBFF;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .chart-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white; /* 設置背景為白色 */
+        }
+        #output {
+            font-size: 16px;
+            white-space: pre-line; /* 保持換行格式 */
+        }
+    </style>
+</head>
+<body>
+    <div class="input-container">
+        <div>
+            <label>初始值 (x): 10</label>
+        </div>
+        <div>
+            <label>學習率 (learning rate): <input type="number" id="learningRate" value="0.7" step="0.1"></label>
+        </div>
+        <div>
+            <label>最大迭代次數 (max iterations): <input type="number" id="maxIterations" value="50" step="1"></label>
+        </div>
+        <div>
+            <label>收斂條件 (tolerance): <input type="number" id="tolerance" value="0.1" step="0.01"></label>
+        </div>
+    </div>
+
+    <!-- 圖表區域 -->
+    <div class="chart-container">
+        <canvas id="gradientChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="lossChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="xChart"></canvas>
+    </div>
+
+    <p id="gradientOutput"></p>
+
+    <script>
+        let lossChart, xChart, gradientChart;
+
+        // 定義損失函數和梯度
+        function lossFunction(x) {
+            return x ** 2;
+        }
+
+        function gradient(x) {
+            return 2 * x;
+        }
+
+        // 計算梯度下降並更新圖表
+        function runGradientDescent() {
+            const outputDiv = document.getElementById('gradientOutput');
+            outputDiv.innerHTML = ''; // 清空結果
+
+            // 獲取參數
+            const x0 = 10;
+            const learningRate = parseFloat(document.getElementById('learningRate').value);
+            const maxIterations = parseInt(document.getElementById('maxIterations').value);
+            const tolerance = parseFloat(document.getElementById('tolerance').value);
+
+            let x = x0;
+            let iteration = 0;
+            const xValues = [x];
+            const lossValues = [lossFunction(x)];
+            const iterationIndices = [0];
+
+            let resultText = `開始梯度下降:\n初始值 x = ${x0}, 學習率 = ${learningRate}, 最大迭代次數 = ${maxIterations}, 收斂條件 = ${tolerance}\n\n`;
+
+            resultText += `計算: x_new = x - η * f'(x) ：\n`;
+
+            while (iteration < maxIterations) {
+                const grad = gradient(x);
+                const loss = lossFunction(x);
+                const prex = x;
+
+                // 更新 x
+                x = x - learningRate * grad;
+
+                resultText += `${x.toFixed(6)} = ${prex.toFixed(6)} - ${learningRate} * ${grad.toFixed(6)}\n`;
+
+                iteration++;
+                xValues.push(x);
+                lossValues.push(lossFunction(x));
+                iterationIndices.push(iteration);
+
+                if (Math.abs(grad) < tolerance) {
+                    resultText += `梯度下降已收斂 ( ${Math.abs(grad).toFixed(6)}<${tolerance} ) ，停止迭代。\n\n`;
+                    break;
+                }
+            }
+
+            resultText += `最終結果: x = ${x.toFixed(6)}, Loss = ${lossFunction(x).toFixed(6)}, 迭代次數 = ${iteration}\n`;
+
+            // 使用 innerHTML 來顯示換行
+            outputDiv.innerHTML = resultText.replace(/\n/g, "<br>");
+
+            // 更新圖表
+            drawGradientChart(xValues, lossValues);
+            drawLossChart(iterationIndices, lossValues);
+            drawXChart(iterationIndices, xValues);
+        }
+
+        // 繪製梯度下降圖表
+        function drawGradientChart(xValues, lossValues) {
+            const ctx = document.getElementById('gradientChart').getContext('2d');
+            const xRange = Array.from({ length: 500 }, (_, i) => -12 + (i * 24) / 500);
+            const yRange = xRange.map(x => lossFunction(x));
+            if (gradientChart) gradientChart.destroy();
+            gradientChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xRange,
+                    datasets: [
+                        {
+                            label: 'Gradient Descent Steps',
+                            data: xValues.map((x, i) => ({ x, y: lossValues[i] })),
+                            type: 'scatter',
+                            backgroundColor: 'red',
+                            pointRadius: 5
+                        },
+                        {
+                            label: 'y = x^2',
+                            data: yRange,
+                            borderColor: 'blue',
+                            fill: false,
+                            pointRadius: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { type: 'linear', title: { display: true, text: 'x Value' } },
+                        y: { title: { display: true, text: 'y (Loss)' } }
+                    }
+                }
+            });
+        }
+
+        // 繪製損失值變化圖表
+        function drawLossChart(iterationIndices, lossValues) {
+            const ctx = document.getElementById('lossChart').getContext('2d');
+            if (lossChart) lossChart.destroy();
+            lossChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: iterationIndices,
+                    datasets: [{
+                        label: 'Loss Value Over Iterations',
+                        data: lossValues,
+                        borderColor: 'blue',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Iterations' } },
+                        y: { title: { display: true, text: 'Loss Value' } }
+                    }
+                }
+            });
+        }
+
+        // 繪製 x 值變化圖表
+        function drawXChart(iterationIndices, xValues) {
+            const ctx = document.getElementById('xChart').getContext('2d');
+            if (xChart) xChart.destroy();
+            xChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: iterationIndices,
+                    datasets: [{
+                        label: 'x Value Over Iterations',
+                        data: xValues,
+                        borderColor: 'orange',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: true }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Iterations' } },
+                        y: { title: { display: true, text: 'x Value' } }
+                    }
+                }
+            });
+        }
+
+        // 監聽輸入框變化並重新計算
+        document.querySelectorAll('.input-container input').forEach(input => {
+            input.addEventListener('input', runGradientDescent);
+        });
+
+        // 初次加載時運行梯度下降
+        window.addEventListener('DOMContentLoaded', runGradientDescent);
+    </script>
+</body>
+</html>
+
+<p>(內容消失時請重新整理或按下f5)</p>
+</div>
 <p>這個例子和實際的梯度下降演算法還是有一些差異喔！！</p>
 <h4 id="備註">備註<a class="headerlink" href="#備註" title="Permanent link"></a></h4>
 <h5 id="一元函數-univariate-function">一元函數 (Univariate Function)<a class="headerlink" href="#一元函數-univariate-function" title="Permanent link"></a></h5>
@@ -5518,7 +5944,170 @@ b = 5</p>
 <p>最後得到 w 、 b</p>
 </div>
 <h4 id="模擬_1">模擬<a class="headerlink" href="#模擬_1" title="Permanent link"></a></h4>
-<div class="i"></div>
+<div class="i">
+<p>輸入 X = [1, 2, 3, 4]<br />
+標籤 y = [5, 7, 9, 11]<br />
+模型 y = wx + b<br />
+初始 w = 5<br />
+初始 b = 5</p>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist@2.16.1"></script>
+    <title>梯度下降3D示意圖 (模型2)</title>
+    <style>
+        .input-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        input[type="number"] {
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #F2BBFF;
+            font-size: 16px;
+            padding: 5px;
+            width: 100px;
+            text-align: center;
+            outline: none;
+        }
+        input[type="number"]:focus {
+            border-bottom-color: #F2BBFF;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .chart-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        #model2_output {
+            font-size: 16px;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <div class="input-container">
+        <label>學習率 (learning rate): <input type="number" id="model2_learningRate" value="0.01" step="0.01"></label>
+        <label>最大迭代次數 (max iterations): <input type="number" id="model2_maxIterations" value="300" step="1"></label>
+        <label>收斂條件 (tolerance): <input type="number" id="model2_tolerance" value="0.1" step="0.01"></label>
+    </div>
+
+    <div class="chart-container">
+        <div id="model2_3d_chart"></div>
+    </div>
+
+    <p id="model2_output"></p>
+
+    <script>
+        function model2_runGradientDescent() {
+            const outputDiv = document.getElementById('model2_output');
+            outputDiv.innerHTML = ''; // 清空結果
+
+            // 獲取用戶輸入的參數
+            const learningRate = parseFloat(document.getElementById('model2_learningRate').value);
+            const maxIterations = parseInt(document.getElementById('model2_maxIterations').value);
+            const tolerance = parseFloat(document.getElementById('model2_tolerance').value);
+
+            // 訓練數據
+            const X = [1, 2, 3, 4];
+            const y = [5, 7, 9, 11];
+
+            let model2_w = 5, model2_b = 5;  // 初始值
+            let model2_wVals = [model2_w];
+            let model2_bVals = [model2_b];
+            let model2_lossVals = [];
+            let model2_iterationIndices = [];
+            let model2_iteration = 0;
+
+            // 用來存儲每次迭代的損失
+            let resultText = `開始梯度下降:\n初始值 w = ${model2_w}, b = ${model2_b}, 學習率 = ${learningRate}, 最大迭代次數 = ${maxIterations}, 收斂條件 = ${tolerance}\n\n`;
+
+            resultText += `計算: w_new = w - η * f'(w) ：\n`;
+
+            while (model2_iteration < maxIterations) {
+                const y_hat = X.map(xi => model2_w * xi + model2_b);
+                const loss = y.reduce((sum, yi, i) => sum + Math.pow(y_hat[i] - yi, 2), 0);
+                const grad_w = -2 * X.reduce((sum, xi, i) => sum + xi * (y[i] - y_hat[i]), 0);
+                const grad_b = -2 * y.reduce((sum, yi, i) => sum + (yi - y_hat[i]), 0);
+
+                model2_w -= learningRate * grad_w;
+                model2_b -= learningRate * grad_b;
+
+                model2_wVals.push(model2_w);
+                model2_bVals.push(model2_b);
+                model2_lossVals.push(loss);
+                model2_iterationIndices.push(model2_iteration);
+
+                if (Math.sqrt(grad_w**2 + grad_b**2) < tolerance) {
+                    resultText += `梯度下降已收斂 ( 梯度 = ${Math.sqrt(grad_w**2 + grad_b**2).toFixed(6)} < ${tolerance} )，停止迭代。\n\n`;
+                    break;
+                }
+
+                model2_iteration++;
+            }
+
+            resultText += `最終結果: w = ${model2_w.toFixed(6)}, b = ${model2_b.toFixed(6)}, 迭代次數 = ${model2_iteration}\n`;
+
+            outputDiv.innerHTML = resultText.replace(/\n/g, "<br>");
+
+            // 繪製 3D 圖表
+            model2_draw3DChart(model2_wVals, model2_bVals, model2_lossVals);
+        }
+
+        // 使用 Plotly 繪製 3D 圖表
+        function model2_draw3DChart(wVals, bVals, lossVals) {
+            const trace1 = {
+                x: wVals,
+                y: bVals,
+                z: lossVals,
+                mode: 'markers',
+                type: 'scatter3d',
+                marker: { color: 'red', size: 5 }
+            };
+            const data = [trace1];
+
+            const layout = {
+                scene: {
+                    xaxis: { title: 'Weight (w)' },
+                    yaxis: { title: 'Bias (b)' },
+                    zaxis: { title: 'Loss Value (loss)' },
+                    camera: {
+                        eye: {
+                            x: -2, // 攝影機的 x 軸位置
+                            y: -2, // 攝影機的 y 軸位置
+                            z: 1.5  // 攝影機的 z 軸位置
+                        }
+                    }
+                },
+                title: ''
+            };
+
+            Plotly.newPlot('model2_3d_chart', data, layout);
+        }
+
+
+        // 監聽輸入框變化並重新計算
+        document.querySelectorAll('.input-container input').forEach(input => {
+            input.addEventListener('input', model2_runGradientDescent);
+        });
+
+        // 初次加載時運行梯度下降
+        window.addEventListener('DOMContentLoaded', model2_runGradientDescent);
+    </script>
+</body>
+</html>
+<p>(內容消失時請重新整理或按下f5)</p>
+</div>
 <h4 id="補充">補充<a class="headerlink" href="#補充" title="Permanent link"></a></h4>
 <p>如果覺得對於梯度下降演算法不夠熟悉，可以參考以下兩個影片<br />
 <a href="https://www.youtube.com/watch?v=UkcUZTe49Pg">https://www.youtube.com/watch?v=UkcUZTe49Pg</a>              <br />

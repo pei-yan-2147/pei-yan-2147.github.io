@@ -909,6 +909,8 @@ is now available!
       
         
       
+        
+      
     
     
       
@@ -939,6 +941,29 @@ is now available!
             Archive
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../blog/archive/2025.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    2025
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -1007,6 +1032,8 @@ is now available!
       
         
       
+        
+      
     
     
       
@@ -1037,6 +1064,29 @@ is now available!
             Categories
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../blog/category/python.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    python
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3803,6 +3853,17 @@ is now available!
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    變數
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="%E8%AE%8A%E6%95%B8.html" class="md-nav__link md-nav__link--active">
         
   
@@ -3812,6 +3873,34 @@ is now available!
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#變數引用" class="md-nav__link">
+    <span class="md-ellipsis">
+      變數引用
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -3965,6 +4054,23 @@ is now available!
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#變數引用" class="md-nav__link">
+    <span class="md-ellipsis">
+      變數引用
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -3980,6 +4086,98 @@ is now available!
 
 
 <h1 id="變數">變數<a class="headerlink" href="#變數" title="Permanent link"></a></h1>
+<h2 id="變數引用">變數引用<a class="headerlink" href="#變數引用" title="Permanent link"></a></h2>
+<p>在C++中，我們可能會寫下種程式碼：</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">};</span>
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">b</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="o">=</span><span class="n">a</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;a:&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">:</span><span class="n">a</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">b:&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="o">:</span><span class="n">b</span><span class="p">){</span>
+<span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="result">
+<p>a:123456<br />
+b:023456</p>
+</div>
+<p>這段程式碼先宣告陣列a，然後將a複製到b，之後修改b。<br />
+輸出的結果跟想像的一樣，兩個陣列的內容相同。</p>
+<p>但如果換成python呢?我們試試以下程式碼：</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">b</span><span class="o">=</span><span class="n">a</span>
+
+<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</code></pre></div>
+<div class="result">
+<p>a: [0, 2, 3, 4, 5, 6]<br />
+b: [0, 2, 3, 4, 5, 6]</p>
+</div>
+<p>這時結果就和我們想像的不一樣，在更改b時，a也被改到了。<br />
+這是執行指令<code>b=a</code>，意思是「將a新增別名b」，這時a和b同時指向同一個物件。</p>
+<p>當資料型態為</p>
+<ul>
+<li>列表 (list)</li>
+<li>字典 (dict)</li>
+<li>集合 (set)</li>
+</ul>
+<p>時，複製變數就是在新增別名，如下：</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="變數引用-列表-list" name="__tabbed_1" type="radio" /><input id="變數引用-字典-dict" name="__tabbed_1" type="radio" /><input id="變數引用-集合-set" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="變數引用-列表-list">列表 (list)</label><label for="變數引用-字典-dict">字典 (dict)</label><label for="變數引用-集合-set">集合 (set)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">b</span><span class="o">=</span><span class="n">a</span>
+
+<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</code></pre></div>
+<div class="result">
+<p>a: [0, 2, 3, 4, 5, 6]<br />
+b: [0, 2, 3, 4, 5, 6]</p>
+</div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+<span class="n">b</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a:&#39;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;b:&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+</code></pre></div>
+<div class="result">
+<p>a: {'x': 0, 'y': 2}<br />
+b: {'x': 0, 'y': 2}</p>
+</div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">b</span><span class="o">=</span><span class="n">a</span>
+
+<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</code></pre></div>
+<div class="result">
+<p>a: {1, 2, 3, 4}<br />
+b: {1, 2, 3, 4}</p>
+</div>
+</div>
+</div>
+</div>
 
 
 

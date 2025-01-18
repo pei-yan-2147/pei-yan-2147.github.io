@@ -4196,7 +4196,7 @@ a^p \equiv a \pmod{p}
 <blockquote>
 <p>我們先試試暴力找法</p>
 </blockquote>
-<p><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">_find</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="p">){</span>
@@ -4218,12 +4218,14 @@ a^p \equiv a \pmod{p}
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;反元素： &quot;</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;答案： &quot;</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="mi">56</span><span class="o">/</span><span class="n">b</span><span class="p">)</span><span class="o">%</span><span class="mi">5</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code><span class="n">計算</span><span class="w"> </span><span class="p">(</span><span class="mi">56</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span><span class="o">%</span><span class="mi">5</span><span class="w"> </span><span class="n">為</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span><span class="o">%</span><span class="n">c</span>
-<span class="n">反元素b</span><span class="o">=</span><span class="mi">3</span>
-<span class="n">答案</span><span class="o">=</span><span class="mi">3</span>
-</code></pre></div><br />
-複雜度為O(P)也就是O(n)，太慢了。<br />
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>計算 (56/7)%5 為 (a*b)%c
+反元素b=3
+答案=3
+</code></pre></div>
+</div>
+<p>複雜度為O(P)也就是O(n)，太慢了。<br />
 要如何更快找到答案呢？<br />
 這時候要用到費馬小定理。</p>
 <h2 id="費馬小定理_1">費馬小定理<a class="headerlink" href="#費馬小定理_1" title="Permanent link"></a></h2>
@@ -4256,7 +4258,7 @@ a^p \equiv a \pmod{p}
 <p>接下來要思考如何求 <span class="arithmatex">\(a^{p-2}\)</span> ，如果慢慢乘上去，複雜度為O(P)，太慢了，情況並沒有改善。</p>
 <p>所以要我們可以使用快速幂，就能夠用O(log(P)) <br />
 就計算出模逆元</p>
-<p><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
 
@@ -4279,9 +4281,11 @@ a^p \equiv a \pmod{p}
 <span class="w">    </span><span class="n">cin</span><span class="o">&gt;&gt;</span><span class="n">A</span><span class="o">&gt;&gt;</span><span class="n">P</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">mod</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">P</span><span class="mi">-2</span><span class="p">);</span><span class="c1">//to a^(p-2)</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code>3
-</code></pre></div></p>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>3
+</code></pre></div>
+</div>
 
 
 

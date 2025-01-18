@@ -4057,37 +4057,41 @@ is now available!
 <p>眾所周知~<br />
 在宣告陣列時<code>char x[6]="12345";</code>時，程式在之後遇到<code>x</code>就會回傳為<code>"12345"</code></p>
 </blockquote>
-<p><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
 <span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">=</span><span class="s">&quot;12345&quot;</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">x</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code>12345
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>12345
 4
-</code></pre></div></p>
+</code></pre></div>
+</div>
 <hr />
 <blockquote>
 <p>所以也可以直接把<code>x</code>替代成<code>"12345"</code>，如下：</p>
 </blockquote>
-<p><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
 <span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">=</span><span class="s">&quot;12345&quot;</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;12345&quot;</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;12345&quot;</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code>12345
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>12345
 4
-</code></pre></div></p>
+</code></pre></div>
+</div>
 <hr />
 <blockquote>
 <p>那麼接下來我們就可以做有趣的事情了</p>
 </blockquote>
-<p><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
 <span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[](</span><span class="s">&quot;12345&quot;</span><span class="p">);</span>
@@ -4095,14 +4099,16 @@ is now available!
 <span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="s">&quot;abcde&quot;</span><span class="w"> </span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code>1a2b3c4d5e
-</code></pre></div></p>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>1a2b3c4d5e
+</code></pre></div>
+</div>
 <blockquote>
 <p>這段程式碼在輸出英文時根據 i 輸出不同英文<br />
 換個方向，要放入布林值也是可以的</p>
 </blockquote>
-<p><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
 <span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">[](</span><span class="s">&quot;12345&quot;</span><span class="p">);</span>
@@ -4110,9 +4116,11 @@ is now available!
 <span class="w">        </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;&lt;</span><span class="s">&quot;;&quot;</span><span class="w"> </span><span class="p">[</span><span class="n">i</span><span class="o">==</span><span class="n">strlen</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="mi">-1</span><span class="p">];</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code>1;2;3;4;5
-</code></pre></div></p>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>1;2;3;4;5
+</code></pre></div>
+</div>
 
 
 

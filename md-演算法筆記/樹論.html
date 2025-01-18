@@ -4827,7 +4827,7 @@ is now available!
 </code></pre></div>
 <div class="code-footer"><label class="expand" for="__collapse0" tabindex="0" title="expand"></label><label class="collapse" for="__collapse0" tabindex="0" title="collapse"></label></div>
 </div>
-<div class="collapse-code"><input checked="checked" id="__collapse1" name="__collapse1" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse1" name="__collapse1" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N int(1e5)+1</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -4890,7 +4890,7 @@ is now available!
 假設數列是 S，pm 是prefix_max，則最大兩個元素之和其實就是max(S[i]+pm(i): for all i)。     <br />
 所以我們只需要一路掃描並維護好目前看到的最大值，每次將當下看到的值加上他之前的最大值相加即可。       </p>
 </blockquote>
-<div class="collapse-code"><input checked="checked" id="__collapse2" name="__collapse2" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse2" name="__collapse2" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
@@ -4908,7 +4908,7 @@ is now available!
 </code></pre></div>
 <div class="code-footer"><label class="expand" for="__collapse2" tabindex="0" title="expand"></label><label class="collapse" for="__collapse2" tabindex="0" title="collapse"></label></div>
 </div>
-<div class="collapse-code"><input checked="checked" id="__collapse3" name="__collapse3" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse3" name="__collapse3" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N int(1e5)+1</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -4963,7 +4963,7 @@ farthest of farthest 演算法   <br />
 兩次DFS   <br />
 第一次找f的最遠點i，第二次找i最遠點k     </p>
 </blockquote>
-<div class="collapse-code"><input checked="checked" id="__collapse4" name="__collapse4" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse4" name="__collapse4" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N int(1e5)+1</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -5062,7 +5062,7 @@ farthest of farthest 演算法   <br />
 使用權重作為距離，找出最大直徑。  <br />
 全部路段長度*2-直徑即為答案    </p>
 </blockquote>
-<div class="collapse-code"><input checked="checked" id="__collapse5" name="__collapse5" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse5" name="__collapse5" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N 100000</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -5139,7 +5139,7 @@ ex：n=15，分割後兩棵樹節點皆為7。(15/2=7.5，7&lt;=7.5)   </p>
 <p><img alt="alt text" src="../images/%E6%A8%B9%E8%AB%96/image-1-1.png" width="100%" /></p>
 <p>樹壓平可以想樣成前序、後序的結合(有時候會加入中序，例如配合線段樹找LCA時)，經過前面和後面時紀錄，中間不紀錄。   <br />
 紀錄後可以得到一個序列，以圖片為例，可以發現被夾在同一個節點n之間的節點，皆為n的子節點。    </p>
-<div class="collapse-code"><input checked="checked" id="__collapse6" name="__collapse6" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse6" name="__collapse6" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N 100</span>
 
@@ -5175,8 +5175,10 @@ ex：n=15，分割後兩棵樹節點皆為7。(15/2=7.5，7&lt;=7.5)   </p>
 </code></pre></div>
 <div class="code-footer"><label class="expand" for="__collapse6" tabindex="0" title="expand"></label><label class="collapse" for="__collapse6" tabindex="0" title="collapse"></label></div>
 </div>
-<div class="highlight"><span class="filename">output</span><pre><span></span><code><span class="mi">0</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="mi">7</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="mi">0</span>
+<div class="result">
+<div class="highlight"><pre><span></span><code>0 1 2 3 3 4 4 2 5 5 1 6 7 7 8 8 6 0
 </code></pre></div>
+</div>
 <h2 id="lca">LCA<a class="headerlink" href="#lca" title="Permanent link"></a></h2>
 <blockquote>
 <p>from <a href="https://hackmd.io/@konchin/ryhgIlhMu">https://hackmd.io/@konchin/ryhgIlhMu</a></p>
@@ -5194,7 +5196,7 @@ ex：n=15，分割後兩棵樹節點皆為7。(15/2=7.5，7&lt;=7.5)   </p>
 <p>如圖</p>
 <p><img alt="alt text" src="../images/%E6%A8%B9%E8%AB%96/11LTM0v.png" width="50%" /></p>
 <p>黃色框代表是 <span class="arithmatex">\(v\)</span> 的祖先，紅色則是往上找的路徑</p>
-<div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">LCA</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="kt">int</span><span class="w"> </span><span class="nf">LCA</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">	</span><span class="k">if</span><span class="p">(</span><span class="n">isanc</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">u</span><span class="p">;</span><span class="w">  </span><span class="c1">//如果u是v祖先</span>
 <span class="w">	</span><span class="k">if</span><span class="p">(</span><span class="n">isanc</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">u</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">;</span><span class="w">  </span><span class="c1">//如果v是u祖先</span>
 <span class="w">	</span><span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="n">isanc</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">))</span><span class="w">    </span><span class="c1">//如果不是祖先，u往上走(u變為u祖先)</span>
@@ -5208,7 +5210,7 @@ anc 很直覺，DFS 就有了<br />
 isanc 則需要借助另外兩個陣列 tin 和 tout 來實現</p>
 <p>tin：進入點的時間點<br />
 tout：離開點的時間點</p>
-<div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">isanc</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="kt">bool</span><span class="w"> </span><span class="nf">isanc</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">	</span><span class="k">return</span><span class="w"> </span><span class="n">tin</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">tin</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">tout</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">tout</span><span class="p">[</span><span class="n">b</span><span class="p">];</span><span class="w">  </span><span class="c1">//如果a比b早進，a比b晚離開，就是祖先</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -5229,7 +5231,7 @@ tout：離開點的時間點</p>
 <span class="p">}</span>
 </code></pre></div>
 <p>完整程式碼(配合<a href="#d767-血緣關係">d767. 血緣關係</a>)：</p>
-<div class="collapse-code"><input checked="checked" id="__collapse7" name="__collapse7" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse7" name="__collapse7" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N 40000</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -5560,7 +5562,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 <p>範例輸出 #2     <br />
 16     <br />
 0 2 1 2 0       </p>
-<div class="collapse-code"><input checked="checked" id="__collapse9" name="__collapse9" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse9" name="__collapse9" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N 50010</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -5642,7 +5644,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 範例輸出 2   <br />
 9   <br />
 4     </p>
-<div class="collapse-code"><input checked="checked" id="__collapse10" name="__collapse10" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse10" name="__collapse10" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N int(1e5+1)</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -5735,7 +5737,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 <p>這裡用到一個技巧：計算子數數量，也就是包含k，再k之下節點數量。    <br />
 可用button up計算數量      </p>
 <hr />
-<div class="collapse-code"><input checked="checked" id="__collapse11" name="__collapse11" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse11" name="__collapse11" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
 <span class="cp">#define N int(1e5+10)</span>
@@ -5844,7 +5846,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 </code></pre></div><br />
 就是top-down的DP</p>
 </blockquote>
-<div class="collapse-code"><input checked="checked" id="__collapse12" name="__collapse12" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse12" name="__collapse12" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
 <span class="cp">#define N 100000</span>
@@ -5936,7 +5938,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 4 6 7 5 5     </p>
 <p>範例二：<br />
 8 7     </p>
-<div class="collapse-code"><input checked="checked" id="__collapse13" name="__collapse13" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="c1">     </span>
+<div class="collapse-code"><input checked="checked" id="__collapse13" name="__collapse13" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span><span class="c1">     </span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N 200000</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -6028,7 +6030,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 20 20 30 30     </p>
 <p>範例輸出 #2     </p>
 <p>880    </p>
-<div class="collapse-code"><input checked="checked" id="__collapse14" name="__collapse14" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits//stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse14" name="__collapse14" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits//stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N  int(1e5+10)</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -6118,7 +6120,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 4 9      </p>
 <p>範例輸出 #2      </p>
 <p>2      </p>
-<div class="collapse-code"><input checked="checked" id="__collapse15" name="__collapse15" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse15" name="__collapse15" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N 200001</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -6205,7 +6207,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 0 1 2 3 3 2 2      </p>
 <p>範例輸出 #2      </p>
 <p>5      </p>
-<div class="collapse-code"><input checked="checked" id="__collapse16" name="__collapse16" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse16" name="__collapse16" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define N 100001</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
@@ -6303,7 +6305,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 7 6     </p>
 <p>範例輸出 #2     </p>
 <p>3     </p>
-<div class="collapse-code"><input checked="checked" id="__collapse17" name="__collapse17" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse17" name="__collapse17" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn cout&lt;&lt;&quot;\n&quot;;</span>
 <span class="cp">#define N int(1e5)+1</span>
@@ -6429,7 +6431,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 0 1 1 1 1 1      </p>
 <p>範例輸出 #2      </p>
 <p>1      </p>
-<div class="collapse-code"><input checked="checked" id="__collapse18" name="__collapse18" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse18" name="__collapse18" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn cout&lt;&lt;&quot;\n&quot;;</span>
 <span class="cp">#define N int(1e5)+1</span>
@@ -6544,7 +6546,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 8 7</p>
 <p>範例輸出 #2</p>
 <p>66</p>
-<div class="collapse-code"><input checked="checked" id="__collapse19" name="__collapse19" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse19" name="__collapse19" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
 <span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
@@ -6796,7 +6798,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 <p>範例輸出 #2     </p>
 <p>3     </p>
 <p><img alt="alt text" src="../images/%E6%A8%B9%E8%AB%96/image-54.png" width="100%" /></p>
-<div class="collapse-code"><input checked="checked" id="__collapse22" name="__collapse22" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="c1">// P-8-13 min domination set of a tree</span>
+<div class="collapse-code"><input checked="checked" id="__collapse22" name="__collapse22" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="c1">// P-8-13 min domination set of a tree</span>
 <span class="c1">// top-down DP d1(r): min cost with root,</span>
 <span class="c1">// d01(r): without root but root is dominated</span>
 <span class="c1">// d00(r): without root and root is not necessarily dominated</span>
@@ -6892,7 +6894,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 6 2 A     </p>
 <p>範例輸出 #2     </p>
 <p>1     </p>
-<div class="collapse-code"><input checked="checked" id="__collapse23" name="__collapse23" type="checkbox" /><p _="%" endraw="endraw"><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="p">{</span><span class="o">%</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="o">%</span><span class="p">}</span>
+<div class="collapse-code"><input checked="checked" id="__collapse23" name="__collapse23" type="checkbox" /><p _="%" endraw="endraw"><div class="highlight"><pre><span></span><code><span class="p">{</span><span class="o">%</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="o">%</span><span class="p">}</span>
 <span class="err">```</span><span class="n">cpp</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
@@ -6954,7 +6956,7 @@ n 不超過 50000，每條道路長度是不超過 100 的正整數。     </p>
 <div class="code-footer"><label class="expand" for="__collapse23" tabindex="0" title="expand"></label><label class="collapse" for="__collapse23" tabindex="0" title="collapse"></label></div>
 </div>
 <h3 id="2171--打卡遊戲-checkin"><a href="https://tioj.ck.tp.edu.tw/problems/2171">2171 . 打卡遊戲 (Checkin)</a><a class="headerlink" href="#2171--打卡遊戲-checkin" title="Permanent link"></a></h3>
-<div class="collapse-code"><input checked="checked" id="__collapse24" name="__collapse24" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse24" name="__collapse24" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
 <span class="cp">#define nnn &quot; &quot;</span>

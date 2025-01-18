@@ -4247,7 +4247,7 @@ is now available!
 <p>使用於未排序之資料<br />
 函數的find為O(n)<br />
 (若在已經排序(set、map)的find為O(log n)</p>
-<p><div class="highlight"><span class="filename">函數搜尋</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><span class="filename">函數搜尋</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
@@ -4262,10 +4262,12 @@ is now available!
 <span class="w">    </span><span class="p">}</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;5的位置： &quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="n">find</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="mi">5</span><span class="p">));</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code>2 3 1 5 6    
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>2 3 1 5 6    
 5的位置： 3   
-</code></pre></div></p>
+</code></pre></div>
+</div>
 <h2 id="二分搜尋自製">二分搜尋(自製)<a class="headerlink" href="#二分搜尋自製" title="Permanent link"></a></h2>
 <blockquote>
 <p>只可用於已排序之資料 <br />
@@ -4277,7 +4279,7 @@ is now available!
 <p>以下分別說明</p>
 <h3 id="要找的值在陣列中">要找的值在陣列中<a class="headerlink" href="#要找的值在陣列中" title="Permanent link"></a></h3>
 <p>如果要找的值在集合中，就會回傳index，否則回傳-1</p>
-<div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">by</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">v</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">L</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">){</span>
 <span class="w">    </span><span class="k">while</span><span class="p">(</span><span class="n">L</span><span class="o">&lt;=</span><span class="n">R</span><span class="p">){</span>
@@ -4307,7 +4309,7 @@ is now available!
 <li>L為：「小於x且最接近x的數」的index+1</li>
 <li>R為：「大於x且最接近x的數」的index-1</li>
 </ul>
-<div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
 <span class="kt">void</span><span class="w"> </span><span class="nf">by</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">v</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">L</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">){</span>
@@ -4337,7 +4339,7 @@ is now available!
 <span class="p">}</span>
 </code></pre></div>
 <p>這樣我們如果要找到所有小於等於x的數，可以執行以下程式。</p>
-<div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">by</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="n">v</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">L</span><span class="p">,</span><span class="kt">int</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">){</span>
@@ -4415,7 +4417,7 @@ key最早能插入到那個位置 0 1 | 2 2 3 所以2最早插入到2號位置�
 <p>upper的意義是對於給定的已經排好序的a，   <br />
 key最晚能插入到那個位置 0 1 2 2 | 3 所以2最晚插入到4號位置。     </p>
 </blockquote>
-<p><div class="highlight"><span class="filename">陣列</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><span class="filename">陣列</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
@@ -4425,10 +4427,12 @@ key最晚能插入到那個位置 0 1 2 2 | 3 所以2最晚插入到4號位置�
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="p">;</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;*</span><span class="n">upper_bound</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="n">v</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="mi">7</span><span class="p">);</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code><span class="mi">7</span>
-<span class="mi">8</span>
-</code></pre></div></p>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>7
+8
+</code></pre></div>
+</div>
 <hr />
 <div class="highlight"><span class="filename">sort、map</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
@@ -4445,9 +4449,11 @@ key最晚能插入到那個位置 0 1 2 2 | 3 所以2最晚插入到4號位置�
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;*</span><span class="n">s</span><span class="p">.</span><span class="n">upper_bound</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<div class="highlight"><span class="filename">output</span><pre><span></span><code><span class="mi">4</span>
-<span class="mi">5</span>
+<div class="result">
+<div class="highlight"><pre><span></span><code>4
+5
 </code></pre></div>
+</div>
 <h3 id="p-2-6-two-number-problem">P-2-6. Two-Number problem<a class="headerlink" href="#p-2-6-two-number-problem" title="Permanent link"></a></h3>
 <p>題目：<a href="https://judge.tcirc.tw/ShowProblem?problemid=d015">https://judge.tcirc.tw/ShowProblem?problemid=d015</a></p>
 <p>假設 A 為 m 個相異整數的集合，B 為 n 個相異整數的集合，而 K 是一個整數。請計算有多少對(a, b)的組合滿足 a 屬於 A, b 屬於 B 且 a+b = K。<br />
@@ -4462,7 +4468,7 @@ Time limit: 1 秒<br />
 5 1 -1 -3<br />
 範例輸出：<br />
 2</p>
-<div class="collapse-code"><input checked="checked" id="__collapse0" name="__collapse0" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse0" name="__collapse0" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
 <span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
@@ -4525,7 +4531,7 @@ Time limit: 1 秒<br />
 <p><img alt="alt text" src="../images/%E6%90%9C%E5%B0%8B%E3%80%81%E4%BA%8C%E5%88%86%E6%90%9C%E5%B0%8B%E3%80%81%E8%B7%B3%E8%BA%8D%E4%BA%8C%E5%88%86%E6%90%9C/GIF.gif" /></p>
 <iframe width="1280" height="456" src="https://www.youtube.com/embed/S2O7abfIMSk" title="跳躍二分搜" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-<p><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
@@ -4541,11 +4547,13 @@ Time limit: 1 秒<br />
 <span class="w">    </span><span class="p">}</span>
 <span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">nn</span><span class="o">&lt;&lt;</span><span class="n">index</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div><br />
-<div class="highlight"><span class="filename">output</span><pre><span></span><code><span class="mi">3</span>
-</code></pre></div></p>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code>3
+</code></pre></div>
+</div>
 <p>判斷「是否有找到」</p>
-<div class="collapse-code"><input checked="checked" id="__collapse1" name="__collapse1" type="checkbox" /><div class="highlight"><span class="filename">code</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<div class="collapse-code"><input checked="checked" id="__collapse1" name="__collapse1" type="checkbox" /><div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
 <span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
 <span class="cp">#define nn &quot;\n&quot;</span>
 <span class="cp">#define int long long</span>

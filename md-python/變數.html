@@ -4116,9 +4116,9 @@ b: [0, 2, 3, 4, 5, 6]
 </div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
-<span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
-<span class="n">b</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="n">b</span><span class="o">=</span><span class="n">a</span>
+<span class="n">b</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a:&#39;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;b:&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
@@ -4146,6 +4146,29 @@ b: {1, 2, 3, 4}
 </div>
 </div>
 </div>
+<p>現在我們有一個結論：</p>
+<blockquote>
+<p>執行b=a時，若a是陣列，就會指向同一個陣列</p>
+</blockquote>
+<p>那我們看看下面的程式碼：</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span><span class="w">    </span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="w">  </span>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code><span class="nl">a</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
+<span class="nl">b</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w">  </span><span class="c1">//受影響</span>
+<span class="nl">a</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span>
+<span class="nl">b</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w">  </span><span class="c1">//不受影響</span>
+</code></pre></div>
+</div>
+<p>這段程式碼說明了如果變數重新賦值，就會指向不同內容。</p>
+<!-- 解決方式? -->
 
 
 

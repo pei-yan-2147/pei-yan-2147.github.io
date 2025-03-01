@@ -3881,6 +3881,15 @@ is now available!
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#交換變數名稱" class="md-nav__link">
+    <span class="md-ellipsis">
+      交換變數名稱
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4032,6 +4041,15 @@ is now available!
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#交換變數名稱" class="md-nav__link">
+    <span class="md-ellipsis">
+      交換變數名稱
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4151,24 +4169,126 @@ b: {1, 2, 3, 4}
 <p>執行b=a時，若a是陣列，就會指向同一個陣列</p>
 </blockquote>
 <p>那我們看看下面的程式碼：</p>
-<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
-<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
 <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
-<span class="n">print</span><span class="p">(</span><span class="s">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-<span class="n">print</span><span class="p">(</span><span class="s">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
-<span class="n">print</span><span class="p">(</span><span class="s">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span><span class="w">    </span>
-<span class="n">print</span><span class="p">(</span><span class="s">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span><span class="w">  </span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>    
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>  
 </code></pre></div>
 <div class="result">
-<div class="highlight"><pre><span></span><code><span class="nl">a</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
-<span class="nl">b</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w">  </span><span class="c1">//受影響</span>
-<span class="nl">a</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span>
-<span class="nl">b</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w">  </span><span class="c1">//不受影響</span>
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="o">//</span><span class="n">受影響</span>
+<span class="n">a</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="o">//</span><span class="n">不受影響</span>
 </code></pre></div>
 </div>
-<p>這段程式碼說明了如果變數重新賦值，就會指向不同內容。</p>
-<!-- 解決方式? -->
+<p>這段程式碼說明了如果變數重新賦值，就會指向不同內容。<br />
+可以看到以下影片，模擬程式碼運作。</p>
+<iframe width="1236" height="500" src="https://www.youtube.com/embed/iv4ZGNRpRo8" title="python變數" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<p>基於相同概念，其實所有變數都是相同原理：執行<code>b=a</code>時，b與a會指向相同物件</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>  <span class="c1"># 顯示 a 的記憶體地址</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>  <span class="c1"># 顯示 b 的記憶體地址</span>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code><span class="mi">2517631631568</span>
+<span class="mi">2517631631568</span>
+</code></pre></div>
+</div>
+<p>要解決複製的問題，使用<code>.copy()</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;c:&quot;</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">b</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>   <span class="o">//</span><span class="n">受影響</span>
+<span class="n">c</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>   <span class="o">//</span><span class="n">不受影響</span>
+</code></pre></div>
+</div>
+<h2 id="交換變數名稱">交換變數名稱<a class="headerlink" href="#交換變數名稱" title="Permanent link"></a></h2>
+<p>在C++中若不使用函數，要交換變數會需要以下程式碼：</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(){</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">tmp</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;a: &quot;</span><span class="o">&lt;&lt;</span><span class="n">a</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;b: &quot;</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">//交換</span>
+<span class="w">    </span><span class="n">tmp</span><span class="o">=</span><span class="n">a</span><span class="p">;</span>
+<span class="w">    </span><span class="n">a</span><span class="o">=</span><span class="n">b</span><span class="p">;</span>
+<span class="w">    </span><span class="n">b</span><span class="o">=</span><span class="n">tmp</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;a: &quot;</span><span class="o">&lt;&lt;</span><span class="n">a</span><span class="o">&lt;&lt;</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;b: &quot;</span><span class="o">&lt;&lt;</span><span class="n">b</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code><span class="nl">a</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="nl">b</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="nl">a</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">       </span>
+<span class="nl">b</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+</code></pre></div>
+</div>
+<p>但是在python可以簡化：</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> 
+
+<span class="c1">#交換</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">b</span><span class="p">:</span> <span class="mi">2</span>       
+<span class="o">-----</span>      
+<span class="n">a</span><span class="p">:</span> <span class="mi">2</span>       
+<span class="n">b</span><span class="p">:</span> <span class="mi">1</span>   
+</code></pre></div>
+</div>
+<p>也可以多個同時交換：</p>
+<div class="highlight"><pre><span></span><code><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">c</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;c:&quot;</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> 
+
+<span class="c1">#交換</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">a</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-----&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a:&quot;</span><span class="p">,</span><span class="n">a</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b:&quot;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span> 
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;c:&quot;</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div>
+<div class="result">
+<div class="highlight"><pre><span></span><code><span class="n">a</span><span class="p">:</span> <span class="mi">1</span>
+<span class="n">b</span><span class="p">:</span> <span class="mi">2</span>       
+<span class="n">c</span><span class="p">:</span> <span class="mi">3</span>       
+<span class="o">-----</span>      
+<span class="n">a</span><span class="p">:</span> <span class="mi">2</span>       
+<span class="n">b</span><span class="p">:</span> <span class="mi">3</span>       
+<span class="n">c</span><span class="p">:</span> <span class="mi">1</span>
+</code></pre></div>
+</div>
 
 
 

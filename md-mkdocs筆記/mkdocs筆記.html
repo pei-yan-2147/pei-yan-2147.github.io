@@ -4486,6 +4486,15 @@ is now available!
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#把vscode終端機預設為conda" class="md-nav__link">
+    <span class="md-ellipsis">
+      把vscode終端機預設為conda
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4992,6 +5001,15 @@ is now available!
   <a href="#vscode貼上圖片" class="md-nav__link">
     <span class="md-ellipsis">
       vscode貼上圖片
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#把vscode終端機預設為conda" class="md-nav__link">
+    <span class="md-ellipsis">
+      把vscode終端機預設為conda
     </span>
   </a>
   
@@ -6105,6 +6123,42 @@ hide:
 </code></pre></div></p>
 <p>結果如下圖，按下確定：</p>
 <p><img alt="alt text" src="../images/mkdocs%E7%AD%86%E8%A8%98/image-1.png" /></p>
+<h2 id="把vscode終端機預設為conda">把vscode終端機預設為conda<a class="headerlink" href="#把vscode終端機預設為conda" title="Permanent link"></a></h2>
+<p>輸入<br />
+<div class="highlight"><pre><span></span><code>&gt; Terminal: Select Default Profile
+</code></pre></div><br />
+<img alt="alt text" src="images/mkdocs%E7%AD%86%E8%A8%98/image-1.png" /><br />
+選第一個<br />
+<img alt="alt text" src="images/mkdocs%E7%AD%86%E8%A8%98/image-2.png" /><br />
+選隨便一個的後面齒輪<br />
+<img alt="alt text" src="images/mkdocs%E7%AD%86%E8%A8%98/image-5.png" /><br />
+輸入新名稱</p>
+<p>輸入settings.json到設定檔<br />
+<div class="highlight"><pre><span></span><code>&gt; settings.json
+</code></pre></div><br />
+<img alt="alt text" src="images/mkdocs%E7%AD%86%E8%A8%98/image.png" /></p>
+<p><img alt="alt text" src="images/mkdocs%E7%AD%86%E8%A8%98/image-6.png" /><br />
+會看到最下面多一個new</p>
+<p>更改成<br />
+<div class="highlight"><pre><span></span><code>        &quot;conda&quot;: {
+            &quot;path&quot;: &quot;C:\\WINDOWS\\System32\\cmd.exe&quot;,
+            &quot;args&quot;: [
+                &quot;/K&quot;,
+                &quot;D:\\PEI_APPS\\anaconda3\\Scripts\\activate.bat&quot;,
+                &quot;D:\\PEI_APPS\\anaconda3&quot;
+            ]
+        },
+</code></pre></div><br />
+也就是</p>
+<div class="highlight"><pre><span></span><code>        &quot;conda&quot;: {
+            &quot;path&quot;: &quot;C:\\WINDOWS\\System32\\cmd.exe&quot;, //不用動
+            &quot;args&quot;: [
+                &quot;/K&quot;,
+                &quot;&quot;存放conda的資料夾&quot;\\anaconda3\\Scripts\\activate.bat&quot;,
+                &quot;&quot;存放conda的資料夾&quot;\\anaconda3&quot;
+            ]
+        },
+</code></pre></div>
 <div class="footnote">
 <hr />
 <ol>

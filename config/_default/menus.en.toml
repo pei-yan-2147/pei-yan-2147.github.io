@@ -70,3 +70,20 @@
 
 
 
+# config/_default/menus.toml
+
+[[main]]
+  name = "Blog"
+  pageRef = "posts"
+  weight = 10
+
+[[main]]
+  name = "Topics"
+  pageRef = "topics"
+  weight = 20
+
+[[main]]
+  pre = "github"
+  name = "GitHub"
+  url = "posts/my-first-post.md"
+  weight = 30

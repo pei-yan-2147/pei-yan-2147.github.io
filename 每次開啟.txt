@@ -1,6 +1,4 @@
-第一次開啟：
-activate hugo
-hugo server
+
 
 儲存：
 ```
@@ -13,6 +11,10 @@ git remote add origin https://github.com/pei-yan-2147/pei-yan-2147.github.io.git
 git push --set-upstream origin master
 
 ```
+
+
+
+hugo server
 
 
 

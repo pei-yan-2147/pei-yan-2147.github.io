@@ -1,7 +1,7 @@
 baseURL = 'https://example.org/'
 languageCode = 'en-us'
 title = 'PEICSOC'
-theme = 'ananke'
+theme = 'blowfish'
 
 
 [caches]

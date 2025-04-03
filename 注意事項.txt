@@ -1,0 +1,73 @@
+https://hackmd.io/@udzQ2BohS5C0Xc66dtaYIA/S1wSWRbrO
+
+
+1. 安裝 hugo 
+
+```
+conda install conda-forge::hugo
+```
+
+2. 建立 Project
+
+
+```
+hugo new site mysite
+```
+
+3.會出現以下
+```
+mysite/
+│
+├── archetypes/
+│ │
+│ └─ default.md  # 預設 markdown
+├── content/     # 頁面、文章（markdown）
+├── data/        # 資料庫
+├── layouts/     # 自定義的樣板
+├── static/      # 靜態資源
+├── themes/      # 網站的主題
+└── config.toml  # 網站的配置
+```
+
+4.用主題(https://github.com/ertuil/erblog)
+
+
+```
+git submodule add https://github.com/ertuil/erblog themes/erblog
+git submodule init
+git submodule update
+
+```
+
+
+5.連線github
+
+發布流程(第一次發布)：
+
+```
+git init
+git add .
+git commit -m "mysite"
+git remote add origin https://github.com/pei-yan-2147/pei-yan-2147.github.io.git
+git push origin master
+```
+
+第n次
+
+```
+git init
+git add .
+git commit -m "mysite"
+git push origin master
+
+cd mysite
+cd public
+git init
+git add .
+git commit -m "123"
+git remote add origin https://github.com/pei-yan-2147/pei-yan-2147.github.io.git
+git push origin master
+
+
+
+```

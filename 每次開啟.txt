@@ -1,0 +1,15 @@
+第一次開啟：
+activate hugo
+hugo server
+
+儲存：
+```
+activate hugo
+cd quickstart
+hugo
+git add -A
+git commit -m "Create hugo.yaml"
+git remote add origin https://github.com/pei-yan-2147/pei-yan-2147.github.io.git
+git push --set-upstream origin master
+
+```

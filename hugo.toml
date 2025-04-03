@@ -7,3 +7,12 @@ theme = 'blowfish'
 [caches]
   [caches.images]
     dir = ':cacheDir/images'
+
+
+# config/_default/hugo.toml
+
+baseURL = "https://your_domain.com/"
+languageCode = "en"
+
+
+colorScheme = "blowfish"

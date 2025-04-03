@@ -5,7 +5,7 @@ hugo server
 儲存：
 ```
 activate hugo
-cd quickstart
+git init
 hugo
 git add -A
 git commit -m "Create hugo.yaml"

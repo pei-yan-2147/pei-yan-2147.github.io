@@ -14,7 +14,7 @@ hugo server
 ```
 
 
-
+hugo
 hugo server
 
 

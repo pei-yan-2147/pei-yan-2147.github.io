@@ -1786,49 +1786,7 @@ mjx-container:not([display]) {
     background-color: #51f97b
 }
 
-/* 用 flex 讓 header 裡的元素橫向排列 */
-.md-typeset h1,
-.md-typeset h2,
-.md-typeset h3,
-.md-typeset h4,
-.md-typeset h5,
-.md-typeset h6 {
-    display: flex;
-    flex-direction: row; 
-    align-items: flex-end; 
-}
 
-/* 調整圖示外觀與位置 */
-.md-typeset .headerlink {
-    padding-left: 0 !important;
-    margin-left: 0 !important;
-    order: -1; /* 🔥 確保圖示排在最前面！ */
-    width: 0.8em;
-    height: 0.8em;
-    background-color: var(--md-primary-fg-color);
-    background-size: 0.8em;
-    -webkit-mask-size: 0.8em;
-    mask-size: 0.8em;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g transform="skewX(-10)"><path d="M4 6h16v2H4zM4 16h16v2H4zM7 4h2v16H7zM15 4h2v16h-2z" stroke="black" stroke-width="1"/></g></svg>');
-    mask-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g transform="skewX(-10)"><path d="M4 6h16v2H4zM4 16h16v2H4zM7 4h2v16H7zM15 4h2v16h-2z" stroke="black" stroke-width="1"/></g></svg>');
-    visibility: visible;
-    opacity: 1 !important;
-    transition: none !important;
-    flex-shrink: 0;
-    transform: translateY(-0.25em); 
-}
-
-/* hover */
-.md-typeset .headerlink:hover {
-    background-color: var(--md-accent-fg-color);
-}
-
-/* 被點擊後變白 */
-.md-typeset [id]:target .headerlink {
-    background-color: white;
-}
 
 
 
@@ -2252,3 +2210,85 @@ body {
     font-family: "Roboto Mono";
 }
 
+/* 用 flex 讓 header 裡的元素橫向排列 */
+/* 隱藏 h1 的圖示 */
+.md-typeset h1 .headerlink {
+    display: none;
+}
+
+/* .md-typeset h1, */
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+    display: flex;
+    flex-direction: row; 
+    /* align-items: flex-end;  */
+    
+    align-items: top; /* 直接對齊文字與圖示 */
+}
+
+/* 調整圖示外觀與位置 */
+.md-typeset .headerlink {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    order: -1; /* 🔥 確保圖示排在最前面！ */
+    width: 1em;  /* 讓圖示與文字大小一致 */
+    height: 1em; /* 讓圖示與文字大小一致 */
+    background-color: var(--md-primary-fg-color);
+    background-size: 1em; /* 配合文字大小調整背景圖片 */
+    -webkit-mask-size: 1em; /* 配合文字大小調整mask */
+    mask-size: 1em; /* 配合文字大小調整mask */
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g transform="skewX(-10)"><path d="M4 6h16v2H4zM4 16h16v2H4zM7 4h2v16H7zM15 4h2v16h-2z" stroke="black" stroke-width="0.5"/></g></svg>');
+    mask-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g transform="skewX(-10)"><path d="M4 6h16v2H4zM4 16h16v2H4zM7 4h2v16H7zM15 4h2v16h-2z" stroke="black" stroke-width="0.5"/></g></svg>');
+    visibility: visible;
+    opacity: 1 !important;
+    transition: none !important;
+    flex-shrink: 0;
+    /* transform: translateY(-0.1em); 🔧 向下偏移來對齊漢字底部 */
+}
+
+/* hover */
+.md-typeset .headerlink:hover {
+    background-color: var(--md-accent-fg-color);
+}
+
+/* 被點擊後變白 */
+.md-typeset [id]:target .headerlink {
+    background-color: white;
+}
+
+
+.md-typeset h2 .headerlink {
+    transform: translateY(0.3em); /* 調整 h5 標題的圖示位置 */
+}
+
+.md-typeset h3 .headerlink {
+    transform: translateY(0.3em); /* 調整 h5 標題的圖示位置 */
+}
+
+.md-typeset h4 .headerlink {
+    transform: translateY(0.31em); /* 調整 h5 標題的圖示位置 */
+}
+
+.md-typeset h5 .headerlink {
+    transform: translateY(0.35em); /* 調整 h5 標題的圖示位置 */
+}
+
+.md-typeset h6 .headerlink {
+    transform: translateY(0.35em); /* 調整 h5 標題的圖示位置 */
+}
+
+
+/* 博客 - index.md */
+/* 博客 - index.md */
+/* 博客 - index.md */
+.md-post--excerpt {
+    padding: 3px 10px; /* 內部空間調大 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+    border-radius: 12px; /* 可選，給元素圓角 */
+    /* background-color: white; 背景顏色，確保陰影效果清晰可見 */
+}

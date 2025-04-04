@@ -1803,21 +1803,21 @@ mjx-container:not([display]) {
     padding-left: 0 !important;
     margin-left: 0 !important;
     order: -1; /* 🔥 確保圖示排在最前面！ */
-    width: 1em;
-    height: 1em;
+    width: 0.8em;
+    height: 0.8em;
     background-color: var(--md-primary-fg-color);
-    background-size: 1em;
-    -webkit-mask-size: 1em;
-    mask-size: 1em;
+    background-size: 0.8em;
+    -webkit-mask-size: 0.8em;
+    mask-size: 0.8em;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
-    -webkit-mask-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 16h16v2H4zM7 4h2v16H7zM15 4h2v16h-2z"/></svg>');
-    mask-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 6h16v2H4zM4 16h16v2H4zM7 4h2v16H7zM15 4h2v16h-2z"/></svg>');
+    -webkit-mask-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g transform="skewX(-10)"><path d="M4 6h16v2H4zM4 16h16v2H4zM7 4h2v16H7zM15 4h2v16h-2z" stroke="black" stroke-width="1"/></g></svg>');
+    mask-image: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g transform="skewX(-10)"><path d="M4 6h16v2H4zM4 16h16v2H4zM7 4h2v16H7zM15 4h2v16h-2z" stroke="black" stroke-width="1"/></g></svg>');
     visibility: visible;
     opacity: 1 !important;
     transition: none !important;
     flex-shrink: 0;
-    transform: translateY(-0.1em); /* 🔧 向下偏移來對齊漢字底部 */
+    transform: translateY(-0.25em); 
 }
 
 /* hover */

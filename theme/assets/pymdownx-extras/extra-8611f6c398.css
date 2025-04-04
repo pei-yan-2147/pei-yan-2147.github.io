@@ -2134,9 +2134,20 @@ h4,
 h5{
     /*border-bottom: 4px solid #F2BBFF !important;  設置底部邊框為淺紫色 */
     border-left: 4px solid #F2BBFF !important;
-    color: #000000 !important; /* 設置文字顏色為淺灰色 */
-     padding-left: 15px; /*增加左側內邊距，讓文字遠離邊框 */
+    color: #F2BBFF !important; /* 設置文字顏色為淺灰色 */
+    padding-left: 15px; /*增加左側內邊距，讓文字遠離邊框 */
 }
+/* 
+h2,
+h3,
+h4,
+h5{
+    border-left: 4px solid #F2BBFF !important;
+    color: #000000 !important; 
+     padding-left: 15px; 
+} */
+
+
 
 /* 
 img[alt="alt text"] {

@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /private/
+Sitemap: https://pei-yan-2147.github.io/sitemap.xml
